@@ -76,7 +76,7 @@ const App = () => {
   }, []);
 
   return (
-    <div className="bg-dark-green flex items-center justify-center h-screen w-screen p-10">
+    <div className="bg-dark-green flex items-center justify-center h-screen w-screen max-w-[700px] p-10">
       <div className="bg-white w-full h-full rounded-lg flex flex-col relative max-w-full overflow-y-scroll">
         {/* Контейнер для переключателей недель */}
         <WeekToogleContainer
