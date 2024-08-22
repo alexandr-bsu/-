@@ -10,6 +10,7 @@
 
 #root {
   overflow-y: hidden;
+  min-height: 700px;
 }
 
 @layer components {
