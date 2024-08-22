@@ -26,7 +26,7 @@ const WeekToogleContainer = ({ dates, selectFn }) => {
       className="px-5 py-3 flex gap-2 border-b border-gray items-center flex-wrap top-0 z-10 sticky w-full bg-white"
     >
       {dates.map((date, index) => (
-        <li key={date}>
+        <li key={date} className="max-sm:grow max-sm:min-w-40">
           {index == selectedDate ? (
             <Button
               intent="cream"
@@ -41,6 +41,7 @@ const WeekToogleContainer = ({ dates, selectFn }) => {
             <Button
               intent="primary-transparent"
               hower="primary"
+              className="max-sm:grow max-sm:min-w-40"
               onClick={async () => {
                 onSelect(index);
               }}

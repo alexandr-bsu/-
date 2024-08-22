@@ -15,7 +15,7 @@ const DateGroup = ({ group }) => {
         {group.pretty_date} {capitalize(group.day_name)}
       </h2>
 
-      <ul className="flex gap-4 flex-wrap">
+      <ul className="slot-grid gap-4">
         {Object.keys(group.slots).map((slotTime, index) => (
           <li key={`${group.slotTime}_${index}`}>
             {group.slots[slotTime].length == 0 ? (

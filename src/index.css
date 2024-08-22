@@ -11,3 +11,10 @@
 #root {
   overflow-y: hidden;
 }
+
+@layer components {
+  .slot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}

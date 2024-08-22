@@ -1,7 +1,7 @@
 import React from "react";
 import { cva } from "class-variance-authority";
 
-const button = cva(["rounded-xl", "font-medium", "text-regular"], {
+const button = cva(["rounded-xl", "font-medium", "text-regular", "w-full"], {
   variants: {
     intent: {
       primary: ["bg-green", "text-white"],
