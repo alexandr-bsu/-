@@ -1,7 +1,7 @@
 import React from "react";
 import Slots from "./Slots";
 import Button from "./Button";
-
+import WelcomePage from "../survey/WelcomePage";
 import { useState } from "react";
 
 const Form = ({ maxTabsCount }) => {
@@ -11,12 +11,6 @@ const Form = ({ maxTabsCount }) => {
   ];
 
   const [activeTabIndex, setActiveTabIndex] = useState(0);
-
-  function showNextPage() {}
-
-  function showPrevPage() {
-    setActiveTabIndex(activeTabIndex - 1);
-  }
 
   return (
     <>
@@ -32,7 +26,7 @@ const Form = ({ maxTabsCount }) => {
         <div className="relative overflow-y-scroll">
           <div className="min-h-screen">
             {/* Здесь размещаются вкладки */}
-            {activeTabIndex == 0 && <div>Привет я первая вкладка</div>}
+            {activeTabIndex == 0 && <WelcomePage></WelcomePage>}
             {activeTabIndex == 1 && <Slots></Slots>}
             {activeTabIndex == 2 && <div>Привет я последняя вкладка</div>}
           </div>
