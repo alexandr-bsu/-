@@ -13,7 +13,7 @@ const Form = () => {
       <div className="bg-white h-full rounded-lg flex flex-col relative w-full">
         <div
           data-name="header-block"
-          className="p-5 bg-[#2c3531] sticky top-0 rounded-t-lg z-20"
+          className="p-5 bg-[#2c3531] sticky top-0 z-20"
         >
           <h2 className="text-[#d1e8e2] font-medium text-lg">{headers[0]}</h2>
         </div>
@@ -22,10 +22,7 @@ const Form = () => {
           <Slots></Slots>
         </div>
 
-        <div
-          data-name="header-block"
-          className="p-10 rounded-b-lg bg-[#2c3531] z-20"
-        ></div>
+        <div data-name="header-block" className="p-10 bg-[#2c3531] z-20"></div>
       </div>
     </>
   );
