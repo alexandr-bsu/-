@@ -3,34 +3,20 @@ import { useEffect, useState } from "react";
 import WeekToogleContainer from "./WeekToogleContainer";
 import DateGroup from "./DateGroup";
 import axios from "axios";
+import { startOfWeek, endOfWeek } from "date-fns";
 
 const Slots = () => {
   const [groups_of_slots, setGroupsOfSlots] = useState([]);
   //Получаем даты начала и конца недели
   function getWeekStartEnd(date) {
-    //Преобразуем строку в объект DateTime
-    let givenDate = new Date(date);
-
-    //Определяем день недели (0 - воскрессение, 1 - понедельник, ... 6 - суббота)
-    let dayOfWeek = givenDate.getDay();
-
-    // Считаем смещение от понедельника
-    let diffToMonday = (dayOfWeek + 6) % 7;
-
-    // Находим воскресенье предыдущей недели
-    let monday = new Date(givenDate);
-    monday.setDate(givenDate.getDate() - diffToMonday);
-
-    // Находим понедельник следующей недели
-    let sunday = new Date(monday);
-    sunday.setDate(monday.getDate() + 6);
-
-    // Преобразуем даты в строку формата YYYY-MM-DD
-    let mondayStr = monday.toISOString().split("T")[0];
-    let sundayStr = sunday.toISOString().split("T")[0];
-
-    return { monday: mondayStr, sunday: sundayStr };
+    return {
+      monday: startOfWeek(date, { weekStartsOn: 2 })
+        .toISOString()
+        .split("T")[0],
+      sunday: endOfWeek(date, { weekStartsOn: 1 }).toISOString().split("T")[0],
+    };
   }
+
   // Даты начала и конца текущей недели
   const currWeekBorders = getWeekStartEnd(new Date());
   // Даты начала и конца следующей недели
