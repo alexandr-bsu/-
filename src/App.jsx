@@ -4,7 +4,7 @@ import Form from "./components/Form";
 
 const App = () => {
   return (
-    <div className="bg-dark-green h-screen w-screen">
+    <div className="bg-dark-green h-screen w-screen overflow-y-hidden">
       <Form maxTabsCount={3}></Form>;
     </div>
   );
