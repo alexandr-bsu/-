@@ -7,7 +7,7 @@ import axios from "axios";
 const App = () => {
   const [groups_of_slots, setGroupsOfSlots] = useState([]);
   //Получаем даты начала и конца недели
-  function getWeekStartEnd(date: Date) {
+  function getWeekStartEnd(date) {
     //Преобразуем строку в объект DateTime
     let givenDate = new Date(date);
 
@@ -54,7 +54,7 @@ const App = () => {
 
   // Получаем группы слотов и обновляем переменную groups_of_slots
   // Срабатывает когда выбирается дата в WeekToogleContainer
-  function selectFn(date: string) {
+  function selectFn(date) {
     let splited_dates = date.split(":");
     let startDate = splited_dates[0];
     let endDate = splited_dates[1];
