@@ -41,13 +41,13 @@ const Form = ({ maxTabsCount }) => {
         {/* Control buttons */}
         <div
           data-name="control-block"
-          className="p-2 flex items-center flex-wrap max-sm:grow gap-4 justify-between bg-[#2c3531] z-20"
+          className="p-5 flex items-center flex-wrap max-sm:grow gap-4 bg-[#2c3531] z-20"
         >
           {activeTabIndex != 0 ? (
             <Button
               intent="cream-transparent"
               hower="primary"
-              className="sm:max-w-64 max-sm:min-w-40"
+              className="sm:max-w-64 max-sm:min-w-40 mr-auto"
               onClick={() => {
                 setActiveTabIndex(activeTabIndex - 1);
               }}
@@ -55,13 +55,13 @@ const Form = ({ maxTabsCount }) => {
               Назад
             </Button>
           ) : (
-            <div></div>
+            ""
           )}
           {activeTabIndex != maxTabsCount - 1 ? (
             <Button
               intent="cream"
               hower="primary"
-              className="sm:max-w-64 max-sm:min-w-40"
+              className="sm:max-w-64 max-sm:min-w-40 ml-auto"
               onClick={() => {
                 setActiveTabIndex(activeTabIndex + 1);
               }}
@@ -69,7 +69,7 @@ const Form = ({ maxTabsCount }) => {
               Вперёд
             </Button>
           ) : (
-            <div></div>
+            ""
           )}
         </div>
       </div>
