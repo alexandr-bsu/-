@@ -18,10 +18,7 @@ const Form = () => {
           <Slots></Slots>
         </div>
 
-        <div
-          data-name="header-block"
-          className="p-10 bg-black sticky bottom-0 z-20"
-        ></div>
+        <div data-name="header-block" className="p-10 bg-black z-20"></div>
       </div>
     </>
   );
