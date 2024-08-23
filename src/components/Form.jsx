@@ -15,6 +15,7 @@ const Form = ({ maxTabsCount }) => {
   return (
     <>
       {/* Не задаём ограничений  т.к ширину будет ограничивать контейнер в Tilda */}
+      {/* flex flex-col */}
       <div className="bg-white h-full rounded-lg flex flex-col relative w-full">
         <div
           data-name="header-block"
@@ -23,19 +24,17 @@ const Form = ({ maxTabsCount }) => {
           <h2 className="text-[#d1e8e2] font-medium text-lg">{headers[0]}</h2>
         </div>
 
-        <div className="relative overflow-y-scroll">
-          <div className="min-h-screen">
-            {/* Здесь размещаются вкладки */}
-            {activeTabIndex == 0 && <WelcomePage></WelcomePage>}
-            {activeTabIndex == 1 && <Slots></Slots>}
-            {activeTabIndex == 2 && <div>Привет я последняя вкладка</div>}
-          </div>
+        <div className="relative h-full overflow-y-scroll">
+          {/* Здесь размещаются вкладки */}
+          {activeTabIndex == 0 && <WelcomePage></WelcomePage>}
+          {activeTabIndex == 1 && <Slots></Slots>}
+          {activeTabIndex == 2 && <div>Привет я последняя вкладка</div>}
         </div>
 
         {/* Control buttons */}
         <div
           data-name="control-block"
-          className="p-5 flex items-center flex-wrap max-sm:grow gap-4 bg-[#2c3531] z-20"
+          className="p-5 flex items-center flex-wrap max-sm:grow gap-4 bg-[#2c3531] sticky bottom-0 z-30"
         >
           {activeTabIndex != 0 ? (
             <Button

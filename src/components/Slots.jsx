@@ -150,7 +150,7 @@ const Slots = () => {
       {!isLoading && (
         <div
           data-name="data-groups"
-          className="flex flex-col px-5 py-10 gap-10"
+          className="flex flex-col px-5 py-10 min-h-screen gap-10 overflow-y-scroll"
         >
           {groups_of_slots?.map((group) => (
             <DateGroup group={group}></DateGroup>
