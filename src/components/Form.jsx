@@ -26,9 +26,7 @@ const Form = ({ maxTabsCount }) => {
           data-name="header-block"
           className="p-5 bg-[#2c3531] sticky top-0 z-20"
         >
-          <h2 className="text-[#d1e8e2] font-medium text-lg w-2/3">
-            {headers[0]}
-          </h2>
+          <h2 className="text-[#d1e8e2] font-medium text-lg">{headers[0]}</h2>
         </div>
 
         <div className="relative overflow-y-scroll">
