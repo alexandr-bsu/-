@@ -24,7 +24,7 @@ const Form = ({ maxTabsCount }) => {
           <h2 className="text-[#d1e8e2] font-medium text-lg">{headers[0]}</h2>
         </div>
 
-        <div className="relative h-full overflow-y-scroll">
+        <div className="relative h-full flex flex-col overflow-y-scroll">
           {/* Здесь размещаются вкладки */}
           {activeTabIndex == 0 && <WelcomePage></WelcomePage>}
           {activeTabIndex == 1 && <Slots></Slots>}

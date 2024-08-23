@@ -76,7 +76,7 @@ const Slots = () => {
   }, []);
 
   return (
-    <>
+    <div className="flex grow flex-col">
       {/* Контейнер для переключателей недель */}
       <WeekToogleContainer
         dates={dates}
@@ -89,6 +89,7 @@ const Slots = () => {
           className="flex flex-col items-center justify-center w-full h-full"
         >
           <svg
+            className="justify-self-center self-center"
             xmlns="http://www.w3.org/2000/svg"
             width={150}
             height={150}
@@ -157,7 +158,7 @@ const Slots = () => {
           ))}
         </div>
       )}
-    </>
+    </div>
   );
 };
 
