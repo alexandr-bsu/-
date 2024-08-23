@@ -23,7 +23,7 @@ const WeekToogleContainer = ({ dates, selectFn }) => {
   return (
     <ul
       data-name="week-toogle-container"
-      className="px-5 py-3 flex gap-2 border-b border-gray items-center flex-wrap top-0 z-10 sticky w-full bg-white"
+      className="px-5 py-3 flex gap-2 border-b border-gray items-center flex-wrap z-10 sticky top-0 w-full bg-white"
     >
       {dates.map((date, index) => (
         <li key={date} className="max-sm:grow max-sm:min-w-40">
