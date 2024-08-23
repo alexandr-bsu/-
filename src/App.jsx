@@ -5,7 +5,7 @@ import Form from "./components/Form";
 const App = () => {
   return (
     <div className="bg-dark-green h-screen w-screen">
-      <Form></Form>;
+      <Form maxTabsCount={3}></Form>;
     </div>
   );
 };

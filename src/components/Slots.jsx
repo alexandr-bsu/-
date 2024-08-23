@@ -76,7 +76,7 @@ const Slots = () => {
   }, []);
 
   return (
-    <div className="min-h-screen">
+    <>
       {/* Контейнер для переключателей недель */}
       <WeekToogleContainer
         dates={dates}
@@ -157,7 +157,7 @@ const Slots = () => {
           ))}
         </div>
       )}
-    </div>
+    </>
   );
 };
 

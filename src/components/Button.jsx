@@ -13,12 +13,23 @@ const button = cva(["rounded-xl", "font-medium", "text-regular", "w-full"], {
         "border",
         "border-green",
       ],
+
+      "cream-transparent": [
+        "bg-transparent",
+        "text-cream",
+        "border",
+        "border-cream",
+      ],
     },
 
     hover: {
       primary: ["hover:bg-green", "hover:text-white"],
       cream: ["hover:bg-cream", "hover:text-green"],
-      disabled: ["hover:bg-gray", "hover:text-gray-disabled"],
+      disabled: [
+        "hover:bg-gray",
+        "hover:text-gray-disabled",
+        "hover:border-none",
+      ],
       "primary-transparent": [
         "hover:bg-transparent",
         "hover:text-green",
