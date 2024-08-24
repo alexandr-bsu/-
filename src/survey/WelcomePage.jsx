@@ -33,10 +33,10 @@ const WelcomePage = () => {
   ];
 
   return (
-    <div className="px-5 flex flex-col pb-6">
+    <div className="flex flex-col pb-6">
       <div
         data-name="question-block"
-        className="bg-white border-gray border-b z-10 sticky top-0 w-full py-4 mb-4"
+        className="bg-white px-5 border-gray border-b z-10 sticky top-0 w-full py-4 mb-4"
       >
         <div className="flex flex-col">
           <h3 className="font-medium text-lg text-dark-green">
@@ -47,14 +47,15 @@ const WelcomePage = () => {
           </p>
         </div>
       </div>
-
-      <ul data-name="question-inputs">
-        {anxietyList.map((anxiety) => (
-          <li className="mt-2">
-            <Checkbox>{anxiety}</Checkbox>
-          </li>
-        ))}
-      </ul>
+      <div className="px-5">
+        <ul data-name="question-inputs">
+          {anxietyList.map((anxiety) => (
+            <li className="mt-2">
+              <Checkbox>{anxiety}</Checkbox>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
