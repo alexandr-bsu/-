@@ -29,10 +29,10 @@
   }
 
   .custom-checkbox + label {
-    display: inline-flex;
-    align-items: center;
+    display: flex;
+    align-items: top;
     user-select: none;
-    font-size: 18px;
+    font-size: 16px;
   }
   .custom-checkbox + label::before {
     content: "";
@@ -42,7 +42,7 @@
     flex-shrink: 0;
     flex-grow: 0;
     border: 1px solid #89ada4;
-    margin-right: 0.5em;
+    margin-right: 8px;
     background-repeat: no-repeat;
     border-radius: 4px;
     background-position: center center;
