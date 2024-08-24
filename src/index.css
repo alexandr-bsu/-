@@ -30,8 +30,7 @@
 
   .custom-checkbox + label {
     display: flex;
-    padding: 0;
-    align-items: top;
+    align-items: center;
     user-select: none;
     font-size: 16px;
   }
