@@ -36,7 +36,7 @@ const WelcomePage = () => {
     <div className="px-5 flex flex-col pb-6">
       <div
         data-name="question-block"
-        className="bg-white border-gray border-b z-10 sticky top-0 w-full py-6 mb-6"
+        className="bg-white border-gray border-b z-10 sticky top-0 w-full py-4 mb-4"
       >
         <div className="flex flex-col">
           <h3 className="font-medium text-lg text-dark-green">
