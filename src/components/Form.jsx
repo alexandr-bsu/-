@@ -11,7 +11,7 @@ import AskContacts from "../survey/AskContacts";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
-const Form = ({ maxTabsCount }) => {
+const Form = ({ maxTabsCount, showForm, setShowForm }) => {
   const form = useSelector((state) => state.form);
   const checkedAnxieties = useSelector((state) => state.form.anxieties);
   const questionToPsycologist = useSelector(
