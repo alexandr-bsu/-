@@ -7,11 +7,14 @@ import AmountExpectations from "../survey/AmountExpectations";
 import LastExperience from "../survey/LastExperience";
 import Age from "../survey/Age";
 import AskContacts from "../survey/AskContacts";
-
+import axios from "axios";
 import { useState } from "react";
-import { useSelector } from "react-redux";
 
-const Form = ({ maxTabsCount, showForm, setShowForm }) => {
+import { useSelector, useDispatch } from "react-redux";
+import { setStatus } from "../redux/slices/formStatusSlice";
+const Form = ({ maxTabsCount }) => {
+  const dispatch = useDispatch();
+
   const form = useSelector((state) => state.form);
   const checkedAnxieties = useSelector((state) => state.form.anxieties);
   const questionToPsycologist = useSelector(
@@ -38,28 +41,66 @@ const Form = ({ maxTabsCount, showForm, setShowForm }) => {
     // Валидация перед переходом на следущую вкладку
     if (tabIndex == 0 && checkedAnxieties.length == 0) {
       setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
     } else if (tabIndex == 1 && questionToPsycologist.length == "") {
       setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
     } else if (tabIndex == 2 && lastExperience == "") {
       setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
     } else if (tabIndex == 3 && amountExpectations == "") {
       setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
     } else if (tabIndex == 4 && age == "") {
       setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
     } else if (tabIndex == 5 && slots.length == 0) {
       setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
     } else if (tabIndex == 6 && (contactType == "" || contact == "")) {
       setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
     } else {
       setActiveTabIndex(tabIndex + 1);
       setShowError(false);
     }
-
-    setTimeout(() => {
-      setShowError(false);
-    }, 3000);
   }
 
+  function sendData() {
+    if (activeTabIndex == 6 && (contactType == "" || contact == "")) {
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
+    } else {
+      dispatch(setStatus("sending"));
+      axios({
+        method: "POST",
+        data: form,
+        url: "https://n8n.hrani.live/webhook/tilda-zayavka",
+      })
+        .then(() => {
+          dispatch(setStatus("ok"));
+        })
+        .catch((e) => {
+          dispatch(setStatus("error"));
+        });
+    }
+  }
   return (
     <>
       {/* Не задаём ограничений  т.к ширину будет ограничивать контейнер в Tilda */}
@@ -134,7 +175,9 @@ const Form = ({ maxTabsCount, showForm, setShowForm }) => {
               intent="cream"
               hower="primary"
               className="sm:max-w-64 max-sm:min-w-40 ml-auto"
-              onClick={() => {}}
+              onClick={() => {
+                sendData();
+              }}
             >
               Отправить форму
             </Button>
