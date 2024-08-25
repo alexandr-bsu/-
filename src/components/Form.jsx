@@ -2,6 +2,12 @@ import React from "react";
 import Slots from "./Slots";
 import Button from "./Button";
 import WelcomePage from "../survey/WelcomePage";
+import QuestionToPsycologist from "../survey/QuestionToPsycologist";
+import AmountExpectations from "../survey/AmountExpectations";
+import LastExperience from "../survey/LastExperience";
+import Age from "../survey/Age";
+import AskContacts from "../survey/AskContacts";
+
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -17,15 +23,17 @@ const Form = ({ maxTabsCount }) => {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   function showNextTab(tabIndex) {
     // Валидация перед переходом на следущую вкладку
-    if (tabIndex == 0 && checkedAnxieties.length > 0) {
-      setActiveTabIndex(tabIndex + 1);
-      setShowError(false);
-    } else {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    }
+    // if (tabIndex == 0 && checkedAnxieties.length > 0) {
+    //   setActiveTabIndex(tabIndex + 1);
+    //   setShowError(false);
+    // } else {
+    //   setShowError(true);
+    //   setTimeout(() => {
+    //     setShowError(false);
+    //   }, 3000);
+    // }
+
+    setActiveTabIndex(tabIndex + 1);
   }
 
   return (
@@ -52,8 +60,15 @@ const Form = ({ maxTabsCount }) => {
         <div className="relative h-full flex flex-col overflow-y-scroll">
           {/* Здесь размещаются вкладки */}
           {activeTabIndex == 0 && <WelcomePage></WelcomePage>}
-          {activeTabIndex == 1 && <Slots></Slots>}
-          {activeTabIndex == 2 && <div>Привет я последняя вкладка</div>}
+          {activeTabIndex == 1 && (
+            <QuestionToPsycologist></QuestionToPsycologist>
+          )}
+          {activeTabIndex == 2 && <LastExperience></LastExperience>}
+          {activeTabIndex == 3 && <AmountExpectations></AmountExpectations>}
+          {activeTabIndex == 4 && <Age></Age>}
+          {activeTabIndex == 5 && <Slots></Slots>}
+          {activeTabIndex == 6 && <AskContacts></AskContacts>}
+          {activeTabIndex == 7 && <p>Я последняя вкладка</p>}
         </div>
 
         {/* Control buttons */}
