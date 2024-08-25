@@ -10,7 +10,7 @@ const Radio = ({ children, id, name, classLabel, ...props }) => {
         className="custom-radio"
         {...props}
       />
-      <label for={id} className={classLabel}>
+      <label htmlFor={id} className={classLabel}>
         {children}
       </label>
     </>

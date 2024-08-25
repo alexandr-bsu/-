@@ -12,7 +12,13 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 
 const Form = ({ maxTabsCount }) => {
+  const form = useSelector((state) => state.form);
   const checkedAnxieties = useSelector((state) => state.form.anxieties);
+  const lastExperience = useSelector((state) => state.form.lastExperience);
+  const amountExpectations = useSelector(
+    (state) => state.form.amountExpectations
+  );
+  const contactType = useSelector((state) => state.form.contactType);
   const [showError, setShowError] = useState(false);
 
   // Массив заголовков табов формы.
@@ -23,17 +29,23 @@ const Form = ({ maxTabsCount }) => {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   function showNextTab(tabIndex) {
     // Валидация перед переходом на следущую вкладку
-    // if (tabIndex == 0 && checkedAnxieties.length > 0) {
-    //   setActiveTabIndex(tabIndex + 1);
-    //   setShowError(false);
-    // } else {
-    //   setShowError(true);
-    //   setTimeout(() => {
-    //     setShowError(false);
-    //   }, 3000);
-    // }
+    if (tabIndex == 0 && checkedAnxieties.length == 0) {
+      setShowError(true);
+    } else if (tabIndex == 2 && lastExperience == "") {
+      setShowError(true);
+    } else if (tabIndex == 3 && amountExpectations == "") {
+      setShowError(true);
+    } else if (tabIndex == 6 && contactType == "") {
+      setShowError(true);
+    } else {
+      setActiveTabIndex(tabIndex + 1);
+    }
 
-    setActiveTabIndex(tabIndex + 1);
+    setTimeout(() => {
+      setShowError(false);
+    }, 3000);
+
+    // console.log(form);
   }
 
   return (

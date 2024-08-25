@@ -29,15 +29,15 @@ const AmountExpectations = () => {
 
       <div className="px-5">
         <ul data-name="question-inputs">
-          {contactList.map((contactType, index) => (
-            <li key={contactType} className="mt-2">
+          {contactList.map((contactT, index) => (
+            <li key={contactT} className="mt-2">
               <Radio
                 name="contactType"
                 id={`contactType_${index}`}
-                onChange={() => dispatch(setContactType(contactType))}
-                checked={contactType == contactType ? true : false}
+                onChange={() => dispatch(setContactType(contactT))}
+                checked={contactType == contactT ? true : false}
               >
-                {contactType}
+                {contactT}
               </Radio>
             </li>
           ))}
