@@ -2,20 +2,10 @@ import React from "react";
 import Checkbox from "../components/Checkbox";
 import { useState } from "react";
 
+import { useSelector, useDispatch } from "react-redux";
+import { toogleAnexieties } from "../redux/slices/formSlice";
+
 const WelcomePage = () => {
-  const [checkedList, setCheckedList] = useState([]);
-
-  function toogleList(elem, list) {
-    let list_copy = list;
-    if (list.includes(elem)) {
-      list.splice(1, list.indexOf(elem));
-    } else {
-      list.push(elem);
-    }
-
-    return list_copy;
-  }
-
   const anxietyList = [
     "Низкая самооценка",
     "Тревога, страхи, панические атаки",
@@ -32,6 +22,9 @@ const WelcomePage = () => {
     "Детские травмы, которые сильно сказываются на взрослой жизни",
   ];
 
+  const checkedAnxieties = useSelector((state) => state.form.anxieties);
+  const dispatch = useDispatch();
+
   return (
     <div className="flex flex-col pb-6">
       <div
@@ -47,11 +40,18 @@ const WelcomePage = () => {
           </p>
         </div>
       </div>
+      {console.log(checkedAnxieties)}
       <div className="px-5">
         <ul data-name="question-inputs">
-          {anxietyList.map((anxiety) => (
-            <li className="mt-2">
-              <Checkbox>{anxiety}</Checkbox>
+          {anxietyList.map((anxiety, index) => (
+            <li key={anxiety} className="mt-2">
+              <Checkbox
+                id={`anxiety_${index}`}
+                onChange={() => dispatch(toogleAnexieties(anxiety))}
+                checked={checkedAnxieties.indexOf(anxiety) > -1 ? true : false}
+              >
+                {anxiety}
+              </Checkbox>
             </li>
           ))}
         </ul>
