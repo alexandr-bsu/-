@@ -1,13 +1,20 @@
 import React from "react";
-import Checkbox from "../components/Checkbox";
 import { useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 import { toogleAnexieties } from "../redux/slices/formSlice";
+import Radio from "../components/Radio";
 
 const LastExperience = () => {
   const checkedAnxieties = useSelector((state) => state.form.anxieties);
   const dispatch = useDispatch();
+
+  const experienceList = [
+    "Нет, это первый опыт",
+    "Да, было 1-2 сессии",
+    "Да, было до 3 месяцев терапии",
+    "Да, была длительная терапия",
+  ];
 
   return (
     <div className="flex flex-col pb-6">
@@ -20,12 +27,27 @@ const LastExperience = () => {
             Обращались ли вы к психологу или к психотерапевту ранее?
           </h3>
           <p className="text-gray-disabled text-base">
-            Выберите один вариант ответа (радио-кнопки)
+            Выберите один вариант ответа
           </p>
         </div>
       </div>
 
-      <div className="px-5"></div>
+      <div className="px-5">
+        <ul data-name="question-inputs">
+          {experienceList.map((experience, index) => (
+            <li key={experience} className="mt-2">
+              <Radio
+                name="experience"
+                id={`experience_${index}`}
+                // onChange={() => dispatch(toogleAnexieties(anxiety))}
+                // checked={checkedAnxieties.indexOf(anxiety) > -1 ? true : false}
+              >
+                {experience}
+              </Radio>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

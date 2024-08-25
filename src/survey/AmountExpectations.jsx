@@ -1,13 +1,15 @@
 import React from "react";
-import Checkbox from "../components/Checkbox";
 import { useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 import { toogleAnexieties } from "../redux/slices/formSlice";
+import Radio from "../components/Radio";
 
 const AmountExpectations = () => {
   const checkedAnxieties = useSelector((state) => state.form.anxieties);
   const dispatch = useDispatch();
+
+  const expectationList = ["За 1", "За 2 и более", "За несколько месяцев"];
 
   return (
     <div className="flex flex-col pb-6">
@@ -20,12 +22,27 @@ const AmountExpectations = () => {
             За сколько сессий вы ожидаете решить свой запрос?
           </h3>
           <p className="text-gray-disabled text-base">
-            Выберите один вариант ответа (радио-кнопки)
+            Выберите один вариант ответа
           </p>
         </div>
       </div>
 
-      <div className="px-5"></div>
+      <div className="px-5">
+        <ul data-name="question-inputs">
+          {expectationList.map((expectation, index) => (
+            <li key={expectation} className="mt-2">
+              <Radio
+                name="expectation"
+                id={`expectation_${index}`}
+                // onChange={() => dispatch(toogleAnexieties(anxiety))}
+                // checked={checkedAnxieties.indexOf(anxiety) > -1 ? true : false}
+              >
+                {expectation}
+              </Radio>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

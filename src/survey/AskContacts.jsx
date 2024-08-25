@@ -1,13 +1,15 @@
 import React from "react";
-import Checkbox from "../components/Checkbox";
 import { useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 import { toogleAnexieties } from "../redux/slices/formSlice";
+import Radio from "../components/Radio";
 
-const AskContacts = () => {
+const AmountExpectations = () => {
   const checkedAnxieties = useSelector((state) => state.form.anxieties);
   const dispatch = useDispatch();
+
+  const contactList = ["Телефон", "Whatsapp", "Telegram", "VK"];
 
   return (
     <div className="flex flex-col pb-6">
@@ -17,17 +19,32 @@ const AskContacts = () => {
       >
         <div className="flex flex-col">
           <h3 className="font-medium text-lg text-dark-green">
-            Как с Вами связаться?
+            Как с вами связаться?
           </h3>
           <p className="text-gray-disabled text-base">
-            радиокнопки и простое поле ввода
+            Выберите один вариант ответа
           </p>
         </div>
       </div>
 
-      <div className="px-5"></div>
+      <div className="px-5">
+        <ul data-name="question-inputs">
+          {contactList.map((contactType, index) => (
+            <li key={contactType} className="mt-2">
+              <Radio
+                name="contactType"
+                id={`contactType_${index}`}
+                // onChange={() => dispatch(toogleAnexieties(anxiety))}
+                // checked={checkedAnxieties.indexOf(anxiety) > -1 ? true : false}
+              >
+                {contactType}
+              </Radio>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
 
-export default AskContacts;
+export default AmountExpectations;
