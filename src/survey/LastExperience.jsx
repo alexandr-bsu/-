@@ -1,12 +1,11 @@
 import React from "react";
-import { useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
-import { toogleAnexieties } from "../redux/slices/formSlice";
+import { setLastExperience } from "../redux/slices/formSlice";
 import Radio from "../components/Radio";
 
 const LastExperience = () => {
-  const checkedAnxieties = useSelector((state) => state.form.anxieties);
+  const lastExperience = useSelector((state) => state.form.lastExperience);
   const dispatch = useDispatch();
 
   const experienceList = [
@@ -39,8 +38,8 @@ const LastExperience = () => {
               <Radio
                 name="experience"
                 id={`experience_${index}`}
-                // onChange={() => dispatch(toogleAnexieties(anxiety))}
-                // checked={checkedAnxieties.indexOf(anxiety) > -1 ? true : false}
+                onChange={() => dispatch(setLastExperience(experience))}
+                checked={lastExperience == experience ? true : false}
               >
                 {experience}
               </Radio>

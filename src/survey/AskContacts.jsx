@@ -2,11 +2,11 @@ import React from "react";
 import { useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
-import { toogleAnexieties } from "../redux/slices/formSlice";
+import { setContactType, setContact } from "../redux/slices/formSlice";
 import Radio from "../components/Radio";
 
 const AmountExpectations = () => {
-  const checkedAnxieties = useSelector((state) => state.form.anxieties);
+  const contactType = useSelector((state) => state.form.contactType);
   const dispatch = useDispatch();
 
   const contactList = ["Телефон", "Whatsapp", "Telegram", "VK"];
@@ -34,8 +34,8 @@ const AmountExpectations = () => {
               <Radio
                 name="contactType"
                 id={`contactType_${index}`}
-                // onChange={() => dispatch(toogleAnexieties(anxiety))}
-                // checked={checkedAnxieties.indexOf(anxiety) > -1 ? true : false}
+                onChange={() => dispatch(setContactType(contactType))}
+                checked={contactType == contactType ? true : false}
               >
                 {contactType}
               </Radio>

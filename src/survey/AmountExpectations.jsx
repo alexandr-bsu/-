@@ -1,12 +1,13 @@
 import React from "react";
-import { useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
-import { toogleAnexieties } from "../redux/slices/formSlice";
+import { setAmountExpectations } from "../redux/slices/formSlice";
 import Radio from "../components/Radio";
 
 const AmountExpectations = () => {
-  const checkedAnxieties = useSelector((state) => state.form.anxieties);
+  const amountExpectations = useSelector(
+    (state) => state.form.amountExpectations
+  );
   const dispatch = useDispatch();
 
   const expectationList = ["За 1", "За 2 и более", "За несколько месяцев"];
@@ -34,8 +35,8 @@ const AmountExpectations = () => {
               <Radio
                 name="expectation"
                 id={`expectation_${index}`}
-                // onChange={() => dispatch(toogleAnexieties(anxiety))}
-                // checked={checkedAnxieties.indexOf(anxiety) > -1 ? true : false}
+                onChange={() => dispatch(setAmountExpectations(expectation))}
+                checked={amountExpectations == expectation ? true : false}
               >
                 {expectation}
               </Radio>
