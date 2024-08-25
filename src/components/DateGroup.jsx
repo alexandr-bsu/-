@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "./Button";
+import Check from "../assets/check.svg?react";
 
 import { useSelector, useDispatch } from "react-redux";
 import { toogleSlots } from "../redux/slices/formSlice";
@@ -41,6 +42,13 @@ const DateGroup = ({ group }) => {
                 hover="no"
               >
                 {slotTime}
+                {slotsRedux.includes(
+                  `${group.pretty_date} ${group.day_name} ${slotTime}`
+                ) ? (
+                  <Check width={20} height={20}></Check>
+                ) : (
+                  ""
+                )}
               </Button>
             )}
           </li>
