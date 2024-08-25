@@ -1,12 +1,13 @@
 import React from "react";
-import Checkbox from "../components/Checkbox";
-import { useState } from "react";
+import TextArea from "../components/TextArea";
 
 import { useSelector, useDispatch } from "react-redux";
-import { toogleAnexieties } from "../redux/slices/formSlice";
+import { setQuestionToPsycologist } from "../redux/slices/formSlice";
 
 const QuestionToPsycologist = () => {
-  const checkedAnxieties = useSelector((state) => state.form.anxieties);
+  const questionToPsycologist = useSelector(
+    (state) => state.form.questionToPsycologist
+  );
   const dispatch = useDispatch();
 
   return (
@@ -25,7 +26,13 @@ const QuestionToPsycologist = () => {
         </div>
       </div>
 
-      <div className="px-5"></div>
+      <div className="px-5 flex flex-col grow">
+        <TextArea
+          rows={12}
+          value={questionToPsycologist}
+          onChangeFn={(e) => dispatch(setQuestionToPsycologist(e))}
+        />
+      </div>
     </div>
   );
 };

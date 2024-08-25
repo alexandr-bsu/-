@@ -1,8 +1,8 @@
 import React from "react";
 
-const Input = ({ children, onChangeFn, ...props }) => {
+const TextArea = ({ children, onChangeFn, ...props }) => {
   return (
-    <input
+    <textarea
       type="text"
       className="appearance-none border-b-dark-green border-b-2 bg-[#155d5e2e] outline-none p-3 text-dark-green placeholder:text-dark-green"
       onChange={(e) => onChangeFn(e.target.value)}
@@ -11,4 +11,4 @@ const Input = ({ children, onChangeFn, ...props }) => {
   );
 };
 
-export default Input;
+export default TextArea;

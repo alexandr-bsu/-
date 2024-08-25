@@ -14,11 +14,18 @@ import { useSelector } from "react-redux";
 const Form = ({ maxTabsCount }) => {
   const form = useSelector((state) => state.form);
   const checkedAnxieties = useSelector((state) => state.form.anxieties);
+  const questionToPsycologist = useSelector(
+    (state) => state.form.questionToPsycologist
+  );
   const lastExperience = useSelector((state) => state.form.lastExperience);
   const amountExpectations = useSelector(
     (state) => state.form.amountExpectations
   );
+  const age = useSelector((state) => state.form.age);
+  const slots = useSelector((state) => state.form.slots);
   const contactType = useSelector((state) => state.form.contactType);
+  const contact = useSelector((state) => state.form.contact);
+
   const [showError, setShowError] = useState(false);
 
   // Массив заголовков табов формы.
@@ -31,21 +38,26 @@ const Form = ({ maxTabsCount }) => {
     // Валидация перед переходом на следущую вкладку
     if (tabIndex == 0 && checkedAnxieties.length == 0) {
       setShowError(true);
+    } else if (tabIndex == 1 && questionToPsycologist.length == "") {
+      setShowError(true);
     } else if (tabIndex == 2 && lastExperience == "") {
       setShowError(true);
     } else if (tabIndex == 3 && amountExpectations == "") {
       setShowError(true);
-    } else if (tabIndex == 6 && contactType == "") {
+    } else if (tabIndex == 4 && age == "") {
+      setShowError(true);
+    } else if (tabIndex == 5 && slots.length == 0) {
+      setShowError(true);
+    } else if (tabIndex == 6 && (contactType == "" || contact == "")) {
       setShowError(true);
     } else {
       setActiveTabIndex(tabIndex + 1);
+      setShowError(false);
     }
 
     setTimeout(() => {
       setShowError(false);
     }, 3000);
-
-    // console.log(form);
   }
 
   return (
@@ -112,6 +124,19 @@ const Form = ({ maxTabsCount }) => {
               }}
             >
               Вперёд
+            </Button>
+          ) : (
+            ""
+          )}
+
+          {activeTabIndex == maxTabsCount - 1 ? (
+            <Button
+              intent="cream"
+              hower="primary"
+              className="sm:max-w-64 max-sm:min-w-40 ml-auto"
+              onClick={() => {}}
+            >
+              Отправить форму
             </Button>
           ) : (
             ""

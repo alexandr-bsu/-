@@ -1,12 +1,11 @@
 import React from "react";
-import Checkbox from "../components/Checkbox";
-import { useState } from "react";
+import Input from "../components/Input";
 
 import { useSelector, useDispatch } from "react-redux";
-import { toogleAnexieties } from "../redux/slices/formSlice";
+import { setAge } from "../redux/slices/formSlice";
 
 const Age = () => {
-  const checkedAnxieties = useSelector((state) => state.form.anxieties);
+  const age = useSelector((state) => state.form.age);
   const dispatch = useDispatch();
 
   return (
@@ -17,11 +16,16 @@ const Age = () => {
       >
         <div className="flex flex-col">
           <h3 className="font-medium text-lg text-dark-green">Ваш возраст</h3>
-          <p className="text-gray-disabled text-base">простое поле ввода</p>
         </div>
       </div>
 
-      <div className="px-5"></div>
+      <div className="px-5 flex flex-col">
+        <Input
+          placeholder="Введите ваш возраст"
+          value={age}
+          onChangeFn={(e) => dispatch(setAge(e))}
+        />
+      </div>
     </div>
   );
 };

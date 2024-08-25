@@ -1,12 +1,13 @@
 import React from "react";
-import { useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 import { setContactType, setContact } from "../redux/slices/formSlice";
 import Radio from "../components/Radio";
+import Input from "../components/Input";
 
 const AmountExpectations = () => {
   const contactType = useSelector((state) => state.form.contactType);
+  const contact = useSelector((state) => state.form.contact);
   const dispatch = useDispatch();
 
   const contactList = ["Телефон", "Whatsapp", "Telegram", "VK"];
@@ -27,7 +28,7 @@ const AmountExpectations = () => {
         </div>
       </div>
 
-      <div className="px-5">
+      <div className="px-5 flex flex-col gap-10">
         <ul data-name="question-inputs">
           {contactList.map((contactT, index) => (
             <li key={contactT} className="mt-2">
@@ -42,6 +43,12 @@ const AmountExpectations = () => {
             </li>
           ))}
         </ul>
+
+        <Input
+          placeholder="Введите ваши контактные данные"
+          value={contact}
+          onChangeFn={(e) => dispatch(setContact(e))}
+        />
       </div>
     </div>
   );

@@ -1,6 +1,13 @@
 import React from "react";
 import Button from "./Button";
+
+import { useSelector, useDispatch } from "react-redux";
+import { toogleSlots } from "../redux/slices/formSlice";
+
 const DateGroup = ({ group }) => {
+  const slotsRedux = useSelector((state) => state.form.slots);
+  const dispatch = useDispatch();
+
   function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
@@ -23,7 +30,18 @@ const DateGroup = ({ group }) => {
                 {slotTime}
               </Button>
             ) : (
-              <Button hover="no">{slotTime}</Button>
+              <Button
+                onClick={() => {
+                  dispatch(
+                    toogleSlots(
+                      `${group.pretty_date} ${group.day_name} ${slotTime}`
+                    )
+                  );
+                }}
+                hover="no"
+              >
+                {slotTime}
+              </Button>
             )}
           </li>
         ))}
