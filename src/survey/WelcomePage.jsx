@@ -40,7 +40,7 @@ const WelcomePage = () => {
           </p>
         </div>
       </div>
-      {console.log(checkedAnxieties)}
+
       <div className="px-5">
         <ul data-name="question-inputs">
           {anxietyList.map((anxiety, index) => (
