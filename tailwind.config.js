@@ -10,6 +10,7 @@ export default {
       white: "#ffffff",
       gray: "#d7d7d7",
       "gray-disabled": "#a5a5a5",
+      red: "#e72222",
     },
     extend: {},
   },
