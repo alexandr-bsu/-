@@ -9,16 +9,20 @@ const Slots = () => {
   const [groups_of_slots, setGroupsOfSlots] = useState([]);
   //Получаем даты начала и конца недели
   function getWeekStartEnd(date) {
+    let sunday = endOfWeek(date, { weekStartsOn: 2 });
+    sunday.setDate(sunday.getDate() - 1);
+
     return {
       monday: startOfWeek(date, { weekStartsOn: 2 })
         .toISOString()
         .split("T")[0],
-      sunday: endOfWeek(date, { weekStartsOn: 1 }).toISOString().split("T")[0],
+      sunday: sunday.toISOString().split("T")[0],
     };
   }
 
   // Даты начала и конца текущей недели
   const currWeekBorders = getWeekStartEnd(new Date());
+
   // Даты начала и конца следующей недели
   let next_date = new Date();
   next_date.setDate(next_date.getDate() + 7);
