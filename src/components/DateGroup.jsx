@@ -33,12 +33,18 @@ const DateGroup = ({ group }) => {
             ) : (
               <Button
                 onClick={() => {
-                  dispatch(toogleSlots(`${group.pretty_date} ${slotTime}`));
+                  dispatch(
+                    toogleSlots(
+                      `${group.pretty_date} ${slotTime} ${group.day_name}`
+                    )
+                  );
                 }}
                 hover="no"
               >
                 {slotTime}
-                {slotsRedux.includes(`${group.pretty_date} ${slotTime}`) ? (
+                {slotsRedux.includes(
+                  `${group.pretty_date} ${slotTime} ${group.day_name}`
+                ) ? (
                   <Check width={20} height={20}></Check>
                 ) : (
                   ""

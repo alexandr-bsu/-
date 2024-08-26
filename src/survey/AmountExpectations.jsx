@@ -10,7 +10,11 @@ const AmountExpectations = () => {
   );
   const dispatch = useDispatch();
 
-  const expectationList = ["За 1", "За 2 и более", "За несколько месяцев"];
+  const expectationList = [
+    "За 1 сессию",
+    "За 2 и более сессии",
+    "За несколько месяцев",
+  ];
 
   return (
     <div className="flex flex-col pb-6">
