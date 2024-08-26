@@ -9,6 +9,7 @@ const initialState = {
   slots: [],
   contactType: "",
   contact: "",
+  name: "",
 };
 
 export const formSlice = createSlice({
@@ -54,6 +55,10 @@ export const formSlice = createSlice({
     setContact: (state, contact) => {
       state.contact = contact.payload;
     },
+
+    setName: (state, name) => {
+      state.name = name.payload;
+    },
   },
 });
 
@@ -66,5 +71,6 @@ export const {
   toogleSlots,
   setContactType,
   setContact,
+  setName,
 } = formSlice.actions;
 export default formSlice.reducer;

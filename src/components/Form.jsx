@@ -6,6 +6,7 @@ import QuestionToPsycologist from "../survey/QuestionToPsycologist";
 import AmountExpectations from "../survey/AmountExpectations";
 import LastExperience from "../survey/LastExperience";
 import Age from "../survey/Age";
+import Name from "../survey/Name";
 import AskContacts from "../survey/AskContacts";
 import axios from "axios";
 import { useState } from "react";
@@ -133,7 +134,7 @@ const Form = ({ maxTabsCount }) => {
           {activeTabIndex == 4 && <Age></Age>}
           {activeTabIndex == 5 && <Slots></Slots>}
           {activeTabIndex == 6 && <AskContacts></AskContacts>}
-          {activeTabIndex == 7 && <p>Я последняя вкладка</p>}
+          {activeTabIndex == 7 && <Name></Name>}
         </div>
 
         {/* Control buttons */}
