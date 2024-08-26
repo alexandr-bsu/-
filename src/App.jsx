@@ -161,7 +161,11 @@ const App = () => {
                     Мы уже знаем о проблеме и начили работать над исправлением.
                     Попробуйте отправить форму заново
                   </p>
-                  <Button onClick={() => sendData()}>Повторить отправку</Button>
+                  <div className="p-5">
+                    <Button onClick={() => sendData()}>
+                      Повторить отправку
+                    </Button>
+                  </div>
                 </div>
               )}
             </div>
