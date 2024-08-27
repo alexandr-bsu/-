@@ -51,6 +51,7 @@ const button = cva(
       },
 
       size: {
+        "small-no-x": ["py-2"],
         small: ["px-4", "py-2"],
         medium: ["px-5", "py-3"],
         large: ["px-8", "py-6"],
