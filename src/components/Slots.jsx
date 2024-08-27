@@ -7,16 +7,27 @@ import { startOfWeek, endOfWeek } from "date-fns";
 
 const Slots = () => {
   const [groups_of_slots, setGroupsOfSlots] = useState([]);
+
   //Получаем даты начала и конца недели
+
   function getWeekStartEnd(date) {
-    let sunday = endOfWeek(date, { weekStartsOn: 2 });
-    sunday.setDate(sunday.getDate() - 1);
+    let monday = startOfWeek(date, { weekStartsOn: 1 });
+    let month = monday.getMonth() + 1;
+    let day = monday.getDate();
+    month = month < 10 ? "0" + month : month;
+    day = day < 10 ? "0" + day : day;
+    monday = `${monday.getFullYear()}-${month}-${day}`;
+
+    let sunday = endOfWeek(date, { weekStartsOn: 1 });
+    month = sunday.getMonth() + 1;
+    day = sunday.getDate();
+    month = month < 10 ? "0" + month : month;
+    day = day < 10 ? "0" + day : day;
+    sunday = `${sunday.getFullYear()}-${month}-${day}`;
 
     return {
-      monday: startOfWeek(date, { weekStartsOn: 2 })
-        .toISOString()
-        .split("T")[0],
-      sunday: sunday.toISOString().split("T")[0],
+      monday,
+      sunday,
     };
   }
 
@@ -33,6 +44,8 @@ const Slots = () => {
     `${currWeekBorders.monday}:${currWeekBorders.sunday}`,
     `${nextWeekBorders.monday}:${nextWeekBorders.sunday}`,
   ];
+
+  console.log(dates);
 
   const [selectedDate, setSelectedDate] = useState(dates[0]);
 
