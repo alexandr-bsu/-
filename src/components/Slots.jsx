@@ -80,8 +80,7 @@ const Slots = () => {
 
   return (
     <div className="flex grow flex-col">
-      {/* Удалён sticky top-0 */}
-      <div className="">
+      <div className="sticky top-0">
         {/* Контейнер для переключателей недель */}
         <WeekToogleContainer
           dates={dates}
