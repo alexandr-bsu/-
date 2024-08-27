@@ -91,7 +91,7 @@ const Slots = () => {
           className="bg-white px-5 border-gray border-b z-10  w-full py-4 mb-4"
         >
           <div className="flex flex-col">
-            <h3 className="font-medium text-lg text-dark-green">
+            <h3 className="font-medium text-base text-dark-green">
               Выберите подходящее вам время для сессии
             </h3>
             <p className="text-gray-disabled text-base">
