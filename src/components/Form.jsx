@@ -117,7 +117,7 @@ const Form = ({ maxTabsCount }) => {
         <div
           data-name="error-message"
           className={`px-5 h-0 flex justify-center items-center text-white font-medium bg-[#ff2f2f] height-transition-4 ${
-            showError ? "h-10" : "h-0"
+            showError ? "h-20" : "h-0"
           }`}
         >
           Обязательное поле
