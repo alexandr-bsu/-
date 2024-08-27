@@ -80,11 +80,26 @@ const Slots = () => {
 
   return (
     <div className="flex grow flex-col">
-      {/* Контейнер для переключателей недель */}
-      <WeekToogleContainer
-        dates={dates}
-        selectFn={selectFn}
-      ></WeekToogleContainer>
+      <div className="sticky top-0">
+        {/* Контейнер для переключателей недель */}
+        <WeekToogleContainer
+          dates={dates}
+          selectFn={selectFn}
+        ></WeekToogleContainer>
+        <div
+          data-name="question-block"
+          className="bg-white px-5 border-gray border-b z-10  w-full py-4 mb-4"
+        >
+          <div className="flex flex-col">
+            <h3 className="font-medium text-lg text-dark-green">
+              Выберите подходящее вам время для сессии
+            </h3>
+            <p className="text-gray-disabled text-base">
+              Выберите один или несколько вариантов
+            </p>
+          </div>
+        </div>
+      </div>
       {/* Индикатор загрузки */}
       {isLoading && (
         <div
