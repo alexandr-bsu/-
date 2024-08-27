@@ -27,11 +27,12 @@ const DateGroup = ({ group }) => {
         {Object.keys(group.slots).map((slotTime, index) => (
           <li key={`${group.slotTime}_${index}`}>
             {group.slots[slotTime].length == 0 ? (
-              <Button hover="no" intent="disabled">
+              <Button size="small" hover="no" intent="disabled">
                 {slotTime}
               </Button>
             ) : (
               <Button
+                size="small"
                 onClick={() => {
                   dispatch(toogleSlots(`${group.pretty_date} ${slotTime}`));
                 }}
