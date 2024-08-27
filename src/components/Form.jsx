@@ -10,6 +10,7 @@ import Name from "../survey/Name";
 import AskContacts from "../survey/AskContacts";
 import axios from "axios";
 import { useState } from "react";
+import FormPager from "./FormPager";
 
 import { useSelector, useDispatch } from "react-redux";
 import { setStatus } from "../redux/slices/formStatusSlice";
@@ -122,6 +123,7 @@ const Form = ({ maxTabsCount }) => {
         >
           Вы не заполнили обязательное поле
         </div>
+        {/* <FormPager></FormPager> */}
 
         <div className="relative h-full flex flex-col overflow-y-scroll">
           {/* Здесь размещаются вкладки */}
