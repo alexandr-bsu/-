@@ -29,6 +29,7 @@ const WeekToogleContainer = ({ dates, selectFn }) => {
         <li key={date} className="max-sm:grow max-sm:min-w-40">
           {index == selectedDate ? (
             <Button
+              size="small"
               intent="cream"
               hower="primary"
               onClick={() => {
@@ -39,6 +40,7 @@ const WeekToogleContainer = ({ dates, selectFn }) => {
             </Button>
           ) : (
             <Button
+              size="small"
               intent="primary-transparent"
               hower="primary"
               className="max-sm:grow max-sm:min-w-40"
