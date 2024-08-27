@@ -143,6 +143,7 @@ const Form = ({ maxTabsCount }) => {
           >
             {activeTabIndex != 0 ? (
               <Button
+                size="small"
                 intent="cream-transparent"
                 hower="primary"
                 className="sm:max-w-64 max-sm:min-w-40 mr-auto"
@@ -157,6 +158,7 @@ const Form = ({ maxTabsCount }) => {
             )}
             {activeTabIndex != maxTabsCount - 1 ? (
               <Button
+                size="small"
                 intent="cream"
                 hower="primary"
                 className="sm:max-w-64 max-sm:min-w-40 ml-auto"
@@ -172,6 +174,7 @@ const Form = ({ maxTabsCount }) => {
 
             {activeTabIndex == maxTabsCount - 1 ? (
               <Button
+                size="small"
                 intent="cream"
                 hower="primary"
                 className="sm:max-w-64 max-sm:min-w-40 ml-auto"

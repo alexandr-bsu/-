@@ -3,7 +3,7 @@ import { cva } from "class-variance-authority";
 
 const button = cva(
   [
-    "rounded-xl",
+    "rounded-[30px]",
     "font-medium",
     "text-regular",
     "w-full",
