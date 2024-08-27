@@ -10,7 +10,6 @@ import Name from "../survey/Name";
 import AskContacts from "../survey/AskContacts";
 import axios from "axios";
 import { useState } from "react";
-import FormPager from "./FormPager";
 
 import { useSelector, useDispatch } from "react-redux";
 import { setStatus } from "../redux/slices/formStatusSlice";
