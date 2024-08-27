@@ -26,37 +26,43 @@ const WelcomePage = () => {
   const dispatch = useDispatch();
 
   return (
-    <div className="flex flex-col grow pb-6">
-      <div
-        data-name="question-block"
-        className="bg-white px-5 border-gray border-b z-10 sticky top-0 w-full py-4 mb-4"
-      >
-        <div className="flex flex-col">
-          <h3 className="font-medium text-lg text-dark-green">
-            Что вас беспокоит?
-          </h3>
-          <p className="text-gray-disabled text-base">
-            Выберите один или несколько вариантов ответа
-          </p>
+    <>
+      {/* Добавлен relative */}
+      <div className="flex flex-col relative grow pb-6">
+        {/* Удалён sticky top-0 */}
+        <div
+          data-name="question-block"
+          className="bg-white px-5 border-gray border-b z-10 w-full py-4 mb-4"
+        >
+          <div className="flex flex-col">
+            <h3 className="font-medium text-lg text-dark-green">
+              Что вас беспокоит?
+            </h3>
+            <p className="text-gray-disabled text-base">
+              Выберите один или несколько вариантов ответа
+            </p>
+          </div>
+        </div>
+
+        <div className="px-5">
+          <ul data-name="question-inputs">
+            {anxietyList.map((anxiety, index) => (
+              <li key={anxiety} className="mt-2">
+                <Checkbox
+                  id={`anxiety_${index}`}
+                  onChange={() => dispatch(toogleAnexieties(anxiety))}
+                  checked={
+                    checkedAnxieties.indexOf(anxiety) > -1 ? true : false
+                  }
+                >
+                  {anxiety}
+                </Checkbox>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
-
-      <div className="px-5">
-        <ul data-name="question-inputs">
-          {anxietyList.map((anxiety, index) => (
-            <li key={anxiety} className="mt-2">
-              <Checkbox
-                id={`anxiety_${index}`}
-                onChange={() => dispatch(toogleAnexieties(anxiety))}
-                checked={checkedAnxieties.indexOf(anxiety) > -1 ? true : false}
-              >
-                {anxiety}
-              </Checkbox>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+    </>
   );
 };
 

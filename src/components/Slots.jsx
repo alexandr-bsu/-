@@ -80,7 +80,8 @@ const Slots = () => {
 
   return (
     <div className="flex grow flex-col">
-      <div className="sticky top-0">
+      {/* Удалён sticky top-0 */}
+      <div className="">
         {/* Контейнер для переключателей недель */}
         <WeekToogleContainer
           dates={dates}
@@ -88,7 +89,7 @@ const Slots = () => {
         ></WeekToogleContainer>
         <div
           data-name="question-block"
-          className="bg-white px-5 border-gray border-b z-10  w-full py-4 mb-4"
+          className="bg-white px-5 border-gray border-b z-10 w-full py-4 mb-4"
         >
           <div className="flex flex-col">
             <h3 className="font-medium text-base text-dark-green">

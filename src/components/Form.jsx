@@ -107,7 +107,8 @@ const Form = ({ maxTabsCount }) => {
     <>
       {/* Не задаём ограничений  т.к ширину будет ограничивать контейнер в Tilda */}
 
-      <div className="bg-white h-full rounded-lg flex flex-col relative w-full">
+      {/* добавлен overflow-y-scroll */}
+      <div className="bg-white h-full flex flex-col  overflow-y-scroll relative w-full">
         <div
           data-name="header-block relative"
           className="p-5 bg-[#2c3531] sticky top-0 z-20"
@@ -125,7 +126,8 @@ const Form = ({ maxTabsCount }) => {
         </div>
         {/* <FormPager></FormPager> */}
 
-        <div className="relative h-full flex flex-col overflow-y-scroll">
+        {/* удалён overflow-y-scroll */}
+        <div className="relative h-full flex flex-col ">
           {/* Здесь размещаются вкладки */}
           {activeTabIndex == 0 && <WelcomePage></WelcomePage>}
           {activeTabIndex == 1 && (
