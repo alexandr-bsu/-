@@ -120,7 +120,7 @@ const Form = ({ maxTabsCount }) => {
             showError ? "h-20" : "h-0"
           }`}
         >
-          Обязательное поле
+          Вы не заполнили обязательное поле
         </div>
 
         <div className="relative h-full flex flex-col overflow-y-scroll">
