@@ -135,59 +135,59 @@ const Form = ({ maxTabsCount }) => {
           {activeTabIndex == 5 && <Slots></Slots>}
           {activeTabIndex == 6 && <AskContacts></AskContacts>}
           {activeTabIndex == 7 && <Name></Name>}
+        </div>
 
-          {/* Control buttons */}
-          <div
-            data-name="control-block"
-            className="p-5 flex items-center flex-wrap gap-4 bg-[#2c3531] sticky bottom-0  w-full z-30"
-          >
-            {activeTabIndex != 0 ? (
-              <Button
-                size="small"
-                intent="cream-transparent"
-                hower="primary"
-                className="sm:max-w-64 max-sm:min-w-40 mr-auto"
-                onClick={() => {
-                  setActiveTabIndex(activeTabIndex - 1);
-                }}
-              >
-                Назад
-              </Button>
-            ) : (
-              ""
-            )}
-            {activeTabIndex != maxTabsCount - 1 ? (
-              <Button
-                size="small"
-                intent="cream"
-                hower="primary"
-                className="sm:max-w-64 max-sm:min-w-40 ml-auto"
-                onClick={() => {
-                  showNextTab(activeTabIndex);
-                }}
-              >
-                Вперёд
-              </Button>
-            ) : (
-              ""
-            )}
+        {/* Control buttons */}
+        <div
+          data-name="control-block"
+          className="p-5 flex items-center flex-wrap gap-4 bg-[#2c3531] sticky bottom-0  w-full z-30"
+        >
+          {activeTabIndex != 0 ? (
+            <Button
+              size="small"
+              intent="cream-transparent"
+              hower="primary"
+              className="sm:max-w-64 max-sm:min-w-40 mr-auto"
+              onClick={() => {
+                setActiveTabIndex(activeTabIndex - 1);
+              }}
+            >
+              Назад
+            </Button>
+          ) : (
+            ""
+          )}
+          {activeTabIndex != maxTabsCount - 1 ? (
+            <Button
+              size="small"
+              intent="cream"
+              hower="primary"
+              className="sm:max-w-64 max-sm:min-w-40 ml-auto"
+              onClick={() => {
+                showNextTab(activeTabIndex);
+              }}
+            >
+              Вперёд
+            </Button>
+          ) : (
+            ""
+          )}
 
-            {activeTabIndex == maxTabsCount - 1 ? (
-              <Button
-                size="small"
-                intent="cream"
-                hower="primary"
-                className="sm:max-w-64 max-sm:min-w-40 ml-auto"
-                onClick={() => {
-                  sendData();
-                }}
-              >
-                Отправить форму
-              </Button>
-            ) : (
-              ""
-            )}
-          </div>
+          {activeTabIndex == maxTabsCount - 1 ? (
+            <Button
+              size="small"
+              intent="cream"
+              hower="primary"
+              className="sm:max-w-64 max-sm:min-w-40 ml-auto"
+              onClick={() => {
+                sendData();
+              }}
+            >
+              Отправить форму
+            </Button>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </>
