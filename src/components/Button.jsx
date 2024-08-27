@@ -8,7 +8,7 @@ const button = cva(
     "text-regular",
     "w-full",
     "flex",
-    "gap-4",
+    "gap-2",
     "items-center",
     "justify-center",
   ],
