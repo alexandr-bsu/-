@@ -92,7 +92,7 @@ const Slots = () => {
         >
           <div className="flex flex-col">
             <h3 className="font-medium text-base text-dark-green">
-              Выберите подходящее вам время для сессии
+              Выберите подходящее время сессии
             </h3>
             <p className="text-gray-disabled text-base">
               Выберите один или несколько вариантов
