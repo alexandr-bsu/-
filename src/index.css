@@ -13,9 +13,16 @@
 }
 
 @layer components {
+  /* Грид для группы слотов */
   .slot-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+
+  /* Грид для контейнера групп слотов */
+  .slot-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
 
   .height-transition-4 {
