@@ -28,7 +28,7 @@ const QuestionToPsycologist = () => {
 
       <div className="px-5 flex flex-col grow">
         <TextArea
-          rows={8}
+          rows={4}
           value={questionToPsycologist}
           onChangeFn={(e) => dispatch(setQuestionToPsycologist(e))}
         />
