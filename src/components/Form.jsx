@@ -125,8 +125,7 @@ const Form = ({ maxTabsCount }) => {
         </div>
         {/* <FormPager></FormPager> */}
 
-        {/* {overflow-y-scroll} */}
-        <div className="relative h-full flex flex-col ">
+        <div className="relative h-full flex flex-col overflow-y-scroll">
           {/* Здесь размещаются вкладки */}
           {activeTabIndex == 0 && <WelcomePage></WelcomePage>}
           {activeTabIndex == 1 && (
