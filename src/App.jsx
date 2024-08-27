@@ -140,9 +140,11 @@ const App = () => {
                   <h2 className="font-medium text-center text-green text-3xl">
                     Cпасибо!
                   </h2>
-                  <p className="text-black text-lg font-medium text-center p-5">
-                    Мы уже начали подбирать психолога и вернемся к вам чтобы
-                    назначить встречу как можно скорее!
+                  <p className="text-black text-base font-medium text-center p-5">
+                    Спасибо! Мы получили ваш запрос и сейчас подбираем
+                    специалиста из сообщество психологов "Хранители". Мы
+                    свяжемся с вами в течение 20 минут (с 10.00 до 20.00 по
+                    Московскому времени, ежедневно)
                   </p>
                 </div>
               )}
