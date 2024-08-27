@@ -20,9 +20,7 @@ const QuestionToPsycologist = () => {
           <h3 className="font-medium text-lg text-dark-green">
             Опишите своими словами, какой вопрос хотите обсудить с психологом?
           </h3>
-          <p className="text-gray-disabled text-base">
-            Что вас беспокоит? (Большое поле)
-          </p>
+          <p className="text-gray-disabled text-base">Что вас беспокоит?</p>
         </div>
       </div>
 

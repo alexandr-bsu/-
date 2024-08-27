@@ -140,7 +140,7 @@ const Form = ({ maxTabsCount }) => {
         {/* Control buttons */}
         <div
           data-name="control-block"
-          className="p-5 flex items-center flex-wrap max-sm:grow gap-4 bg-[#2c3531] sticky bottom-0 z-30"
+          className="p-5 flex items-center flex-wrap max-sm:grow gap-4 bg-[#2c3531] fixed bottom-0 w-full z-30"
         >
           {activeTabIndex != 0 ? (
             <Button
