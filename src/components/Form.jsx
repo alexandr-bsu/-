@@ -138,10 +138,10 @@ const Form = ({ maxTabsCount }) => {
           {activeTabIndex == 7 && <Name></Name>}
         </div>
 
-        {/* Control buttons sticky bottom-0   */}
+        {/* Control buttons  */}
         <div
           data-name="control-block"
-          className="p-5 flex items-center flex-wrap-reverse gap-4 bg-[#2c3531] w-full z-30"
+          className="p-5 flex items-center sticky bottom-0 flex-wrap-reverse gap-4 bg-[#2c3531] w-full z-30"
         >
           {activeTabIndex != 0 ? (
             <Button
