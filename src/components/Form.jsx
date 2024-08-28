@@ -120,7 +120,9 @@ const Form = ({ maxTabsCount }) => {
             showError ? "h-20" : "h-0"
           }`}
         >
-          Вы не заполнили обязательное поле
+          {activeTabIndex == 5
+            ? "Вы не выбрали время"
+            : "Вы не заполнили обязательное поле"}
         </div>
         {/* <FormPager></FormPager> */}
 
