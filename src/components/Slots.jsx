@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import WeekToogleContainer from "./WeekToogleContainer";
+// Временно удалили переключатель недель
+// import WeekToogleContainer from "./WeekToogleContainer";
 import DateGroup from "./DateGroup";
 import axios from "axios";
 import { startOfWeek, endOfWeek } from "date-fns";
@@ -40,11 +41,13 @@ const Slots = () => {
   const nextWeekBorders = getWeekStartEnd(next_date);
 
   // Даты для поиска слотов по неделям
-  const dates = [
-    `${currWeekBorders.monday}:${currWeekBorders.sunday}`,
-    `${nextWeekBorders.monday}:${nextWeekBorders.sunday}`,
-  ];
+  // Временно заменяем 2 недели на 14 дней
+  // const dates = [
+  // `${currWeekBorders.monday}:${currWeekBorders.sunday}`,
+  // `${nextWeekBorders.monday}:${nextWeekBorders.sunday}`,
+  // ];
 
+  const dates = [`${currWeekBorders.monday}:${nextWeekBorders.sunday}`];
   const [selectedDate, setSelectedDate] = useState(dates[0]);
 
   //Таймер запроса апи (нужно для получения обновлений только нату дату, которая соответствует дате владки на которой находится пользователь)
@@ -60,6 +63,7 @@ const Slots = () => {
     let startDate = splited_dates[0];
     let endDate = splited_dates[1];
     setIsLoading(true);
+    // setSelectedDate(date);
 
     axios({
       method: "GET",
@@ -80,10 +84,10 @@ const Slots = () => {
     <div className="flex grow flex-col">
       <div className="sticky top-0">
         {/* Контейнер для переключателей недель */}
-        <WeekToogleContainer
+        {/* <WeekToogleContainer
           dates={dates}
           selectFn={selectFn}
-        ></WeekToogleContainer>
+        ></WeekToogleContainer> */}
         <div
           data-name="question-block"
           className="bg-white px-5 border-gray border-b z-10 w-full py-4 mb-4"

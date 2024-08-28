@@ -44,7 +44,7 @@ const WeekToogleContainer = ({ dates, selectFn }) => {
               intent="primary-transparent"
               hower="primary"
               className="max-sm:grow"
-              onClick={async () => {
+              onClick={() => {
                 onSelect(index);
               }}
             >
