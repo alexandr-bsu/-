@@ -13,7 +13,7 @@ const AmountExpectations = () => {
   const contactList = ["Телефон", "Whatsapp", "Telegram", "VK"];
 
   return (
-    <div className="flex flex-col pb-6">
+    <div className="flex flex-col grow pb-6">
       <div
         data-name="question-block"
         className="bg-white px-5 border-gray border-b z-10 sticky top-0 w-full py-4 mb-4"
