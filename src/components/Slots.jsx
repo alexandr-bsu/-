@@ -5,8 +5,20 @@ import { useEffect, useState } from "react";
 import DateGroup from "./DateGroup";
 import axios from "axios";
 import { startOfWeek, endOfWeek } from "date-fns";
+import Button from "./Button";
+import Lottie from "react-lottie";
+import errorLottie from "../assets/lotties/error";
 
 const Slots = () => {
+  const errorLottieOptions = {
+    loop: false,
+    autoplay: true,
+    animationData: errorLottie,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+
   const [groups_of_slots, setGroupsOfSlots] = useState([]);
 
   //Получаем даты начала и конца недели
@@ -54,7 +66,7 @@ const Slots = () => {
   // const [timerRequestScheduleId, setTimerRequestScheduleId] = useState();
 
   // Флаг показывает загружается ли расписание или нет
-  const [isLoading, setIsLoading] = useState(false);
+  const [slotStatus, setSlotStatus] = useState("loading");
 
   // Получаем группы слотов и обновляем переменную groups_of_slots
   // Срабатывает когда выбирается дата в WeekToogleContainer
@@ -62,17 +74,21 @@ const Slots = () => {
     let splited_dates = date.split(":");
     let startDate = splited_dates[0];
     let endDate = splited_dates[1];
-    setIsLoading(true);
+    setSlotStatus("loading");
     // setSelectedDate(date);
 
     axios({
       method: "GET",
       params: { startDate, endDate },
       url: "https://n8n.hrani.live/webhook/aggregated-schedule",
-    }).then((resp) => {
-      setGroupsOfSlots(resp.data[0].items);
-      setIsLoading(false);
-    });
+    })
+      .then((resp) => {
+        setGroupsOfSlots(resp.data[0].items);
+        setSlotStatus("active");
+      })
+      .catch((thrown) => {
+        setSlotStatus("error");
+      });
   }
 
   // Запрашиваем группы слотов при загрузке страницы
@@ -103,7 +119,7 @@ const Slots = () => {
         </div>
       </div>
       {/* Индикатор загрузки */}
-      {isLoading && (
+      {slotStatus == "loading" && (
         <div
           data-name="data-groups"
           className="flex flex-col items-center justify-center w-full h-full"
@@ -167,8 +183,37 @@ const Slots = () => {
         </div>
       )}
 
+      {slotStatus == "error" && (
+        <div
+          data-name="data-groups"
+          className="flex flex-col items-center justify-center w-full h-full"
+        >
+          <div className="flex-col gap-4 p-2 max-w-[450px]">
+            <Lottie options={errorLottieOptions} height={150} width={150} />
+            <div className="flex flex-col items-center justify-center gap-2">
+              <p className="text-black text-center font-bold text-lg">
+                Произошла ошибка
+              </p>
+              <p className="text-black text-center text-base">
+                Мы уже в курсе проблемы и работаем над её устранением.
+                Пожалуйста повторите попытку
+              </p>
+              <Button
+                intent="cream"
+                hover="primary"
+                onClick={() => {
+                  selectFn(selectedDate);
+                }}
+              >
+                Повторить
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Контейнер для групп с датами недель */}
-      {!isLoading && (
+      {slotStatus == "active" && (
         <div
           data-name="data-groups"
           className="slot-grid-container px-5 pt-5 pb-10 min-h-screen gap-10 overflow-y-scroll"

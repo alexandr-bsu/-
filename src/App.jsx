@@ -156,15 +156,19 @@ const App = () => {
                     height={200}
                     width={200}
                   />
-                  <h2 className="font-medium text-center text-red text-3xl">
+                  <h2 className="font-medium text-center text-red text-xl">
                     Упс! Что-то пошло не так
                   </h2>
-                  <p className="text-black text-lg font-medium text-center p-5">
-                    Мы уже знаем о проблеме и начили работать над исправлением.
-                    Попробуйте отправить форму заново
+                  <p className="text-black font-medium text-center p-5">
+                    Мы уже в курсе проблемы и работаем над её устранением.
+                    Пожалуйста повторите отправку формы
                   </p>
                   <div className="p-5">
-                    <Button onClick={() => sendData()}>
+                    <Button
+                      intent="cream"
+                      hover="primary"
+                      onClick={() => sendData()}
+                    >
                       Повторить отправку
                     </Button>
                   </div>
