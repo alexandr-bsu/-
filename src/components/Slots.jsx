@@ -45,8 +45,6 @@ const Slots = () => {
     `${nextWeekBorders.monday}:${nextWeekBorders.sunday}`,
   ];
 
-  console.log(dates);
-
   const [selectedDate, setSelectedDate] = useState(dates[0]);
 
   //Таймер запроса апи (нужно для получения обновлений только нату дату, которая соответствует дате владки на которой находится пользователь)
@@ -61,14 +59,14 @@ const Slots = () => {
     let splited_dates = date.split(":");
     let startDate = splited_dates[0];
     let endDate = splited_dates[1];
-
     setIsLoading(true);
+
     axios({
       method: "GET",
       params: { startDate, endDate },
       url: "https://n8n.hrani.live/webhook/aggregated-schedule",
     }).then((resp) => {
-      setGroupsOfSlots(resp.data);
+      setGroupsOfSlots(resp.data[0].items);
       setIsLoading(false);
     });
   }
