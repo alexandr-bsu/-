@@ -27,7 +27,7 @@ const WelcomePage = () => {
 
   return (
     <>
-      <div className="flex flex-col grow pb-6">
+      <div className="flex flex-col pb-6">
         <div
           data-name="question-block"
           className="bg-white px-5 sticky top-0 border-gray border-b z-10 w-full py-4 mb-4"
