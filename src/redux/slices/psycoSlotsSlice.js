@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 const initialState = {
   // Свободные слоты
@@ -12,7 +13,17 @@ export const psycoSlots = createSlice({
     toogleSlots: (state, slotId) => {
       let index = state.freeSlots.findIndex((s) => s?.id == slotId?.payload);
       if (index != -1) {
+        state.freeSlots[index].state = "loading";
         state.freeSlots.splice(index, 1);
+        console.log(slotId.payload);
+        axios({
+          url: "https://n8n.hrani.live/webhook/delete-slot",
+          data: { id: slotId.payload },
+          method: "POST",
+        }).then((resp) => {
+          state.freeSlots[index].state = "ok";
+          state.freeSlots.splice(index, 1);
+        });
       } else {
         state.freeSlots.push({ id: 1, state: "ok" });
       }
