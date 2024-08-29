@@ -10,30 +10,49 @@ export const psycoSlots = createSlice({
   name: "psycoSlots",
   initialState,
   reducers: {
-    toogleSlots: (state, slotId) => {
-      let index = state.freeSlots.findIndex((s) => s?.id == slotId?.payload);
+    toogleSlots: (state, slot) => {
+      let index = state.freeSlots.findIndex((s) => s.slot == slot.payload);
+      console.log("slot", slot?.payload);
+
       if (index != -1) {
         state.freeSlots[index].state = "loading";
         state.freeSlots.splice(index, 1);
-        console.log(slotId.payload);
+
         axios({
           url: "https://n8n.hrani.live/webhook/delete-slot",
-          data: { id: slotId.payload },
+          data: {
+            slot: slot.payload,
+            secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
+          },
           method: "POST",
         }).then((resp) => {
           state.freeSlots[index].state = "ok";
           state.freeSlots.splice(index, 1);
         });
       } else {
-        state.freeSlots.push({ id: 1, state: "ok" });
+        axios({
+          url: "https://n8n.hrani.live/webhook/add-slot",
+          data: {
+            secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
+            slot: slot.payload,
+          },
+          method: "POST",
+        }).then((resp) => {
+          // state.freeSlots[index].state = "ok";
+          state.freeSlots.push({ slot: slot.payload, state: "ok" });
+        });
       }
     },
+
     setFreeSlots: (state, groupsOfSlots) => {
       for (let groupOfSlots of groupsOfSlots.payload) {
         let slots = groupOfSlots.slots;
         for (let time in slots) {
           if (slots[time].length != 0 && slots[time][0].status == "Свободен") {
-            state.freeSlots.push({ id: slots[time][0].id, state: "ok" });
+            state.freeSlots.push({
+              slot: `${groupOfSlots.pretty_date} ${time}`,
+              state: "ok",
+            });
           }
         }
       }

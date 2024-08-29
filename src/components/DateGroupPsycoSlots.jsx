@@ -36,11 +36,12 @@ const DateGroupPsycoSlots = ({ group }) => {
               <Button
                 size="small"
                 onClick={() => {
-                  dispatch(toogleSlots(`${group.slots[slotTime][0]?.id}`));
+                  dispatch(toogleSlots(`${group.pretty_date} ${slotTime}`));
                 }}
                 intent={
                   slotsRedux.findIndex(
-                    (slot) => group.slots[slotTime][0]?.id == slot.id
+                    (slotObject) =>
+                      slotObject?.slot == `${group.pretty_date} ${slotTime}`
                   ) != -1
                     ? "primary"
                     : "primary-transparent"
@@ -50,7 +51,8 @@ const DateGroupPsycoSlots = ({ group }) => {
 
                 {/* Ставим галочку когда пользователь сам нажал на кнопку либо слот свободен */}
                 {slotsRedux.findIndex(
-                  (slot) => group.slots[slotTime][0]?.id == slot.id
+                  (slotObject) =>
+                    slotObject?.slot == `${group.pretty_date} ${slotTime}`
                 ) != -1 ? (
                   <Check width={20} height={20}></Check>
                 ) : (
