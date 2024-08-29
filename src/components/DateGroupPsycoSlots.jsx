@@ -90,8 +90,8 @@ const DateGroupPsycoSlots = ({ group }) => {
 
                 {loadListRedux.includes(`${group.pretty_date} ${slotTime}`) ? (
                   <svg
-                    width={24}
                     height={24}
+                    width={24}
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 200 200"
                   >
@@ -103,25 +103,25 @@ const DateGroupPsycoSlots = ({ group }) => {
                       fy=".3125"
                       gradientTransform="scale(1.5)"
                     >
-                      <stop offset="0" stop-color="#D1A987"></stop>
+                      <stop offset="0" stop-color="#D9B08C"></stop>
                       <stop
                         offset=".3"
-                        stop-color="#D1A987"
+                        stop-color="#D9B08C"
                         stop-opacity=".9"
                       ></stop>
                       <stop
                         offset=".6"
-                        stop-color="#D1A987"
+                        stop-color="#D9B08C"
                         stop-opacity=".6"
                       ></stop>
                       <stop
                         offset=".8"
-                        stop-color="#D1A987"
+                        stop-color="#D9B08C"
                         stop-opacity=".3"
                       ></stop>
                       <stop
                         offset="1"
-                        stop-color="#D1A987"
+                        stop-color="#D9B08C"
                         stop-opacity="0"
                       ></stop>
                     </radialGradient>
@@ -129,7 +129,7 @@ const DateGroupPsycoSlots = ({ group }) => {
                       transform-origin="center"
                       fill="none"
                       stroke="url(#a12)"
-                      stroke-width="16"
+                      stroke-width="30"
                       stroke-linecap="round"
                       stroke-dasharray="200 1000"
                       stroke-dashoffset="0"
@@ -141,7 +141,7 @@ const DateGroupPsycoSlots = ({ group }) => {
                         type="rotate"
                         attributeName="transform"
                         calcMode="spline"
-                        dur="2"
+                        dur="2.5"
                         values="360;0"
                         keyTimes="0;1"
                         keySplines="0 0 1 1"
@@ -152,8 +152,8 @@ const DateGroupPsycoSlots = ({ group }) => {
                       transform-origin="center"
                       fill="none"
                       opacity=".2"
-                      stroke="#D1A987"
-                      stroke-width="16"
+                      stroke="#D9B08C"
+                      stroke-width="30"
                       stroke-linecap="round"
                       cx="100"
                       cy="100"
