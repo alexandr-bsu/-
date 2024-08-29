@@ -1,9 +1,10 @@
 import React from "react";
-import FormPage from "./pages/FormPage";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router";
 const App = () => {
   return (
     <>
-      <FormPage />
+      <RouterProvider router={router} />
     </>
   );
 };
