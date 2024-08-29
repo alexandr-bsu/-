@@ -3,11 +3,48 @@ import Button from "./Button";
 import Check from "../assets/check.svg?react";
 
 import { useSelector, useDispatch } from "react-redux";
-import { toogleSlots } from "../redux/slices/psycoSlotsSlice";
+import axios from "axios";
+import {
+  setStateSlotLoading,
+  setStateSlotOk,
+  pushSlot,
+  spliceSlot,
+} from "../redux/slices/psycoSlotsSlice";
 
 const DateGroupPsycoSlots = ({ group }) => {
   const slotsRedux = useSelector((state) => state.psyco.freeSlots);
   const dispatch = useDispatch();
+
+  const toogleSlots = (freeSlots, slot) => {
+    let index = freeSlots.findIndex((s) => s.slot == slot);
+
+    if (index != -1) {
+      dispatch(setStateSlotLoading(index));
+
+      axios({
+        url: "https://n8n.hrani.live/webhook/delete-slot",
+        data: {
+          slot: slot,
+          secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
+        },
+        method: "POST",
+      }).then((resp) => {
+        dispatch(setStateSlotOk(index));
+        dispatch(spliceSlot(index));
+      });
+    } else {
+      axios({
+        url: "https://n8n.hrani.live/webhook/add-slot",
+        data: {
+          secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
+          slot: slot,
+        },
+        method: "POST",
+      }).then((resp) => {
+        dispatch(pushSlot(slot));
+      });
+    }
+  };
 
   function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -36,7 +73,7 @@ const DateGroupPsycoSlots = ({ group }) => {
               <Button
                 size="small"
                 onClick={() => {
-                  dispatch(toogleSlots(`${group.pretty_date} ${slotTime}`));
+                  toogleSlots(slotsRedux, `${group.pretty_date} ${slotTime}`);
                 }}
                 intent={
                   slotsRedux.findIndex(

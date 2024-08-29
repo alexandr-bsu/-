@@ -10,38 +10,20 @@ export const psycoSlots = createSlice({
   name: "psycoSlots",
   initialState,
   reducers: {
-    toogleSlots: (state, slot) => {
-      let index = state.freeSlots.findIndex((s) => s.slot == slot.payload);
-      console.log("slot", slot?.payload);
+    setStateSlotLoading: (state, index) => {
+      state.freeSlots[index.payload] = "loading";
+    },
 
-      if (index != -1) {
-        state.freeSlots[index].state = "loading";
-        state.freeSlots.splice(index, 1);
+    setStateSlotOk: (state, index) => {
+      state.freeSlots[index.payload] = "ok";
+    },
 
-        axios({
-          url: "https://n8n.hrani.live/webhook/delete-slot",
-          data: {
-            slot: slot.payload,
-            secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
-          },
-          method: "POST",
-        }).then((resp) => {
-          state.freeSlots[index].state = "ok";
-          state.freeSlots.splice(index, 1);
-        });
-      } else {
-        axios({
-          url: "https://n8n.hrani.live/webhook/add-slot",
-          data: {
-            secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
-            slot: slot.payload,
-          },
-          method: "POST",
-        }).then((resp) => {
-          // state.freeSlots[index].state = "ok";
-          state.freeSlots.push({ slot: slot.payload, state: "ok" });
-        });
-      }
+    pushSlot: (state, slot) => {
+      state.freeSlots.push({ slot: slot.payload, state: "ok" });
+    },
+
+    spliceSlot: (state, index) => {
+      state.freeSlots.splice(index.payload, 1);
     },
 
     setFreeSlots: (state, groupsOfSlots) => {
@@ -60,5 +42,11 @@ export const psycoSlots = createSlice({
   },
 });
 
-export const { toogleSlots, setFreeSlots } = psycoSlots.actions;
+export const {
+  setStateSlotLoading,
+  spliceSlot,
+  setStateSlotOk,
+  pushSlot,
+  setFreeSlots,
+} = psycoSlots.actions;
 export default psycoSlots.reducer;
