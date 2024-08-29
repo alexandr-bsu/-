@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  slots: [],
+  // Свободные слоты
+  freeSlots: [],
 };
 
 export const psycoSlots = createSlice({
@@ -9,14 +10,24 @@ export const psycoSlots = createSlice({
   initialState,
   reducers: {
     toogleSlots: (state, slot) => {
-      if (state.slots.includes(slot.payload)) {
-        state.slots.splice(state.slots.indexOf(slot.payload), 1);
+      if (state.freeSlots.includes(slot.payload)) {
+        state.freeSlots.splice(state.freeSlots.indexOf(slot.payload), 1);
       } else {
-        state.slots.push(slot.payload);
+        state.freeSlots.push(slot.payload);
+      }
+    },
+    setFreeSlots: (state, groupsOfSlots) => {
+      for (let groupOfSlots of groupsOfSlots.payload) {
+        let slots = groupOfSlots.slots;
+        for (let time in slots) {
+          if (slots[time].length != 0 && slots[time][0].status == "Свободен") {
+            state.freeSlots.push(`${groupOfSlots.pretty_date} ${time}`);
+          }
+        }
       }
     },
   },
 });
 
-export const { toogleSlots } = psycoSlots.actions;
+export const { toogleSlots, setFreeSlots } = psycoSlots.actions;
 export default psycoSlots.reducer;

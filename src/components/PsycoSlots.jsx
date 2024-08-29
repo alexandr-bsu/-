@@ -8,8 +8,12 @@ import { startOfWeek, endOfWeek } from "date-fns";
 import Button from "./Button";
 import Lottie from "react-lottie";
 import errorLottie from "../assets/lotties/error";
+import { useSelector, useDispatch } from "react-redux";
+import { setFreeSlots } from "../redux/slices/psycoSlotsSlice";
 
 const PsycoSlots = () => {
+  const dispatch = useDispatch();
+
   const errorLottieOptions = {
     loop: false,
     autoplay: true,
@@ -89,6 +93,7 @@ const PsycoSlots = () => {
       .then((resp) => {
         setGroupsOfSlots(resp.data[0].items);
         setSlotStatus("active");
+        dispatch(setFreeSlots(resp.data[0].items));
       })
       .catch((thrown) => {
         setSlotStatus("error");

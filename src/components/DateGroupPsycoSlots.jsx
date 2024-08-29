@@ -3,10 +3,10 @@ import Button from "./Button";
 import Check from "../assets/check.svg?react";
 
 import { useSelector, useDispatch } from "react-redux";
-import { toogleSlots } from "../redux/slices/formSlice";
+import { toogleSlots } from "../redux/slices/psycoSlotsSlice";
 
 const DateGroupPsycoSlots = ({ group }) => {
-  const slotsRedux = useSelector((state) => state.form.slots);
+  const slotsRedux = useSelector((state) => state.psyco.freeSlots);
   const dispatch = useDispatch();
 
   function capitalize(string) {
@@ -36,10 +36,13 @@ const DateGroupPsycoSlots = ({ group }) => {
                 size="small"
                 onClick={() => {
                   dispatch(toogleSlots(`${group.pretty_date} ${slotTime}`));
+                  console.log(slotsRedux);
                 }}
                 hover="no"
               >
                 {slotTime}
+
+                {/* Ставим галочку когда пользователь сам нажал на кнопку либо слот свободен */}
                 {slotsRedux.includes(`${group.pretty_date} ${slotTime}`) ? (
                   <Check width={20} height={20}></Check>
                 ) : (
