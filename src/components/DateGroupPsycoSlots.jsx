@@ -19,8 +19,6 @@ const DateGroupPsycoSlots = ({ group }) => {
     let index = freeSlots.findIndex((s) => s.slot == slot);
 
     if (index != -1) {
-      dispatch(setStateSlotLoading(index));
-
       axios({
         url: "https://n8n.hrani.live/webhook/delete-slot",
         data: {
@@ -29,7 +27,6 @@ const DateGroupPsycoSlots = ({ group }) => {
         },
         method: "POST",
       }).then((resp) => {
-        dispatch(setStateSlotOk(index));
         dispatch(spliceSlot(index));
       });
     } else {
