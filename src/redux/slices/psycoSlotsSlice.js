@@ -4,18 +4,21 @@ import axios from "axios";
 const initialState = {
   // Свободные слоты
   freeSlots: [],
+  // Впроцессе обработке
+  loadList: [],
 };
 
 export const psycoSlots = createSlice({
   name: "psycoSlots",
   initialState,
   reducers: {
-    setStateSlotLoading: (state, index) => {
-      state.freeSlots[index.payload] = "loading";
+    setStateSlotLoading: (state, slot) => {
+      state.loadList.push(slot.payload);
     },
 
-    setStateSlotOk: (state, index) => {
-      state.freeSlots[index.payload] = "ok";
+    setStateSlotOk: (state, slot) => {
+      let index = state.loadList.findIndex((s) => s == slot.payload);
+      state.loadList.splice(index, 1);
     },
 
     pushSlot: (state, slot) => {
