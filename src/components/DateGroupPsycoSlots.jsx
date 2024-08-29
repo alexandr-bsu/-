@@ -30,7 +30,7 @@ const DateGroupPsycoSlots = ({ group }) => {
             group.slots[slotTime][0]?.status == "Забронирован" ? (
               <Button size="small" intent="cream" hover="no">
                 {slotTime}
-                <img src="src/assets/user.png" width={20} height={20}></img>
+                <img src="static/user.png" width={20} height={20}></img>
               </Button>
             ) : (
               <Button
