@@ -50,7 +50,7 @@ const FormPage = () => {
   }
 
   return (
-    <>
+    <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden">
       {status == "active" && <Form maxTabsCount={8}></Form>}
       {status != "active" && (
         <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden p-5">
@@ -178,7 +178,7 @@ const FormPage = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
