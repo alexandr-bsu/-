@@ -15,8 +15,8 @@ const button = cva(
   {
     variants: {
       intent: {
-        primary: ["bg-green", "text-white"],
-        cream: ["bg-cream", "text-green"],
+        primary: ["bg-green", "text-white", "border", "border-green"],
+        cream: ["bg-cream", "text-green", "border", "border-cream"],
         disabled: ["bg-gray", "text-gray-disabled"],
         "primary-transparent": [
           "bg-transparent",
@@ -34,8 +34,13 @@ const button = cva(
       },
 
       hover: {
-        primary: ["hover:bg-green", "hover:text-white"],
-        cream: ["hover:bg-cream", "hover:text-green"],
+        primary: [
+          "hover:bg-green",
+          "hover:text-white",
+          "border",
+          "border-green",
+        ],
+        cream: ["hover:bg-cream", "hover:text-green", "border", "border-cream"],
         disabled: [
           "hover:bg-gray",
           "hover:text-gray-disabled",

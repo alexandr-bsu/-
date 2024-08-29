@@ -30,15 +30,19 @@ const DateGroupPsycoSlots = ({ group }) => {
             group.slots[slotTime][0]?.status == "Забронирован" ? (
               <Button size="small" intent="cream" hover="no">
                 {slotTime}
+                <img src="src/assets/user.png" width={20} height={20}></img>
               </Button>
             ) : (
               <Button
                 size="small"
                 onClick={() => {
                   dispatch(toogleSlots(`${group.pretty_date} ${slotTime}`));
-                  console.log(slotsRedux);
                 }}
-                hover="no"
+                intent={
+                  slotsRedux.includes(`${group.pretty_date} ${slotTime}`)
+                    ? "primary"
+                    : "primary-transparent"
+                }
               >
                 {slotTime}
 
