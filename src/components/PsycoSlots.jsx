@@ -11,6 +11,7 @@ import errorLottie from "../assets/lotties/error";
 import { useSelector, useDispatch } from "react-redux";
 import { setFreeSlots } from "../redux/slices/psycoSlotsSlice";
 import QueryString from "qs";
+import { Link } from "react-router-dom";
 
 const PsycoSlots = () => {
   const dispatch = useDispatch();
@@ -276,6 +277,14 @@ const PsycoSlots = () => {
           </div>
         )}
       </div>
+
+      {slotStatus != "error" && slotStatus != "loading" && (
+        <div className="p-10 fixed bottom-0 bg-[#2c3531] w-full">
+          <Link to="/slots-saved">
+            <Button intent="cream">Готово</Button>
+          </Link>
+        </div>
+      )}
     </>
   );
 };
