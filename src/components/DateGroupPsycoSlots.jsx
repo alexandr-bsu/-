@@ -33,6 +33,7 @@ const DateGroupPsycoSlots = ({ group }) => {
     if (index != -1) {
       let Tpromise = axios({
         url: "https://n8n.hrani.live/webhook/delete-slot",
+        // signal: AbortSignal.timeout(500), //Aborts request after 5 seconds
 
         data: {
           slot: slot,
@@ -40,10 +41,14 @@ const DateGroupPsycoSlots = ({ group }) => {
         },
 
         method: "POST",
-      }).then((resp) => {
-        dispatch(setStateSlotOk(slot));
-        dispatch(spliceSlot(index));
-      });
+      })
+        .then((resp) => {
+          dispatch(setStateSlotOk(slot));
+          dispatch(spliceSlot(index));
+        })
+        .catch((error) => {
+          dispatch(setStateSlotOk(slot));
+        });
 
       toast.promise(Tpromise, {
         loading: `Удаляем слот ${slot}`,
@@ -53,15 +58,20 @@ const DateGroupPsycoSlots = ({ group }) => {
     } else {
       let Tpromise = axios({
         url: "https://n8n.hrani.live/webhook/add-slot",
+        // signal: AbortSignal.timeout(500),
         data: {
           secret: secret,
           slot: slot,
         },
         method: "POST",
-      }).then((resp) => {
-        dispatch(setStateSlotOk(slot));
-        dispatch(pushSlot(slot));
-      });
+      })
+        .then((resp) => {
+          dispatch(setStateSlotOk(slot));
+          dispatch(pushSlot(slot));
+        })
+        .catch((error) => {
+          dispatch(setStateSlotOk(slot));
+        });
 
       toast.promise(Tpromise, {
         loading: `Добавляем слот ${slot}`,
