@@ -18,12 +18,17 @@ const DateGroupPsycoSlots = ({ group }) => {
   const dispatch = useDispatch();
 
   const toogleSlots = (freeSlots, slot) => {
+    if (loadListRedux.includes(slot)) {
+      return;
+    }
+
     let index = freeSlots.findIndex((s) => s.slot == slot);
     dispatch(setStateSlotLoading(slot));
 
     if (index != -1) {
       let Tpromise = axios({
         url: "https://n8n.hrani.live/webhook/delete-slot",
+
         data: {
           slot: slot,
           secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
