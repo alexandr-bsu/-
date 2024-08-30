@@ -9,10 +9,6 @@ import {
   spliceSlot,
   setStateSlotLoading,
   setStateSlotOk,
-  pushToDeleteList,
-  spliceDeleteList,
-  pushToAddList,
-  spliceAddList,
 } from "../redux/slices/psycoSlotsSlice";
 
 const DateGroupPsycoSlots = ({ group }) => {
@@ -22,43 +18,33 @@ const DateGroupPsycoSlots = ({ group }) => {
 
   const toogleSlots = (freeSlots, slot) => {
     let index = freeSlots.findIndex((s) => s.slot == slot);
-    if (index != -1) {
-      dispatch(spliceSlot(index));
-      pushToDeleteList(spliceSlot(slot));
-      dispatch(spliceAddList(slot));
-    } else {
-      dispatch(pushSlot(slot));
-      dispatch(pushToAddList(slot));
-      dispatch(spliceDeleteList(slot));
-    }
-    // dispatch(setStateSlotLoading(slot));
-    // if (index != -1) {
-    //   axios({
-    //     url: "https://n8n.hrani.live/webhook/delete-slot",
-    //     data: {
-    //       slot: slot,
-    //       secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
-    //     },
-    //     method: "POST",
-    //   }).then((resp) => {
-    //     dispatch(setStateSlotOk(slot));
-    //     let indexToDelete = freeSlots.findIndex((s) => s.slot == slot);
+    dispatch(setStateSlotLoading(slot));
 
-    //     dispatch(spliceSlot(indexToDelete));
-    //   });
-    // } else {
-    //   axios({
-    //     url: "https://n8n.hrani.live/webhook/add-slot",
-    //     data: {
-    //       secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
-    //       slot: slot,
-    //     },
-    //     method: "POST",
-    //   }).then((resp) => {
-    //     dispatch(setStateSlotOk(slot));
-    //     dispatch(pushSlot(slot));
-    //   });
-    // }
+    if (index != -1) {
+      axios({
+        url: "https://n8n.hrani.live/webhook/delete-slot",
+        data: {
+          slot: slot,
+          secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
+        },
+        method: "POST",
+      }).then((resp) => {
+        dispatch(setStateSlotOk(slot));
+        dispatch(spliceSlot(index));
+      });
+    } else {
+      axios({
+        url: "https://n8n.hrani.live/webhook/add-slot",
+        data: {
+          secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
+          slot: slot,
+        },
+        method: "POST",
+      }).then((resp) => {
+        dispatch(setStateSlotOk(slot));
+        dispatch(pushSlot(slot));
+      });
+    }
   };
 
   function capitalize(string) {
@@ -104,8 +90,8 @@ const DateGroupPsycoSlots = ({ group }) => {
 
                 {loadListRedux.includes(`${group.pretty_date} ${slotTime}`) ? (
                   <svg
-                    height={24}
                     width={24}
+                    height={24}
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 200 200"
                   >
@@ -117,25 +103,25 @@ const DateGroupPsycoSlots = ({ group }) => {
                       fy=".3125"
                       gradientTransform="scale(1.5)"
                     >
-                      <stop offset="0" stop-color="#D9B08C"></stop>
+                      <stop offset="0" stop-color="#D1A987"></stop>
                       <stop
                         offset=".3"
-                        stop-color="#D9B08C"
+                        stop-color="#D1A987"
                         stop-opacity=".9"
                       ></stop>
                       <stop
                         offset=".6"
-                        stop-color="#D9B08C"
+                        stop-color="#D1A987"
                         stop-opacity=".6"
                       ></stop>
                       <stop
                         offset=".8"
-                        stop-color="#D9B08C"
+                        stop-color="#D1A987"
                         stop-opacity=".3"
                       ></stop>
                       <stop
                         offset="1"
-                        stop-color="#D9B08C"
+                        stop-color="#D1A987"
                         stop-opacity="0"
                       ></stop>
                     </radialGradient>
@@ -143,7 +129,7 @@ const DateGroupPsycoSlots = ({ group }) => {
                       transform-origin="center"
                       fill="none"
                       stroke="url(#a12)"
-                      stroke-width="30"
+                      stroke-width="16"
                       stroke-linecap="round"
                       stroke-dasharray="200 1000"
                       stroke-dashoffset="0"
@@ -155,7 +141,7 @@ const DateGroupPsycoSlots = ({ group }) => {
                         type="rotate"
                         attributeName="transform"
                         calcMode="spline"
-                        dur="2.5"
+                        dur="2"
                         values="360;0"
                         keyTimes="0;1"
                         keySplines="0 0 1 1"
@@ -166,8 +152,8 @@ const DateGroupPsycoSlots = ({ group }) => {
                       transform-origin="center"
                       fill="none"
                       opacity=".2"
-                      stroke="#D9B08C"
-                      stroke-width="30"
+                      stroke="#D1A987"
+                      stroke-width="16"
                       stroke-linecap="round"
                       cx="100"
                       cy="100"

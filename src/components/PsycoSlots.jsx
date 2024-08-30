@@ -12,8 +12,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { setFreeSlots } from "../redux/slices/psycoSlotsSlice";
 
 const PsycoSlots = () => {
-  const slotsToAdd = useSelector((state) => state.psyco.addList);
-  const slotsToDelete = useSelector((state) => state.psyco.deleteList);
   const dispatch = useDispatch();
 
   const errorLottieOptions = {
@@ -100,29 +98,6 @@ const PsycoSlots = () => {
       .catch((thrown) => {
         setSlotStatus("error");
       });
-  }
-
-  function applyChanges() {
-    axios({
-      url: "https://n8n.hrani.live/webhook-test/delete-slot",
-      data: {
-        slots: slotsToDelete,
-        secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
-      },
-      method: "POST",
-    });
-
-    axios({
-      url: "https://n8n.hrani.live/webhook-test/add-slot",
-      data: {
-        secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
-        slots: slotsToAdd,
-      },
-      method: "POST",
-    }).then((resp) => {
-      dispatch(setStateSlotOk(slot));
-      dispatch(pushSlot(slot));
-    });
   }
 
   // Запрашиваем группы слотов при загрузке страницы
@@ -267,19 +242,13 @@ const PsycoSlots = () => {
         {slotStatus == "active" && (
           <div
             data-name="data-groups"
-            className="slot-grid-container px-5 pt-5 pb-32 min-h-screen gap-10 "
+            className="slot-grid-container px-5 pt-5 pb-10 min-h-screen gap-10 "
           >
             {groups_of_slots?.map((group) => (
               <DateGroupPsycoSlots group={group}></DateGroupPsycoSlots>
             ))}
           </div>
         )}
-      </div>
-
-      <div className="p-5 flex fixed bottom-0 w-full bg-[#2c3531]">
-        <Button intent="cream" onClick={() => applyChanges()}>
-          Сохранить расписание
-        </Button>
       </div>
     </>
   );
