@@ -9,6 +9,10 @@ import {
   spliceSlot,
   setStateSlotLoading,
   setStateSlotOk,
+  pushToDeleteList,
+  spliceDeleteList,
+  pushToAddList,
+  spliceAddList,
 } from "../redux/slices/psycoSlotsSlice";
 
 const DateGroupPsycoSlots = ({ group }) => {
@@ -18,40 +22,43 @@ const DateGroupPsycoSlots = ({ group }) => {
 
   const toogleSlots = (freeSlots, slot) => {
     let index = freeSlots.findIndex((s) => s.slot == slot);
-    dispatch(setStateSlotLoading(slot));
-
     if (index != -1) {
-      axios({
-        url: "https://n8n.hrani.live/webhook/delete-slot",
-        data: {
-          slot: slot,
-          secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
-        },
-        method: "POST",
-      }).then((resp) => {
-        dispatch(setStateSlotOk(slot));
-        let indexToDelete = freeSlots.findIndex((s) => s.slot == slot);
-        console.log(
-          index,
-          indexToDelete,
-          freeSlots[index],
-          freeSlots[indexToDelete]
-        );
-        dispatch(spliceSlot(indexToDelete));
-      });
+      dispatch(spliceSlot(index));
+      pushToDeleteList(spliceSlot(index));
+      dispatch(spliceAddList(index));
     } else {
-      axios({
-        url: "https://n8n.hrani.live/webhook/add-slot",
-        data: {
-          secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
-          slot: slot,
-        },
-        method: "POST",
-      }).then((resp) => {
-        dispatch(setStateSlotOk(slot));
-        dispatch(pushSlot(slot));
-      });
+      dispatch(pushSlot(slot));
+      dispatch(pushToAddList(slot));
+      dispatch(spliceDeleteList(slot));
     }
+    // dispatch(setStateSlotLoading(slot));
+    // if (index != -1) {
+    //   axios({
+    //     url: "https://n8n.hrani.live/webhook/delete-slot",
+    //     data: {
+    //       slot: slot,
+    //       secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
+    //     },
+    //     method: "POST",
+    //   }).then((resp) => {
+    //     dispatch(setStateSlotOk(slot));
+    //     let indexToDelete = freeSlots.findIndex((s) => s.slot == slot);
+
+    //     dispatch(spliceSlot(indexToDelete));
+    //   });
+    // } else {
+    //   axios({
+    //     url: "https://n8n.hrani.live/webhook/add-slot",
+    //     data: {
+    //       secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
+    //       slot: slot,
+    //     },
+    //     method: "POST",
+    //   }).then((resp) => {
+    //     dispatch(setStateSlotOk(slot));
+    //     dispatch(pushSlot(slot));
+    //   });
+    // }
   };
 
   function capitalize(string) {

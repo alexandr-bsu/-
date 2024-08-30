@@ -6,6 +6,10 @@ const initialState = {
   freeSlots: [],
   // Впроцессе обработке
   loadList: [],
+  // Слоты на удаление
+  deleteList: [],
+  //Слоты на добавление
+  addList: [],
 };
 
 export const psycoSlots = createSlice({
@@ -27,6 +31,26 @@ export const psycoSlots = createSlice({
 
     spliceSlot: (state, index) => {
       state.freeSlots.splice(index.payload, 1);
+    },
+
+    pushToDeleteList: (state, slot) => {
+      state.deleteList.push(slot.payload);
+    },
+
+    spliceDeleteList: (state, slot) => {
+      let index = state.deleteList.findIndex(
+        (s) => s.slot == slot.payload?.slot
+      );
+      state.deleteList.splice(index, 1);
+    },
+
+    pushToAddList: (state, slot) => {
+      state.addList.push(slot.payload);
+    },
+
+    spliceAddList: (state, slot) => {
+      let index = state.addList.findIndex((s) => s.slot == slot.payload?.slot);
+      state.addList.splice(index, 1);
     },
 
     setFreeSlots: (state, groupsOfSlots) => {
@@ -51,5 +75,9 @@ export const {
   setStateSlotOk,
   pushSlot,
   setFreeSlots,
+  pushToDeleteList,
+  spliceDeleteList,
+  pushToAddList,
+  spliceAddList,
 } = psycoSlots.actions;
 export default psycoSlots.reducer;
