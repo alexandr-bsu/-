@@ -30,7 +30,8 @@ const DateGroupPsycoSlots = ({ group }) => {
         method: "POST",
       }).then((resp) => {
         dispatch(setStateSlotOk(slot));
-        dispatch(spliceSlot(index));
+        let indexToDelete = freeSlots.findIndex((s) => s.slot == slot);
+        dispatch(spliceSlot(indexToDelete));
       });
     } else {
       axios({
