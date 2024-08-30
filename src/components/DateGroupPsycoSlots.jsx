@@ -1,6 +1,7 @@
 import React from "react";
 import Button from "./Button";
 import Check from "../assets/check.svg?react";
+import toast, { Toaster } from "react-hot-toast";
 
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
@@ -21,7 +22,7 @@ const DateGroupPsycoSlots = ({ group }) => {
     dispatch(setStateSlotLoading(slot));
 
     if (index != -1) {
-      axios({
+      let Tpromise = axios({
         url: "https://n8n.hrani.live/webhook/delete-slot",
         data: {
           slot: slot,
@@ -32,8 +33,14 @@ const DateGroupPsycoSlots = ({ group }) => {
         dispatch(setStateSlotOk(slot));
         dispatch(spliceSlot(index));
       });
+
+      toast.promise(Tpromise, {
+        loading: `Удаляем слот ${slot}`,
+        success: `Слот ${slot} удалён`,
+        error: `Ошибка! Слот ${slot} не удалён. Повторите попытку`,
+      });
     } else {
-      axios({
+      let Tpromise = axios({
         url: "https://n8n.hrani.live/webhook/add-slot",
         data: {
           secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
@@ -43,6 +50,12 @@ const DateGroupPsycoSlots = ({ group }) => {
       }).then((resp) => {
         dispatch(setStateSlotOk(slot));
         dispatch(pushSlot(slot));
+      });
+
+      toast.promise(Tpromise, {
+        loading: `Добавляем слот ${slot}`,
+        success: `Слот ${slot} добавлен`,
+        error: `Ошибка! Слот ${slot} не добавлен. Повторите попытку`,
       });
     }
   };
@@ -60,6 +73,7 @@ const DateGroupPsycoSlots = ({ group }) => {
       <h2 className="text-xl font-medium text-green pb-2 border-b border-gray w-full mb-5">
         {group.pretty_date} {capitalize(group.day_name)}
       </h2>
+      <Toaster />
 
       <ul className="slot-grid gap-4">
         {Object.keys(group.slots).map((slotTime, index) => (
