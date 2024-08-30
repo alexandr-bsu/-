@@ -24,8 +24,8 @@ const DateGroupPsycoSlots = ({ group }) => {
     let index = freeSlots.findIndex((s) => s.slot == slot);
     if (index != -1) {
       dispatch(spliceSlot(index));
-      pushToDeleteList(spliceSlot(index));
-      dispatch(spliceAddList(index));
+      pushToDeleteList(spliceSlot(slot));
+      dispatch(spliceAddList(slot));
     } else {
       dispatch(pushSlot(slot));
       dispatch(pushToAddList(slot));
