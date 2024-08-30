@@ -31,6 +31,12 @@ const DateGroupPsycoSlots = ({ group }) => {
       }).then((resp) => {
         dispatch(setStateSlotOk(slot));
         let indexToDelete = freeSlots.findIndex((s) => s.slot == slot);
+        console.log(
+          index,
+          indexToDelete,
+          freeSlots[index],
+          freeSlots[indexToDelete]
+        );
         dispatch(spliceSlot(indexToDelete));
       });
     } else {
