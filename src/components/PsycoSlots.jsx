@@ -10,9 +10,15 @@ import Lottie from "react-lottie";
 import errorLottie from "../assets/lotties/error";
 import { useSelector, useDispatch } from "react-redux";
 import { setFreeSlots } from "../redux/slices/psycoSlotsSlice";
+import QueryString from "qs";
 
 const PsycoSlots = () => {
   const dispatch = useDispatch();
+  const secret = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.secret;
+
+  const [authState, setAuthState] = useState("");
 
   const errorLottieOptions = {
     loop: false,
@@ -74,7 +80,7 @@ const PsycoSlots = () => {
 
   // Получаем группы слотов и обновляем переменную groups_of_slots
   // Срабатывает когда выбирается дата в WeekToogleContainer
-  function selectFn(date) {
+  function selectFn(date, secret) {
     let splited_dates = date.split(":");
     let startDate = splited_dates[0];
     let endDate = splited_dates[1];
@@ -86,11 +92,15 @@ const PsycoSlots = () => {
       params: {
         startDate,
         endDate,
-        secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
+        secret: secret,
       },
       url: "https://n8n.hrani.live/webhook/get-slot",
     })
       .then((resp) => {
+        if (resp.data?.error == "unauthored") {
+          setAuthState("unauthored");
+        }
+
         setGroupsOfSlots(resp.data[0].items);
         setSlotStatus("active");
         dispatch(setFreeSlots(resp.data[0].items));
@@ -102,7 +112,12 @@ const PsycoSlots = () => {
 
   // Запрашиваем группы слотов при загрузке страницы
   useEffect(() => {
-    selectFn(selectedDate);
+    if (secret) {
+      selectFn(selectedDate, secret);
+    } else {
+      setAuthState("unauthored");
+      setSlotStatus("error");
+    }
   }, []);
 
   return (
@@ -220,19 +235,30 @@ const PsycoSlots = () => {
                 <p className="text-black text-center font-bold text-lg">
                   Произошла ошибка
                 </p>
-                <p className="text-black text-center text-base">
-                  Мы уже в курсе проблемы и работаем над её устранением.
-                  Пожалуйста повторите попытку
-                </p>
-                <Button
-                  intent="cream"
-                  hover="primary"
-                  onClick={() => {
-                    selectFn(selectedDate);
-                  }}
-                >
-                  Повторить
-                </Button>
+                <>
+                  {authState == "unauthored" ? (
+                    <p className="text-black text-center text-base">
+                      Некорректная ссылка для входа. Пожалуйста, свяжитель с
+                      администратором
+                    </p>
+                  ) : (
+                    <>
+                      <p className="text-black text-center text-base">
+                        Мы уже в курсе проблемы и работаем над её устранением.
+                        Пожалуйста повторите попытку
+                      </p>
+                      <Button
+                        intent="cream"
+                        hover="primary"
+                        onClick={() => {
+                          selectFn(selectedDate);
+                        }}
+                      >
+                        Повторить
+                      </Button>
+                    </>
+                  )}
+                </>
               </div>
             </div>
           </div>

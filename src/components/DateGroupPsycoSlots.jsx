@@ -11,13 +11,18 @@ import {
   setStateSlotLoading,
   setStateSlotOk,
 } from "../redux/slices/psycoSlotsSlice";
+import QueryString from "qs";
 
 const DateGroupPsycoSlots = ({ group }) => {
+  const secret = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.secret;
+
   const slotsRedux = useSelector((state) => state.psyco.freeSlots);
   const loadListRedux = useSelector((state) => state.psyco.loadList);
   const dispatch = useDispatch();
 
-  const toogleSlots = (freeSlots, slot) => {
+  const toogleSlots = (freeSlots, slot, secret) => {
     if (loadListRedux.includes(slot)) {
       return;
     }
@@ -31,8 +36,9 @@ const DateGroupPsycoSlots = ({ group }) => {
 
         data: {
           slot: slot,
-          secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
+          secret: secret,
         },
+
         method: "POST",
       }).then((resp) => {
         dispatch(setStateSlotOk(slot));
@@ -48,7 +54,7 @@ const DateGroupPsycoSlots = ({ group }) => {
       let Tpromise = axios({
         url: "https://n8n.hrani.live/webhook/add-slot",
         data: {
-          secret: "ecbb9433-1336-45c4-bb26-999aa194b3b9",
+          secret: secret,
           slot: slot,
         },
         method: "POST",
@@ -93,7 +99,11 @@ const DateGroupPsycoSlots = ({ group }) => {
               <Button
                 size="small"
                 onClick={() => {
-                  toogleSlots(slotsRedux, `${group.pretty_date} ${slotTime}`);
+                  toogleSlots(
+                    slotsRedux,
+                    `${group.pretty_date} ${slotTime}`,
+                    secret
+                  );
                 }}
                 intent={
                   slotsRedux.findIndex(
