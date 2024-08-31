@@ -13,6 +13,8 @@ import { useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 import { setStatus } from "../redux/slices/formStatusSlice";
+
+import QueryString from "qs";
 const Form = ({ maxTabsCount }) => {
   const dispatch = useDispatch();
 
@@ -82,6 +84,11 @@ const Form = ({ maxTabsCount }) => {
   }
 
   function sendData() {
+    // Парсим utm метки
+    const utm_client = QueryString.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })?.utm_client;
+
     if (activeTabIndex == 6 && (contactType == "" || contact == "")) {
       setShowError(true);
       setTimeout(() => {
@@ -91,7 +98,7 @@ const Form = ({ maxTabsCount }) => {
       dispatch(setStatus("sending"));
       axios({
         method: "POST",
-        data: form,
+        data: { ...form, utm_client },
         url: "https://n8n.hrani.live/webhook/tilda-zayavka",
       })
         .then(() => {

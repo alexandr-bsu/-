@@ -7,6 +7,7 @@ import Button from "../components/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { setStatus } from "../redux/slices/formStatusSlice";
 import axios from "axios";
+import QueryString from "qs";
 
 const FormPage = () => {
   const status = useSelector((state) => state.formStatus.status);
@@ -32,12 +33,17 @@ const FormPage = () => {
 
   // Повторная отправка формы
   function sendData() {
+    // Парсим utm метки
+    const utm_client = QueryString.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })?.utm_client;
+
     dispatch(setStatus("sending"));
     let timer = setTimeout(() => dispatch(setStatus("error")), 10000);
 
     axios({
       method: "POST",
-      data: form,
+      data: { ...form, utm_client },
       url: "https://n8n.hrani.live/webhook/tilda-zayavka",
     })
       .then(() => {
