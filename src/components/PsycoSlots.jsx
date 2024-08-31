@@ -145,7 +145,7 @@ const PsycoSlots = () => {
         </div>
       </div>
 
-      <div className="flex grow flex-col">
+      <div className="flex grow flex-col pb-28">
         {/* Индикатор загрузки */}
         {slotStatus == "loading" && (
           <div className="my-auto">
