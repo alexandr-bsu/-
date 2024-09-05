@@ -10,6 +10,7 @@ const initialState = {
   contactType: "",
   contact: "",
   name: "",
+  promocode: "",
 };
 
 export const formSlice = createSlice({
@@ -59,6 +60,10 @@ export const formSlice = createSlice({
     setName: (state, name) => {
       state.name = name.payload;
     },
+
+    setPromocode: (state, prompcode) => {
+      state.promocode = prompcode.payload;
+    },
   },
 });
 
@@ -72,5 +77,6 @@ export const {
   setContactType,
   setContact,
   setName,
+  setPromocode,
 } = formSlice.actions;
 export default formSlice.reducer;

@@ -7,6 +7,7 @@ import AmountExpectations from "../survey/AmountExpectations";
 import LastExperience from "../survey/LastExperience";
 import Age from "../survey/Age";
 import Name from "../survey/Name";
+import Promocode from "../survey/Promocode";
 import AskContacts from "../survey/AskContacts";
 import axios from "axios";
 import { useState } from "react";
@@ -62,27 +63,42 @@ const Form = ({ maxTabsCount }) => {
       setTimeout(() => {
         setShowError(false);
       }, 3000);
-    } else if (tabIndex == 2 && lastExperience == "") {
+    } else if (
+      (tabIndex == 2 || (problemFromQuery !== undefined && tabIndex == 0)) &&
+      lastExperience == ""
+    ) {
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
       }, 3000);
-    } else if (tabIndex == 3 && amountExpectations == "") {
+    } else if (
+      (tabIndex == 3 || (problemFromQuery !== undefined && tabIndex == 1)) &&
+      amountExpectations == ""
+    ) {
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
       }, 3000);
-    } else if (tabIndex == 4 && age == "") {
+    } else if (
+      (tabIndex == 4 || (problemFromQuery !== undefined && tabIndex == 2)) &&
+      age == ""
+    ) {
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
       }, 3000);
-    } else if (tabIndex == 5 && slots.length == 0) {
+    } else if (
+      (tabIndex == 5 || (problemFromQuery !== undefined && tabIndex == 3)) &&
+      slots.length == 0
+    ) {
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
       }, 3000);
-    } else if (tabIndex == 6 && (contactType == "" || contact == "")) {
+    } else if (
+      (tabIndex == 7 || (problemFromQuery !== undefined && tabIndex == 5)) &&
+      (contactType == "" || contact == "")
+    ) {
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
@@ -99,7 +115,11 @@ const Form = ({ maxTabsCount }) => {
       ignoreQueryPrefix: true,
     })?.utm_client;
 
-    if (activeTabIndex == 6 && (contactType == "" || contact == "")) {
+    if (
+      (activeTabIndex == 7 ||
+        (problemFromQuery !== undefined && activeTabIndex == 5)) &&
+      (contactType == "" || contact == "")
+    ) {
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
@@ -141,7 +161,8 @@ const Form = ({ maxTabsCount }) => {
             showError ? "h-20" : "h-0"
           }`}
         >
-          {activeTabIndex == 5
+          {activeTabIndex == 5 ||
+          (problemFromQuery !== undefined && activeTabIndex == 3)
             ? "Вы не выбрали время"
             : "Вы не заполнили обязательное поле"}
         </div>
@@ -159,8 +180,9 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 3 && <AmountExpectations></AmountExpectations>}
               {activeTabIndex == 4 && <Age></Age>}
               {activeTabIndex == 5 && <Slots></Slots>}
-              {activeTabIndex == 6 && <AskContacts></AskContacts>}
-              {activeTabIndex == 7 && <Name></Name>}
+              {activeTabIndex == 6 && <Promocode></Promocode>}
+              {activeTabIndex == 7 && <AskContacts></AskContacts>}
+              {activeTabIndex == 8 && <Name></Name>}
             </>
           )}
           {problemFromQuery !== undefined && (
@@ -169,8 +191,9 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 1 && <AmountExpectations></AmountExpectations>}
               {activeTabIndex == 2 && <Age></Age>}
               {activeTabIndex == 3 && <Slots></Slots>}
-              {activeTabIndex == 4 && <AskContacts></AskContacts>}
-              {activeTabIndex == 5 && <Name></Name>}
+              {activeTabIndex == 4 && <Promocode></Promocode>}
+              {activeTabIndex == 5 && <AskContacts></AskContacts>}
+              {activeTabIndex == 6 && <Name></Name>}
             </>
           )}
         </div>
