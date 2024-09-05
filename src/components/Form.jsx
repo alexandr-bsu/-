@@ -10,13 +10,15 @@ import Name from "../survey/Name";
 import AskContacts from "../survey/AskContacts";
 import axios from "axios";
 import { useState } from "react";
-
+import QueryString from "qs";
 import { useSelector, useDispatch } from "react-redux";
 import { setStatus } from "../redux/slices/formStatusSlice";
 
-import QueryString from "qs";
 const Form = ({ maxTabsCount }) => {
   const dispatch = useDispatch();
+  const problemFromQuery = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.problem;
 
   const form = useSelector((state) => state.form);
   const checkedAnxieties = useSelector((state) => state.form.anxieties);
@@ -42,12 +44,20 @@ const Form = ({ maxTabsCount }) => {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   function showNextTab(tabIndex) {
     // Валидация перед переходом на следущую вкладку
-    if (tabIndex == 0 && checkedAnxieties.length == 0) {
+    if (
+      tabIndex == 0 &&
+      checkedAnxieties.length == 0 &&
+      problemFromQuery === undefined
+    ) {
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
       }, 3000);
-    } else if (tabIndex == 1 && questionToPsycologist.length == "") {
+    } else if (
+      tabIndex == 1 &&
+      questionToPsycologist.length == "" &&
+      problemFromQuery === undefined
+    ) {
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
@@ -95,10 +105,14 @@ const Form = ({ maxTabsCount }) => {
         setShowError(false);
       }, 3000);
     } else {
+      let data = { ...form, utm_client };
+      if (problemFromQuery) {
+        data["anxieties"] = [problemFromQuery];
+      }
       dispatch(setStatus("sending"));
       axios({
         method: "POST",
-        data: { ...form, utm_client },
+        data: data,
         url: "https://n8n.hrani.live/webhook/tilda-zayavka",
       })
         .then(() => {
@@ -135,16 +149,30 @@ const Form = ({ maxTabsCount }) => {
 
         <div className="relative h-full overflow-y-scroll flex flex-col ">
           {/* Здесь размещаются вкладки */}
-          {activeTabIndex == 0 && <WelcomePage></WelcomePage>}
-          {activeTabIndex == 1 && (
-            <QuestionToPsycologist></QuestionToPsycologist>
+          {problemFromQuery === undefined && (
+            <>
+              {activeTabIndex == 0 && <WelcomePage></WelcomePage>}
+              {activeTabIndex == 1 && (
+                <QuestionToPsycologist></QuestionToPsycologist>
+              )}
+              {activeTabIndex == 2 && <LastExperience></LastExperience>}
+              {activeTabIndex == 3 && <AmountExpectations></AmountExpectations>}
+              {activeTabIndex == 4 && <Age></Age>}
+              {activeTabIndex == 5 && <Slots></Slots>}
+              {activeTabIndex == 6 && <AskContacts></AskContacts>}
+              {activeTabIndex == 7 && <Name></Name>}
+            </>
           )}
-          {activeTabIndex == 2 && <LastExperience></LastExperience>}
-          {activeTabIndex == 3 && <AmountExpectations></AmountExpectations>}
-          {activeTabIndex == 4 && <Age></Age>}
-          {activeTabIndex == 5 && <Slots></Slots>}
-          {activeTabIndex == 6 && <AskContacts></AskContacts>}
-          {activeTabIndex == 7 && <Name></Name>}
+          {problemFromQuery !== undefined && (
+            <>
+              {activeTabIndex == 0 && <LastExperience></LastExperience>}
+              {activeTabIndex == 1 && <AmountExpectations></AmountExpectations>}
+              {activeTabIndex == 2 && <Age></Age>}
+              {activeTabIndex == 3 && <Slots></Slots>}
+              {activeTabIndex == 4 && <AskContacts></AskContacts>}
+              {activeTabIndex == 5 && <Name></Name>}
+            </>
+          )}
         </div>
 
         {/* Control buttons  */}

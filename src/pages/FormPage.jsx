@@ -30,6 +30,9 @@ const FormPage = () => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
+  const problemFromQuery = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.problem;
 
   // Повторная отправка формы
   function sendData() {
@@ -41,9 +44,14 @@ const FormPage = () => {
     dispatch(setStatus("sending"));
     let timer = setTimeout(() => dispatch(setStatus("error")), 10000);
 
+    let data = { ...form, utm_client };
+    if (problemFromQuery) {
+      data["anxieties"] = [problemFromQuery];
+    }
+
     axios({
       method: "POST",
-      data: { ...form, utm_client },
+      data: data,
       url: "https://n8n.hrani.live/webhook/tilda-zayavka",
     })
       .then(() => {
@@ -57,7 +65,9 @@ const FormPage = () => {
 
   return (
     <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden">
-      {status == "active" && <Form maxTabsCount={8}></Form>}
+      {status == "active" && (
+        <Form maxTabsCount={problemFromQuery ? 6 : 8}></Form>
+      )}
       {status != "active" && (
         <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden p-5">
           <div className=" bg-white w-full h-full rounded-lg">
