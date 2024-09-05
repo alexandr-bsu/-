@@ -88,7 +88,7 @@ const Form = ({ maxTabsCount }) => {
         setShowError(false);
       }, 3000);
     } else if (
-      (tabIndex == 5 || (problemFromQuery !== undefined && tabIndex == 3)) &&
+      (tabIndex == 6 || (problemFromQuery !== undefined && tabIndex == 4)) &&
       slots.length == 0
     ) {
       setShowError(true);
@@ -161,8 +161,8 @@ const Form = ({ maxTabsCount }) => {
             showError ? "h-20" : "h-0"
           }`}
         >
-          {activeTabIndex == 5 ||
-          (problemFromQuery !== undefined && activeTabIndex == 3)
+          {activeTabIndex == 6 ||
+          (problemFromQuery !== undefined && activeTabIndex == 4)
             ? "Вы не выбрали время"
             : "Вы не заполнили обязательное поле"}
         </div>
@@ -179,8 +179,8 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 2 && <LastExperience></LastExperience>}
               {activeTabIndex == 3 && <AmountExpectations></AmountExpectations>}
               {activeTabIndex == 4 && <Age></Age>}
-              {activeTabIndex == 5 && <Slots></Slots>}
-              {activeTabIndex == 6 && <Promocode></Promocode>}
+              {activeTabIndex == 5 && <Promocode></Promocode>}
+              {activeTabIndex == 6 && <Slots></Slots>}
               {activeTabIndex == 7 && <AskContacts></AskContacts>}
               {activeTabIndex == 8 && <Name></Name>}
             </>
@@ -190,8 +190,8 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 0 && <LastExperience></LastExperience>}
               {activeTabIndex == 1 && <AmountExpectations></AmountExpectations>}
               {activeTabIndex == 2 && <Age></Age>}
-              {activeTabIndex == 3 && <Slots></Slots>}
-              {activeTabIndex == 4 && <Promocode></Promocode>}
+              {activeTabIndex == 3 && <Promocode></Promocode>}
+              {activeTabIndex == 4 && <Slots></Slots>}
               {activeTabIndex == 5 && <AskContacts></AskContacts>}
               {activeTabIndex == 6 && <Name></Name>}
             </>

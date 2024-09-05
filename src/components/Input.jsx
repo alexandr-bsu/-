@@ -4,7 +4,7 @@ const Input = ({ children, onChangeFn, ...props }) => {
   return (
     <input
       type="text"
-      className="appearance-none border-b-dark-green border-b-2 bg-[#155d5e2e] outline-none p-3 text-dark-green placeholder:text-dark-green"
+      className="appearance-none border-b-dark-green border-b-2 bg-[#155d5e2e] outline-none p-3 text-dark-green placeholder:text-[#204b4a76]"
       onChange={(e) => onChangeFn(e.target.value)}
       {...props}
     />
