@@ -80,7 +80,7 @@ const Form = ({ maxTabsCount }) => {
         setShowError(false);
       }, 3000);
     } else if (
-      (tabIndex == 4 || (problemFromQuery !== undefined && tabIndex == 2)) &&
+      (tabIndex == 5 || (problemFromQuery !== undefined && tabIndex == 3)) &&
       age == ""
     ) {
       setShowError(true);
@@ -178,8 +178,8 @@ const Form = ({ maxTabsCount }) => {
               )}
               {activeTabIndex == 2 && <LastExperience></LastExperience>}
               {activeTabIndex == 3 && <AmountExpectations></AmountExpectations>}
-              {activeTabIndex == 4 && <Age></Age>}
-              {activeTabIndex == 5 && <Promocode></Promocode>}
+              {activeTabIndex == 4 && <Promocode></Promocode>}
+              {activeTabIndex == 5 && <Age></Age>}
               {activeTabIndex == 6 && <Slots></Slots>}
               {activeTabIndex == 7 && <AskContacts></AskContacts>}
               {activeTabIndex == 8 && <Name></Name>}
@@ -189,8 +189,8 @@ const Form = ({ maxTabsCount }) => {
             <>
               {activeTabIndex == 0 && <LastExperience></LastExperience>}
               {activeTabIndex == 1 && <AmountExpectations></AmountExpectations>}
-              {activeTabIndex == 2 && <Age></Age>}
-              {activeTabIndex == 3 && <Promocode></Promocode>}
+              {activeTabIndex == 2 && <Promocode></Promocode>}
+              {activeTabIndex == 3 && <Age></Age>}
               {activeTabIndex == 4 && <Slots></Slots>}
               {activeTabIndex == 5 && <AskContacts></AskContacts>}
               {activeTabIndex == 6 && <Name></Name>}
