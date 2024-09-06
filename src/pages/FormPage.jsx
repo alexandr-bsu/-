@@ -41,10 +41,14 @@ const FormPage = () => {
       ignoreQueryPrefix: true,
     })?.utm_client;
 
+    const utm_tarif = QueryString.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })?.utm_tarif;
+
     dispatch(setStatus("sending"));
     let timer = setTimeout(() => dispatch(setStatus("error")), 10000);
 
-    let data = { ...form, utm_client };
+    let data = { ...form, utm_client, utm_tarif };
     if (problemFromQuery) {
       data["anxieties"] = [problemFromQuery];
     }
