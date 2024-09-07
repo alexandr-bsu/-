@@ -2,6 +2,7 @@ import React from "react";
 import Button from "./Button";
 import Check from "../assets/check.svg?react";
 import toast, { Toaster } from "react-hot-toast";
+
 import { startOfWeek, endOfWeek } from "date-fns";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
@@ -93,16 +94,12 @@ const DateGroupPsycoSlots = ({ group }) => {
         .then((resp) => {
           dispatch(setStateSlotOk(slot));
           dispatch(spliceSlot(index));
+          toast.success(`Слот ${slot} удалён`);
         })
         .catch((error) => {
           dispatch(setStateSlotOk(slot));
+          toast.error(`Ошибка! Слот ${slot} не удалён. Повторите попытку`);
         });
-
-      toast.promise(Tpromise, {
-        loading: `Удаляем слот ${slot}`,
-        success: `Слот ${slot} удалён`,
-        error: `Ошибка! Слот ${slot} не удалён. Повторите попытку`,
-      });
     } else {
       let Tpromise = axios({
         url: "https://n8n.hrani.live/webhook/add-slot",
@@ -116,16 +113,12 @@ const DateGroupPsycoSlots = ({ group }) => {
         .then((resp) => {
           dispatch(setStateSlotOk(slot));
           dispatch(pushSlot(slot));
+          toast.success(`Слот ${slot} добавлен`);
         })
         .catch((error) => {
           dispatch(setStateSlotOk(slot));
+          toast.error(`Ошибка! Слот ${slot} не добавлен. Повторите попытку`);
         });
-
-      toast.promise(Tpromise, {
-        loading: `Добавляем слот ${slot}`,
-        success: `Слот ${slot} добавлен`,
-        error: `Ошибка! Слот ${slot} не добавлен. Повторите попытку`,
-      });
     }
   };
 
