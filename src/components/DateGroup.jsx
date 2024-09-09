@@ -54,12 +54,6 @@ const DateGroup = ({ group }) => {
     return dates;
   }
 
-  const compareDates = (date) => {
-    let date1 = new Date(new Date().toISOString().split("T")[0]);
-    let date2 = new Date(date);
-    return date1 <= date2;
-  };
-
   const compareDatesISO = (date1, date2) => {
     return (
       new Date(date1) <= new Date(new Date(date2).getTime() + 60 * 60 * 1000)

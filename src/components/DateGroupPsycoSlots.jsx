@@ -2,7 +2,7 @@ import React from "react";
 import Button from "./Button";
 import Check from "../assets/check.svg?react";
 import toast, { Toaster } from "react-hot-toast";
-
+import { startOfWeek, endOfWeek } from "date-fns";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import {
@@ -14,6 +14,54 @@ import {
 import QueryString from "qs";
 
 const DateGroupPsycoSlots = ({ group }) => {
+  //Получаем даты начала и конца недели
+  function getWeekStartEnd(date) {
+    let monday = startOfWeek(date, { weekStartsOn: 1 });
+    let month = monday.getMonth() + 1;
+    let day = monday.getDate();
+    month = month < 10 ? "0" + month : month;
+    day = day < 10 ? "0" + day : day;
+    monday = `${monday.getFullYear()}-${month}-${day}`;
+
+    let sunday = endOfWeek(date, { weekStartsOn: 1 });
+    month = sunday.getMonth() + 1;
+    day = sunday.getDate();
+    month = month < 10 ? "0" + month : month;
+    day = day < 10 ? "0" + day : day;
+    sunday = `${sunday.getFullYear()}-${month}-${day}`;
+
+    return {
+      monday,
+      sunday,
+    };
+  }
+
+  // Получаем текущую дату
+  let currDate = new Date().toISOString().split("T")[0];
+
+  // Даты начала и конца следующей недели
+  let next_date = new Date();
+  next_date.setDate(next_date.getDate() + 7);
+  const nextWeekBorders = getWeekStartEnd(next_date);
+
+  function getDatesBetween(startDate, endDate) {
+    const dates = [];
+    let currentDate = new Date(startDate);
+
+    while (currentDate <= new Date(endDate)) {
+      dates.push(currentDate.toISOString().split("T")[0]);
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return dates;
+  }
+
+  console.log(
+    "dates",
+    getDatesBetween(currDate, nextWeekBorders.sunday),
+    new Date()
+  );
+
   const secret = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
   })?.secret;
@@ -93,7 +141,9 @@ const DateGroupPsycoSlots = ({ group }) => {
 
   return (
     <>
-      {compareDates(group.date) ? (
+      {getDatesBetween(currDate, nextWeekBorders.sunday).includes(
+        group.date
+      ) ? (
         <div
           key={group.pretty_date}
           data-date={group.date}
