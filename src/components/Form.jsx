@@ -43,6 +43,30 @@ const Form = ({ maxTabsCount }) => {
   ];
 
   const [activeTabIndex, setActiveTabIndex] = useState(0);
+
+  function setGoalReached(tabIndex) {
+    let counter_number = 96890969;
+    if (tabIndex == 1 && problemFromQuery === undefined) {
+      ym(counter_number, "reachGoal", "prichina");
+      // alert("prichina long");
+    } else if (tabIndex == 4 && problemFromQuery == undefined) {
+      ym(counter_number, "reachGoal", "promo");
+      // alert("promo short");
+    } else if (tabIndex == 7 && problemFromQuery == undefined) {
+      // alert("svyaz long");
+      ym(counter_number, "reachGoal", "svyaz");
+    } else if (problemFromQuery != undefined && tabIndex == 5) {
+      // alert("svyaz short");
+      ym(counter_number, "reachGoal", "svyazshort");
+    } else if (problemFromQuery !== undefined && tabIndex == 1) {
+      ym(counter_number, "reachGoal", "skolko");
+      // alert("skolko short");
+    } else if (problemFromQuery !== undefined && tabIndex == 3) {
+      ym(counter_number, "reachGoal", "age");
+      // alert("age short");
+    }
+  }
+
   function showNextTab(tabIndex) {
     // Валидация перед переходом на следущую вкладку
     if (
@@ -104,6 +128,7 @@ const Form = ({ maxTabsCount }) => {
         setShowError(false);
       }, 3000);
     } else {
+      setGoalReached(tabIndex);
       setActiveTabIndex(tabIndex + 1);
       setShowError(false);
     }
@@ -140,6 +165,12 @@ const Form = ({ maxTabsCount }) => {
         url: "https://n8n.hrani.live/webhook/tilda-zayavka",
       })
         .then(() => {
+          if (problemFromQuery) {
+            ym(96890969, "reachGoal", "otpravkashort");
+          } else {
+            ym(96890969, "reachGoal", "otpravka");
+          }
+
           dispatch(setStatus("ok"));
         })
         .catch((e) => {

@@ -59,8 +59,13 @@ const FormPage = () => {
       url: "https://n8n.hrani.live/webhook/tilda-zayavka",
     })
       .then(() => {
+        if (problemFromQuery) {
+          ym(96890969, "reachGoal", "otpravkashort");
+        } else {
+          ym(96890969, "reachGoal", "otpravka");
+        }
+
         dispatch(setStatus("ok"));
-        clearTimeout(timer);
       })
       .catch((e) => {
         dispatch(setStatus("error"));
