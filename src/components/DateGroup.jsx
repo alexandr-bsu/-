@@ -79,9 +79,8 @@ const DateGroup = ({ group }) => {
   console.log("dates", getDatesBetween(currDate, nextWeekBorders.sunday));
   return (
     <>
-      {getDatesBetween(currDate, nextWeekBorders.sunday).includes(
-        group.date
-      ) ? (
+      {getDatesBetween(currDate, nextWeekBorders.sunday).includes(group.date) &&
+      group.date != currDate ? (
         <div
           key={group.pretty_date}
           data-name="date-group"

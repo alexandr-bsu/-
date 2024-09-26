@@ -144,6 +144,26 @@ const Form = ({ maxTabsCount }) => {
       ignoreQueryPrefix: true,
     })?.utm_tarif;
 
+    const utm_campaign = QueryString.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })?.utm_campaign;
+
+    const utm_content = QueryString.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })?.utm_content;
+
+    const utm_medium = QueryString.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })?.utm_medium;
+
+    const utm_source = QueryString.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })?.utm_source;
+
+    const utm_term = QueryString.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })?.utm_term;
+
     if (
       (activeTabIndex == 7 ||
         (problemFromQuery !== undefined && activeTabIndex == 5)) &&
@@ -154,7 +174,16 @@ const Form = ({ maxTabsCount }) => {
         setShowError(false);
       }, 3000);
     } else {
-      let data = { ...form, utm_client, utm_tarif };
+      let data = {
+        ...form,
+        utm_client,
+        utm_tarif,
+        utm_campaign,
+        utm_content,
+        utm_medium,
+        utm_source,
+        utm_term,
+      };
       if (problemFromQuery) {
         data["anxieties"] = [problemFromQuery];
       }
@@ -162,6 +191,7 @@ const Form = ({ maxTabsCount }) => {
       axios({
         method: "POST",
         data: data,
+        // url: "https://n8n.hrani.live/webhook/tilda-zayavka-dev",
         url: "https://n8n.hrani.live/webhook/tilda-zayavka",
       })
         .then(() => {

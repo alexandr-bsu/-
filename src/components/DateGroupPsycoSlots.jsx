@@ -1,6 +1,7 @@
 import React from "react";
 import Button from "./Button";
 import Check from "../assets/check.svg?react";
+// import SlotInfoPopup from "./SlotInfoPopup"; Раскомментить позже
 import toast, { Toaster } from "react-hot-toast";
 
 import { startOfWeek, endOfWeek } from "date-fns";
@@ -15,6 +16,13 @@ import {
 import QueryString from "qs";
 
 const DateGroupPsycoSlots = ({ group }) => {
+  // Состояние попапа с инфой по слотам (Рачкоментить позже)
+  // const [slotPopupData, setSlotPopupData] = React.useState({});
+  // const [isPopupShown, setIsPopupShown] = React.useState(false);
+  // const [slotPopupDate, setSlotPopupDate] = React.useState("");
+  // const [slotQueryDate, setSlotQueryDate] = React.useState("");
+  // const [slotQueryTime, setSlotQueryTime] = React.useState("");
+
   //Получаем даты начала и конца недели
   function getWeekStartEnd(date) {
     let monday = startOfWeek(date, { weekStartsOn: 1 });
@@ -134,6 +142,15 @@ const DateGroupPsycoSlots = ({ group }) => {
 
   return (
     <>
+      {/* Раскомментить позже {isPopupShown && (
+        <SlotInfoPopup
+          slotDate={slotPopupDate}
+          queryDate={slotQueryDate}
+          queryTime={slotQueryTime}
+          closeFn={() => setIsPopupShown(false)}
+        ></SlotInfoPopup>
+      )} */}
+
       {getDatesBetween(currDate, nextWeekBorders.sunday).includes(
         group.date
       ) ? (
@@ -146,6 +163,7 @@ const DateGroupPsycoSlots = ({ group }) => {
           <h2 className="text-xl font-medium text-green pb-2 border-b border-gray w-full mb-5">
             {group.pretty_date} {capitalize(group.day_name)}
           </h2>
+
           <Toaster />
 
           <ul className="slot-grid gap-4">
@@ -153,6 +171,20 @@ const DateGroupPsycoSlots = ({ group }) => {
               <li key={`${group.slotTime}_${index}`}>
                 {group.slots[slotTime].length != 0 &&
                 group.slots[slotTime][0]?.status == "Забронирован" ? (
+                  // Раскомментить позже
+                  // <Button
+                  //   size="small"
+                  //   intent="cream"
+                  //   hover="cream"
+                  //   onClick={() => {
+                  //     setSlotPopupDate(`${group.pretty_date} ${slotTime}`);
+                  //     setSlotQueryDate(group.date);
+                  //     setSlotQueryTime(slotTime);
+                  //     setIsPopupShown(true);
+                  //   }}
+                  // >
+
+                  // Удалить позже
                   <Button size="small" intent="cream" hover="no">
                     {slotTime}
                     <img src="static/user.png" width={20} height={20}></img>

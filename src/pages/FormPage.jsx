@@ -45,10 +45,39 @@ const FormPage = () => {
       ignoreQueryPrefix: true,
     })?.utm_tarif;
 
+    const utm_campaign = QueryString.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })?.utm_campaign;
+
+    const utm_content = QueryString.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })?.utm_content;
+
+    const utm_medium = QueryString.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })?.utm_medium;
+
+    const utm_source = QueryString.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })?.utm_source;
+
+    const utm_term = QueryString.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })?.utm_term;
+
     dispatch(setStatus("sending"));
     let timer = setTimeout(() => dispatch(setStatus("error")), 10000);
 
-    let data = { ...form, utm_client, utm_tarif };
+    let data = {
+      ...form,
+      utm_client,
+      utm_tarif,
+      utm_campaign,
+      utm_content,
+      utm_medium,
+      utm_source,
+      utm_term,
+    };
     if (problemFromQuery) {
       data["anxieties"] = [problemFromQuery];
     }
@@ -56,6 +85,7 @@ const FormPage = () => {
     axios({
       method: "POST",
       data: data,
+      // url: "https://n8n.hrani.live/webhook/tilda-zayavka-dev",
       url: "https://n8n.hrani.live/webhook/tilda-zayavka",
     })
       .then(() => {
