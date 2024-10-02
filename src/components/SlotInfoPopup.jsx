@@ -67,7 +67,7 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
           </h2>
 
           <img
-            src="src/assets/close.png"
+            src="static/close.png"
             className="cursor-pointer w-5 h-5"
             onClick={closeFn}
           ></img>
