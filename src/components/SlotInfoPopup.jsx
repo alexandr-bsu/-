@@ -40,14 +40,18 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
           console.log(
             "data",
             resp.data["Время выбранного слота"][0]?.value,
-            resp.data["Дата  выбранного слота"][0]?.value
+            resp.data["Дата  выбранного слота"][0]?.value,
+            queryDate
           );
 
           if ("Что беспокоит" in resp.data) {
             resp.data["Что беспокоит"] = resp.data["Что беспокоит"].split(";");
           }
-          setData(resp.data);
-          setStatus("ok");
+
+          if (queryDate == resp.data["Дата  выбранного слота"][0]?.value) {
+            setData(resp.data);
+            setStatus("ok");
+          }
         }
       })
       .catch((error) => {
