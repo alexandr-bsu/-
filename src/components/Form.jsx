@@ -191,8 +191,7 @@ const Form = ({ maxTabsCount }) => {
       axios({
         method: "POST",
         data: data,
-        // url: "https://n8n.hrani.live/webhook/tilda-zayavka-dev",
-        url: "https://n8n.hrani.live/webhook/tilda-zayavka",
+        url: "https://n8n.hrani.live/webhook/tilda-zayavka-dev",
       })
         .then(() => {
           if (problemFromQuery) {
