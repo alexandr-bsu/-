@@ -65,6 +65,10 @@ const FormPage = () => {
       ignoreQueryPrefix: true,
     })?.utm_term;
 
+    const utm_psy = QueryString.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })?.utm_psy;
+
     dispatch(setStatus("sending"));
     let timer = setTimeout(() => dispatch(setStatus("error")), 10000);
 
@@ -77,6 +81,7 @@ const FormPage = () => {
       utm_medium,
       utm_source,
       utm_term,
+      utm_psy,
     };
     if (problemFromQuery) {
       data["anxieties"] = [problemFromQuery];

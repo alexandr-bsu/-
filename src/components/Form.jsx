@@ -164,6 +164,10 @@ const Form = ({ maxTabsCount }) => {
       ignoreQueryPrefix: true,
     })?.utm_term;
 
+    const utm_psy = QueryString.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })?.utm_psy;
+
     if (
       (activeTabIndex == 7 ||
         (problemFromQuery !== undefined && activeTabIndex == 5)) &&
@@ -183,6 +187,7 @@ const Form = ({ maxTabsCount }) => {
         utm_medium,
         utm_source,
         utm_term,
+        utm_psy,
       };
       if (problemFromQuery) {
         data["anxieties"] = [problemFromQuery];
