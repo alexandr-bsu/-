@@ -1,8 +1,8 @@
 import React from "react";
 
 import { useSelector, useDispatch } from "react-redux";
-import { setLastExperience } from "../redux/slices/formSlice";
-import Radio from "../components/Radio";
+import { setLastExperience } from "../../redux/slices/formSlice";
+import Radio from "../../components/Radio";
 
 const LastExperience = () => {
   const lastExperience = useSelector((state) => state.form.lastExperience);

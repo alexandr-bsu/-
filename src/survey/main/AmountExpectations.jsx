@@ -1,8 +1,8 @@
 import React from "react";
 
 import { useSelector, useDispatch } from "react-redux";
-import { setAmountExpectations } from "../redux/slices/formSlice";
-import Radio from "../components/Radio";
+import { setAmountExpectations } from "../../redux/slices/formSlice";
+import Radio from "../../components/Radio";
 
 const AmountExpectations = () => {
   const amountExpectations = useSelector(

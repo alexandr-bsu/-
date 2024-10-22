@@ -1,8 +1,8 @@
 import React from "react";
-import Input from "../components/Input";
+import Input from "../../components/Input";
 
 import { useSelector, useDispatch } from "react-redux";
-import { setAge } from "../redux/slices/formSlice";
+import { setAge } from "../../redux/slices/formSlice";
 
 const Age = () => {
   const age = useSelector((state) => state.form.age);

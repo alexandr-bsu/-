@@ -1,8 +1,8 @@
 import React from "react";
-import Input from "../components/Input";
+import Input from "../../components/Input";
 
 import { useSelector, useDispatch } from "react-redux";
-import { setName } from "../redux/slices/formSlice";
+import { setName } from "../../redux/slices/formSlice";
 
 const Name = () => {
   const name = useSelector((state) => state.form.name);

@@ -1,8 +1,8 @@
 import React from "react";
-import TextArea from "../components/TextArea";
+import TextArea from "../../components/TextArea";
 
 import { useSelector, useDispatch } from "react-redux";
-import { setQuestionToPsycologist } from "../redux/slices/formSlice";
+import { setQuestionToPsycologist } from "../../redux/slices/formSlice";
 
 const QuestionToPsycologist = () => {
   const questionToPsycologist = useSelector(

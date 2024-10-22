@@ -1,9 +1,9 @@
 import React from "react";
-import Checkbox from "../components/Checkbox";
+import Checkbox from "../../components/Checkbox";
 import { useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
-import { toogleAnexieties } from "../redux/slices/formSlice";
+import { toogleAnexieties } from "../../redux/slices/formSlice";
 
 const WelcomePage = () => {
   const anxietyList = [

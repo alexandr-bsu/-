@@ -1,8 +1,8 @@
 import React from "react";
-import Input from "../components/Input";
+import Input from "../../components/Input";
 
 import { useSelector, useDispatch } from "react-redux";
-import { setPromocode } from "../redux/slices/formSlice";
+import { setPromocode } from "../../redux/slices/formSlice";
 
 const Promocode = () => {
   const promocode = useSelector((state) => state.form.promocode);

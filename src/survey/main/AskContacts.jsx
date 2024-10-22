@@ -1,9 +1,9 @@
 import React from "react";
 
 import { useSelector, useDispatch } from "react-redux";
-import { setContactType, setContact } from "../redux/slices/formSlice";
-import Radio from "../components/Radio";
-import Input from "../components/Input";
+import { setContactType, setContact } from "../../redux/slices/formSlice";
+import Radio from "../../components/Radio";
+import Input from "../../components/Input";
 
 const AmountExpectations = () => {
   const contactType = useSelector((state) => state.form.contactType);
