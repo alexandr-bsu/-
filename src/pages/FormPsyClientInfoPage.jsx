@@ -198,12 +198,11 @@ const FormPsyClientInfoPage = () => {
                     ближайшее время! По всем вопросам вам может помочь
                     администратор сообщества -{" "}
                     <a
-                      href="https://t.me/linizapsy"
+                      href="hranitel_liniza"
                       className="text-green text-underline font-medium"
                     >
-                      Линиза
-                    </a>{" "}
-                    ( Telegram )
+                      Линиза ( Telegram )
+                    </a>
                   </p>
                 </div>
               )}
