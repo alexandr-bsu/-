@@ -83,7 +83,7 @@ const FormPsyClientInfoPage = () => {
     axios({
       method: "POST",
       data: data,
-      url: "https://n8n.hrani.live/webhook-test/research-tilda-zayavka",
+      url: "https://n8n.hrani.live/webhook/research-tilda-zayavka",
     })
       .then(() => {
         dispatch(setStatus("ok"));
@@ -194,10 +194,16 @@ const FormPsyClientInfoPage = () => {
                     Cпасибо!
                   </h2>
                   <p className="text-black text-base font-medium text-center p-5">
-                    Спасибо! Мы получили ваш запрос и сейчас подбираем
-                    специалиста из сообщества психологов "Хранители". Мы
-                    свяжемся с вами в течение 20 минут (с 10.00 до 20.00 по
-                    Московскому времени, ежедневно)
+                    Если вы оставили свой контакт в анкете, то мы напишем вам в
+                    ближайшее время! По всем вопросам вам может помочь
+                    администратор сообщества -{" "}
+                    <a
+                      href="https://t.me/linizapsy"
+                      className="text-green text-underline font-medium"
+                    >
+                      Линиза
+                    </a>{" "}
+                    ( Telegram )
                   </p>
                 </div>
               )}

@@ -233,7 +233,7 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
     axios({
       method: "POST",
       data: data,
-      url: "https://n8n.hrani.live/webhook-test/research-tilda-zayavka",
+      url: "https://n8n.hrani.live/webhook/research-tilda-zayavka",
     })
       .then(() => {
         dispatch(setStatus("ok"));
