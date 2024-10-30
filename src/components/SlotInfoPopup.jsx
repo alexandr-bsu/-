@@ -34,6 +34,7 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
       params: { date: queryDate, time: queryTime, secret: secret },
     })
       .then((resp) => {
+        console.log("resp", resp.data);
         if (JSON.stringify(resp.data) == JSON.stringify({})) {
           setStatus("empty");
         } else {
@@ -48,10 +49,10 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
             resp.data["Что беспокоит"] = resp.data["Что беспокоит"].split(";");
           }
 
-          if (queryDate == resp.data["Дата  выбранного слота"][0]?.value) {
-            setData(resp.data);
-            setStatus("ok");
-          }
+          // if (queryDate == resp.data["Дата  выбранного слота"][0]?.value) {
+          setData(resp.data);
+          setStatus("ok");
+          // }
         }
       })
       .catch((error) => {

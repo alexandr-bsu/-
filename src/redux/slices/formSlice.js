@@ -11,7 +11,21 @@ const initialState = {
   contact: "",
   name: "",
   promocode: "",
+  ticket_id: "",
 };
+
+function makeid(length) {
+  let result = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result;
+}
 
 export const formSlice = createSlice({
   name: "form",
@@ -64,6 +78,10 @@ export const formSlice = createSlice({
     setPromocode: (state, prompcode) => {
       state.promocode = prompcode.payload;
     },
+
+    generateTicketId: (state) => {
+      state.ticket_id = makeid(7);
+    },
   },
 });
 
@@ -78,5 +96,6 @@ export const {
   setContact,
   setName,
   setPromocode,
+  generateTicketId,
 } = formSlice.actions;
 export default formSlice.reducer;

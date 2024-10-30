@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Form from "../components/Form";
 import Lottie from "react-lottie";
 import okLottie from "../assets/lotties/ok";
@@ -6,13 +6,20 @@ import errorLottie from "../assets/lotties/error";
 import Button from "../components/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { setStatus } from "../redux/slices/formStatusSlice";
+import { generateTicketId } from "../redux/slices/formSlice";
 import axios from "axios";
 import QueryString from "qs";
 
 const FormPage = () => {
   const status = useSelector((state) => state.formStatus.status);
   const form = useSelector((state) => state.form);
+  const ticket_id = useSelector((state) => state.form.ticket_id);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(generateTicketId());
+  }, []);
+
   const okLottieOptions = {
     loop: false,
     autoplay: true,
@@ -82,6 +89,7 @@ const FormPage = () => {
       utm_source,
       utm_term,
       utm_psy,
+      ticket_id,
     };
     if (problemFromQuery) {
       data["anxieties"] = [problemFromQuery];
@@ -90,15 +98,9 @@ const FormPage = () => {
     axios({
       method: "POST",
       data: data,
-      url: "https://n8n.hrani.live/webhook/tilda-zayavka-dev",
+      url: "https://n8n.hrani.live/webhook/tilda-zayavka-test",
     })
       .then(() => {
-        if (problemFromQuery) {
-          ym(96890969, "reachGoal", "otpravkashort");
-        } else {
-          ym(96890969, "reachGoal", "otpravka");
-        }
-
         dispatch(setStatus("ok"));
       })
       .catch((e) => {
@@ -200,11 +202,16 @@ const FormPage = () => {
                     Cпасибо!
                   </h2>
                   <p className="text-black text-base font-medium text-center p-5">
-                    Спасибо! Мы получили ваш запрос и сейчас подбираем
-                    специалиста из сообщества психологов "Хранители". Мы
-                    свяжемся с вами в течение 20 минут (с 10.00 до 20.00 по
-                    Московскому времени, ежедневно)
+                    Мы получили ваш запрос и сейчас подбираем специалиста из
+                    сообщества психологов Хранители. <br /> Для получения
+                    уведомления о записи на сессию перейдите в телеграм-бота.
                   </p>
+
+                  <a href={`https://t.me/HraniLiveBot?start=${ticket_id}`}>
+                    <Button intent="cream" hover="primary">
+                      Перейти в телеграм-бот
+                    </Button>
+                  </a>
                 </div>
               )}
 
