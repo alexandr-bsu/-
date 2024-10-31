@@ -21,7 +21,15 @@ const Form = ({ maxTabsCount }) => {
     ignoreQueryPrefix: true,
   })?.problem;
 
+  // Клиент перешёл из исследовательской анкеты в заявку
+  const next = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.next;
+
+  const isNext = next == 1;
+
   const form = useSelector((state) => state.form);
+  const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
   const checkedAnxieties = useSelector((state) => state.form.anxieties);
   const questionToPsycologist = useSelector(
     (state) => state.form.questionToPsycologist
@@ -72,23 +80,27 @@ const Form = ({ maxTabsCount }) => {
     if (
       tabIndex == 0 &&
       checkedAnxieties.length == 0 &&
-      problemFromQuery === undefined
+      problemFromQuery === undefined &&
+      !isNext
     ) {
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
       }, 3000);
     } else if (
-      tabIndex == 1 &&
-      questionToPsycologist.length == "" &&
-      problemFromQuery === undefined
+      (tabIndex == 1 &&
+        questionToPsycologist.length == "" &&
+        problemFromQuery === undefined) ||
+      (isNext && tabIndex == 0 && questionToPsycologist.length == "")
     ) {
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
       }, 3000);
     } else if (
-      (tabIndex == 2 || (problemFromQuery !== undefined && tabIndex == 0)) &&
+      (tabIndex == 2 ||
+        (problemFromQuery !== undefined && tabIndex == 0) ||
+        (isNext && tabIndex == 1)) &&
       lastExperience == ""
     ) {
       setShowError(true);
@@ -96,7 +108,9 @@ const Form = ({ maxTabsCount }) => {
         setShowError(false);
       }, 3000);
     } else if (
-      (tabIndex == 3 || (problemFromQuery !== undefined && tabIndex == 1)) &&
+      (tabIndex == 3 ||
+        (problemFromQuery !== undefined && tabIndex == 1) ||
+        (isNext && tabIndex == 2)) &&
       amountExpectations == ""
     ) {
       setShowError(true);
@@ -105,6 +119,7 @@ const Form = ({ maxTabsCount }) => {
       }, 3000);
     } else if (
       (tabIndex == 5 || (problemFromQuery !== undefined && tabIndex == 3)) &&
+      !isNext &&
       age == ""
     ) {
       setShowError(true);
@@ -112,7 +127,9 @@ const Form = ({ maxTabsCount }) => {
         setShowError(false);
       }, 3000);
     } else if (
-      (tabIndex == 6 || (problemFromQuery !== undefined && tabIndex == 4)) &&
+      (tabIndex == 6 ||
+        (problemFromQuery !== undefined && tabIndex == 4) ||
+        (isNext && tabIndex == 4)) &&
       slots.length == 0
     ) {
       setShowError(true);
@@ -120,7 +137,9 @@ const Form = ({ maxTabsCount }) => {
         setShowError(false);
       }, 3000);
     } else if (
-      (tabIndex == 7 || (problemFromQuery !== undefined && tabIndex == 5)) &&
+      (tabIndex == 7 ||
+        (problemFromQuery !== undefined && tabIndex == 5) ||
+        (isNext && tabIndex == 5)) &&
       (contactType == "" || contact == "")
     ) {
       setShowError(true);
@@ -170,7 +189,8 @@ const Form = ({ maxTabsCount }) => {
 
     if (
       (activeTabIndex == 7 ||
-        (problemFromQuery !== undefined && activeTabIndex == 5)) &&
+        (problemFromQuery !== undefined && activeTabIndex == 5) ||
+        (isNext && activeTabIndex == 5)) &&
       (contactType == "" || contact == "")
     ) {
       setShowError(true);
@@ -192,6 +212,9 @@ const Form = ({ maxTabsCount }) => {
       if (problemFromQuery) {
         data["anxieties"] = [problemFromQuery];
       }
+      if (isNext) {
+        data = { ...data, formPsyClientInfo };
+      }
       dispatch(setStatus("sending"));
       axios({
         method: "POST",
@@ -210,6 +233,33 @@ const Form = ({ maxTabsCount }) => {
         .catch((e) => {
           dispatch(setStatus("error"));
         });
+
+      if (isNext) {
+        let data = {
+          ...formPsyClientInfo,
+          utm_client,
+          utm_tarif,
+          utm_campaign,
+          utm_content,
+          utm_medium,
+          utm_source,
+          utm_term,
+          utm_psy,
+        };
+
+        console.log("test", data, isNext);
+        axios({
+          method: "POST",
+          data: data,
+          url: "https://n8n.hrani.live/webhook/research-tilda-zayavka",
+        })
+          .then(() => {
+            dispatch(setStatus("ok"));
+          })
+          .catch((e) => {
+            dispatch(setStatus("error"));
+          });
+      }
     }
   }
   return (
@@ -231,7 +281,8 @@ const Form = ({ maxTabsCount }) => {
           }`}
         >
           {activeTabIndex == 6 ||
-          (problemFromQuery !== undefined && activeTabIndex == 4)
+          (problemFromQuery !== undefined && activeTabIndex == 4) ||
+          (isNext && activeTabIndex == 4)
             ? "Вы не выбрали время"
             : "Вы не заполнили обязательное поле"}
         </div>
@@ -239,7 +290,7 @@ const Form = ({ maxTabsCount }) => {
 
         <div className="relative h-full overflow-y-scroll flex flex-col ">
           {/* Здесь размещаются вкладки */}
-          {problemFromQuery === undefined && (
+          {problemFromQuery === undefined && !isNext && (
             <>
               {activeTabIndex == 0 && <WelcomePage></WelcomePage>}
               {activeTabIndex == 1 && (
@@ -254,12 +305,26 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 8 && <Name></Name>}
             </>
           )}
-          {problemFromQuery !== undefined && (
+          {problemFromQuery !== undefined && !isNext && (
             <>
               {activeTabIndex == 0 && <LastExperience></LastExperience>}
               {activeTabIndex == 1 && <AmountExpectations></AmountExpectations>}
               {activeTabIndex == 2 && <Promocode></Promocode>}
               {activeTabIndex == 3 && <Age></Age>}
+              {activeTabIndex == 4 && <Slots></Slots>}
+              {activeTabIndex == 5 && <AskContacts></AskContacts>}
+              {activeTabIndex == 6 && <Name></Name>}
+            </>
+          )}
+
+          {isNext && problemFromQuery == undefined && (
+            <>
+              {activeTabIndex == 0 && (
+                <QuestionToPsycologist></QuestionToPsycologist>
+              )}
+              {activeTabIndex == 1 && <LastExperience></LastExperience>}
+              {activeTabIndex == 2 && <AmountExpectations></AmountExpectations>}
+              {activeTabIndex == 3 && <Promocode></Promocode>}
               {activeTabIndex == 4 && <Slots></Slots>}
               {activeTabIndex == 5 && <AskContacts></AskContacts>}
               {activeTabIndex == 6 && <Name></Name>}

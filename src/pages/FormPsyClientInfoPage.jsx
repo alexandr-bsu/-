@@ -93,17 +93,29 @@ const FormPsyClientInfoPage = () => {
       });
   }
 
+  // Рассчёт последней страницы формы
+  function getLastPage() {
+    if (
+      form.hasPsychoExperience ==
+      "Да, я работал(а) с психологом/психотерапевтом"
+    ) {
+      if (form.is_adult) {
+        return 16;
+      } else {
+        return 15;
+      }
+    } else {
+      if (form.is_adult) {
+        return 13;
+      }
+      return 12;
+    }
+  }
+
   return (
     <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden">
       {status == "active" && (
-        <FormPsyClientInfo
-          maxTabsCount={
-            form.hasPsychoExperience ==
-            "Да, я работал(а) с психологом/психотерапевтом"
-              ? 16
-              : 13
-          }
-        ></FormPsyClientInfo>
+        <FormPsyClientInfo maxTabsCount={getLastPage()}></FormPsyClientInfo>
       )}
       {status != "active" && (
         <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden p-5">
@@ -190,20 +202,23 @@ const FormPsyClientInfoPage = () => {
               {status == "ok" && (
                 <div className="flex flex-col justify-center items-center">
                   <Lottie options={okLottieOptions} height={200} width={200} />
+
                   <h2 className="font-medium text-center text-green text-3xl">
-                    Cпасибо!
+                    Спасибо за заполнение анкеты!
                   </h2>
+
                   <p className="text-black text-base font-medium text-center p-5">
-                    Если вы оставили свой контакт в анкете, то мы напишем вам в
-                    ближайшее время! По всем вопросам вам может помочь
-                    администратор сообщества -{" "}
-                    <a
-                      href="hranitel_liniza"
-                      className="text-green text-underline font-medium"
-                    >
-                      Линиза ( Telegram )
-                    </a>
+                    Вы можете подписаться на наш канал в Telegram, в котором мы
+                    анализируем ваши сны, работаем с МАК-картами, отвечаем на
+                    вопросы — помогаем исследовать себя. Также вы можете задать
+                    в нём анонимный вопрос психологу.
                   </p>
+                  <a
+                    href="https://t.me/hrani_live"
+                    className="rounded-[30px] font-medium text-regular flex gap-2 items-center justify-center bg-green text-white border border-green hover:bg-cream hover:text-green hover:border-cream px-5 py-3"
+                  >
+                    Перейти в канал Хранителей
+                  </a>
                 </div>
               )}
 

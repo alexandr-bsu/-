@@ -13,6 +13,7 @@ import QueryString from "qs";
 const FormPage = () => {
   const status = useSelector((state) => state.formStatus.status);
   const form = useSelector((state) => state.form);
+  const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
   const ticket_id = useSelector((state) => state.form.ticket_id);
   const dispatch = useDispatch();
 
@@ -40,6 +41,13 @@ const FormPage = () => {
   const problemFromQuery = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
   })?.problem;
+
+  // Перешёл клиент из исследовательской анкеты
+  const next = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.next;
+
+  const isNext = next == 1;
 
   // Повторная отправка формы
   function sendData() {
@@ -95,6 +103,10 @@ const FormPage = () => {
       data["anxieties"] = [problemFromQuery];
     }
 
+    if (isNext) {
+      data = { ...data, formPsyClientInfo };
+    }
+
     axios({
       method: "POST",
       data: data,
@@ -106,12 +118,39 @@ const FormPage = () => {
       .catch((e) => {
         dispatch(setStatus("error"));
       });
+
+    if (isNext) {
+      let data = {
+        ...formPsyClientInfo,
+        utm_client,
+        utm_tarif,
+        utm_campaign,
+        utm_content,
+        utm_medium,
+        utm_source,
+        utm_term,
+        utm_psy,
+      };
+
+      console.log("test", data, isNext);
+      axios({
+        method: "POST",
+        data: data,
+        url: "https://n8n.hrani.live/webhook/research-tilda-zayavka",
+      })
+        .then(() => {
+          dispatch(setStatus("ok"));
+        })
+        .catch((e) => {
+          dispatch(setStatus("error"));
+        });
+    }
   }
 
   return (
     <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden">
       {status == "active" && (
-        <Form maxTabsCount={problemFromQuery ? 7 : 9}></Form>
+        <Form maxTabsCount={problemFromQuery || next == 1 ? 7 : 9}></Form>
       )}
       {status != "active" && (
         <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden p-5">
@@ -202,8 +241,8 @@ const FormPage = () => {
                     Cпасибо!
                   </h2>
                   <p className="text-black text-base font-medium text-center p-5">
-                    Мы получили ваш запрос и сейчас подбираем специалиста из
-                    сообщества психологов Хранители. <br /> Для получения
+                    Мы получили ваш запрос и сейчас психолог из нашего
+                    сообщества подтверждает время. <br /> Для получения
                     уведомления о записи на сессию перейдите в телеграм-бота.
                   </p>
 
@@ -214,6 +253,8 @@ const FormPage = () => {
                   </a>
                 </div>
               )}
+
+              {/* Дописать что "Расписание психологов подобранных на основании вашего запроса" */}
 
               {status == "error" && (
                 <div className="flex flex-col justify-center items-center">

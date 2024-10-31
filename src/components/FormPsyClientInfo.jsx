@@ -30,6 +30,7 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
   const isHasPsychoExperience =
     form.hasPsychoExperience == "Да, я работал(а) с психологом/психотерапевтом";
   const age = form.age;
+  const is_adult = form.is_adult;
   const city = form.city;
   const sex = form.sex;
   const psychoEducated = form.psychoEducated;
@@ -52,6 +53,7 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
   const name = form.name;
   const checkedAnxieties = form.anxieties;
   const customAnexiety = form.customAnexiety;
+  const is_last_page = form.is_last_page;
 
   const [showError, setShowError] = useState(false);
 
@@ -181,7 +183,7 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
     }
   }
 
-  function sendData() {
+  function _sendData() {
     // Парсим utm метки
     const utm_client = QueryString.parse(window.location.search, {
       ignoreQueryPrefix: true,
@@ -214,7 +216,6 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
     const utm_psy = QueryString.parse(window.location.search, {
       ignoreQueryPrefix: true,
     })?.utm_psy;
-
     let data = {
       ...form,
       utm_client,
@@ -241,6 +242,26 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
       .catch((e) => {
         dispatch(setStatus("error"));
       });
+  }
+
+  function sendData() {
+    if (activeTabIndex == 14 && reasonCancel == "" && isHasPsychoExperience) {
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
+    } else if (
+      activeTabIndex == 11 &&
+      reasonNonApplication == "" &&
+      !isHasPsychoExperience
+    ) {
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
+    } else {
+      _sendData();
+    }
   }
 
   return (
@@ -282,11 +303,15 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
             <ReasonNonApplication />
           )}
           {isHasPsychoExperience && activeTabIndex == 11 && <SexPsycho />}
-          {!isHasPsychoExperience && activeTabIndex == 12 && <AskContacts />}
+          {!isHasPsychoExperience && activeTabIndex == 12 && (
+            <AskContacts sendFn={_sendData} />
+          )}
           {isHasPsychoExperience && activeTabIndex == 12 && <SessionPrice />}
           {isHasPsychoExperience && activeTabIndex == 13 && <TherapyDuring />}
           {isHasPsychoExperience && activeTabIndex == 14 && <ReasonCancel />}
-          {isHasPsychoExperience && activeTabIndex == 15 && <AskContacts />}
+          {isHasPsychoExperience && activeTabIndex == 15 && (
+            <AskContacts sendFn={_sendData} />
+          )}
         </div>
 
         {/* Control buttons  */}
@@ -325,7 +350,9 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
             ""
           )}
 
-          {activeTabIndex == maxTabsCount - 1 ? (
+          {activeTabIndex == maxTabsCount - 1 &&
+          ((!isHasPsychoExperience && activeTabIndex != 12) ||
+            (isHasPsychoExperience && activeTabIndex != 15)) ? (
             <Button
               size="small"
               intent="cream"

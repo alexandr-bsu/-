@@ -8,8 +8,19 @@ import { startOfWeek, endOfWeek } from "date-fns";
 import Button from "./Button";
 import Lottie from "react-lottie";
 import errorLottie from "../assets/lotties/error";
-
+import QueryString from "qs";
+import { useSelector, useDispatch } from "react-redux";
+import { Info } from "lucide-react";
 const Slots = () => {
+  // Клиент перешёл из исследовательской анкеты в заявку
+  const next = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.next;
+
+  const isNext = next == 1;
+  const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
+  const age = formPsyClientInfo.age;
+
   const errorLottieOptions = {
     loop: false,
     autoplay: true,
@@ -79,8 +90,13 @@ const Slots = () => {
 
     axios({
       method: "GET",
-      params: { startDate, endDate },
-      url: "https://n8n.hrani.live/webhook/aggregated-schedule",
+      params: {
+        startDate,
+        endDate,
+        ageFilter: isNext && !isNaN(age) ? age : undefined,
+      },
+
+      url: `https://n8n.hrani.live/webhook/aggregated-schedule`,
     })
       .then((resp) => {
         setGroupsOfSlots(resp.data[0].items);
@@ -99,14 +115,11 @@ const Slots = () => {
   return (
     <div className="flex grow flex-col">
       <div className="sticky top-0">
-        {/* Контейнер для переключателей недель */}
-        {/* <WeekToogleContainer
-          dates={dates}
-          selectFn={selectFn}
-        ></WeekToogleContainer> */}
         <div
           data-name="question-block"
-          className="bg-white px-5 border-gray border-b z-10 w-full py-4 mb-4"
+          className={`bg-white px-5 ${
+            !isNext ? " border-gray border-b" : ""
+          } z-10 w-full py-4 `}
         >
           <div className="flex flex-col">
             <h3 className="font-medium text-base text-dark-green">
@@ -117,6 +130,15 @@ const Slots = () => {
             </p>
           </div>
         </div>
+        {isNext && !isNaN(age) && (
+          <div className="w-full flex justify-center items-center gap-2 py-2 font-medium text-base text-dark-green bg-[#d5e2e2]">
+            <Info size={18} />
+            {/* Расписание психологов подобранных на основании вашего запроса
+             */}
+            На основании вашего запроса мы подобрали для вас психологов.
+            Выберите подходящее время сессии.
+          </div>
+        )}
       </div>
       {/* Индикатор загрузки */}
       {slotStatus == "loading" && (

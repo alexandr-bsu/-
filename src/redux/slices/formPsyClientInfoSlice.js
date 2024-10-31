@@ -24,6 +24,8 @@ const initialState = {
   contactType: "",
   contact: "",
   name: "",
+  is_adult: false,
+  is_last_page: false,
 };
 
 export const formPsyClientInfoSlice = createSlice({
@@ -43,6 +45,11 @@ export const formPsyClientInfoSlice = createSlice({
 
     setAge: (state, age) => {
       state.age = age.payload;
+      if (Number(age.payload) >= 18 || isNaN(Number(age.payload))) {
+        state.is_adult = true;
+      } else {
+        state.is_adult = false;
+      }
     },
 
     setAgePsycho: (state, age) => {

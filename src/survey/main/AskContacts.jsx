@@ -10,7 +10,7 @@ const AmountExpectations = () => {
   const contact = useSelector((state) => state.form.contact);
   const dispatch = useDispatch();
 
-  const contactList = ["Телефон", "Whatsapp", "Telegram", "VK"];
+  const contactList = ["Whatsapp", "Telegram"];
 
   return (
     <div className="flex flex-col grow pb-6">
