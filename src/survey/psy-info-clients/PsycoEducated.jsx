@@ -24,7 +24,9 @@ const PsycoEducated = () => {
         className="bg-white px-5 border-gray border-b z-10 sticky top-0 w-full py-4 mb-4"
       >
         <div className="flex flex-col">
-          <h3 className="font-medium text-lg text-dark-green">Ваш пол</h3>
+          <h3 className="font-medium text-lg text-dark-green">
+            Есть ли у вас психологическое образование?
+          </h3>
           <p className="text-gray-disabled text-base">
             Выберите один вариант ответа
           </p>
