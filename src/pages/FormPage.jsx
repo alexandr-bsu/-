@@ -246,7 +246,10 @@ const FormPage = () => {
                     уведомления о записи на сессию перейдите в телеграм-бота.
                   </p>
 
-                  <a href={`https://t.me/HraniLiveBot?start=${ticket_id}`}>
+                  <a
+                    href={`https://t.me/HraniLiveBot?start=${ticket_id}`}
+                    target="_top"
+                  >
                     <Button intent="cream" hover="primary">
                       Перейти в телеграм-бот
                     </Button>
