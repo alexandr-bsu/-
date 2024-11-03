@@ -98,10 +98,9 @@ const Form = ({ maxTabsCount }) => {
         setShowError(false);
       }, 3000);
     } else if (
-      (tabIndex == 2 ||
-        (problemFromQuery !== undefined && tabIndex == 0) ||
-        (isNext && tabIndex == 1)) &&
-      lastExperience == ""
+      (tabIndex == 2 || (problemFromQuery !== undefined && tabIndex == 0)) &&
+      lastExperience == "" &&
+      !isNext
     ) {
       setShowError(true);
       setTimeout(() => {
@@ -110,7 +109,7 @@ const Form = ({ maxTabsCount }) => {
     } else if (
       (tabIndex == 3 ||
         (problemFromQuery !== undefined && tabIndex == 1) ||
-        (isNext && tabIndex == 2)) &&
+        (isNext && tabIndex == 1)) &&
       amountExpectations == ""
     ) {
       setShowError(true);
@@ -129,7 +128,7 @@ const Form = ({ maxTabsCount }) => {
     } else if (
       (tabIndex == 6 ||
         (problemFromQuery !== undefined && tabIndex == 4) ||
-        (isNext && tabIndex == 4)) &&
+        (isNext && tabIndex == 2)) &&
       slots.length == 0
     ) {
       setShowError(true);
@@ -139,7 +138,7 @@ const Form = ({ maxTabsCount }) => {
     } else if (
       (tabIndex == 7 ||
         (problemFromQuery !== undefined && tabIndex == 5) ||
-        (isNext && tabIndex == 5)) &&
+        (isNext && tabIndex == 3)) &&
       (contactType == "" || contact == "")
     ) {
       setShowError(true);
@@ -190,7 +189,7 @@ const Form = ({ maxTabsCount }) => {
     if (
       (activeTabIndex == 7 ||
         (problemFromQuery !== undefined && activeTabIndex == 5) ||
-        (isNext && activeTabIndex == 5)) &&
+        (isNext && activeTabIndex == 3)) &&
       (contactType == "" || contact == "")
     ) {
       setShowError(true);
@@ -213,6 +212,23 @@ const Form = ({ maxTabsCount }) => {
         data["anxieties"] = [problemFromQuery];
       }
       if (isNext) {
+        console.log(
+          "psy",
+          formPsyClientInfo.hasPsychoExperience,
+          formPsyClientInfo.durationSession
+        );
+        if (
+          formPsyClientInfo.hasPsychoExperience ==
+          "Нет, но рассматривал(а) такую возможность"
+        ) {
+          data["lastExperience"] = "Нет, это первый опыт";
+        } else {
+          data["lastExperience"] =
+            "Да, было.  " + formPsyClientInfo.durationSession;
+        }
+
+        data["promocode"] = "Клиент перешёл из исследовательской анкеты";
+
         data = { ...data, formPsyClientInfo };
       }
       dispatch(setStatus("sending"));
@@ -282,7 +298,7 @@ const Form = ({ maxTabsCount }) => {
         >
           {activeTabIndex == 6 ||
           (problemFromQuery !== undefined && activeTabIndex == 4) ||
-          (isNext && activeTabIndex == 4)
+          (isNext && activeTabIndex == 2)
             ? "Вы не выбрали время"
             : "Вы не заполнили обязательное поле"}
         </div>
@@ -322,12 +338,10 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 0 && (
                 <QuestionToPsycologist></QuestionToPsycologist>
               )}
-              {activeTabIndex == 1 && <LastExperience></LastExperience>}
-              {activeTabIndex == 2 && <AmountExpectations></AmountExpectations>}
-              {activeTabIndex == 3 && <Promocode></Promocode>}
-              {activeTabIndex == 4 && <Slots></Slots>}
-              {activeTabIndex == 5 && <AskContacts></AskContacts>}
-              {activeTabIndex == 6 && <Name></Name>}
+              {activeTabIndex == 1 && <AmountExpectations></AmountExpectations>}
+              {activeTabIndex == 2 && <Slots></Slots>}
+              {activeTabIndex == 3 && <AskContacts></AskContacts>}
+              {activeTabIndex == 4 && <Name></Name>}
             </>
           )}
         </div>

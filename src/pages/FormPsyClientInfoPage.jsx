@@ -215,6 +215,7 @@ const FormPsyClientInfoPage = () => {
                   </p>
                   <a
                     href="https://t.me/hrani_live"
+                    target="_top"
                     className="rounded-[30px] font-medium text-regular flex gap-2 items-center justify-center bg-green text-white border border-green hover:bg-cream hover:text-green hover:border-cream px-5 py-3"
                   >
                     Перейти в канал Хранителей

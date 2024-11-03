@@ -150,7 +150,7 @@ const FormPage = () => {
   return (
     <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden">
       {status == "active" && (
-        <Form maxTabsCount={problemFromQuery || next == 1 ? 7 : 9}></Form>
+        <Form maxTabsCount={problemFromQuery ? 7 : next == 1 ? 5 : 9}></Form>
       )}
       {status != "active" && (
         <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden p-5">

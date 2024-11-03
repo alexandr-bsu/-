@@ -35,7 +35,13 @@ const DateGroup = ({ group }) => {
   }
 
   // Получаем текущую дату
-  let currDate = new Date().toISOString().split("T")[0];
+  // let currDate = new Date().toISOString().split("T")[0];
+  let currDate = new Date().toLocaleString("ru-RU", {
+    timeZone: "Europe/Moscow",
+  });
+
+  currDate = currDate.split(", ")[0].split(".");
+  currDate = currDate[2] + "-" + currDate[1] + "-" + currDate[0];
 
   // Даты начала и конца следующей недели
   let next_date = new Date();
@@ -76,7 +82,6 @@ const DateGroup = ({ group }) => {
     return new Date(date + "T" + time + ":00").toISOString();
   };
 
-  console.log("dates", getDatesBetween(currDate, nextWeekBorders.sunday));
   return (
     <>
       {getDatesBetween(currDate, nextWeekBorders.sunday).includes(group.date) &&
