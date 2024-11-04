@@ -6,6 +6,9 @@ import Radio from "../../components/Radio";
 
 const MeetType = () => {
   const meetType = useSelector((state) => state.formPsyClientInfo.meetType);
+  const hasPsychoExperience = useSelector(
+    (state) => state.formPsyClientInfo.hasPsychoExperience
+  );
   const dispatch = useDispatch();
 
   const meetTypeList = ["Онлайн", "Оффлайн", "И так и так"];
@@ -18,7 +21,10 @@ const MeetType = () => {
       >
         <div className="flex flex-col">
           <h3 className="font-medium text-lg text-dark-green">
-            Вы рассматривали возможность работы с психологом онлайн или оффлайн?
+            {hasPsychoExperience ==
+            "Да, я работал(а) с психологом/психотерапевтом"
+              ? "Это были оффлайн или онлайн встречи?"
+              : "Вы рассматривали возможность работы с психологом онлайн или оффлайн?"}
           </h3>
           <p className="text-gray-disabled text-base">
             Выберите один вариант ответа

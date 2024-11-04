@@ -46,7 +46,8 @@ const Anexietys = () => {
         >
           <div className="flex flex-col">
             <h3 className="font-medium text-lg text-dark-green">
-              Что вас беспокоит?
+              С какими из этих проблем вы сталкивались? Отметьте по возможности
+              все подходящие
             </h3>
             <p className="text-gray-disabled text-base">
               Выберите один или несколько вариантов ответа

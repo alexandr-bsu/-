@@ -15,7 +15,9 @@ const City = () => {
         className="bg-white px-5 border-gray border-b z-10 sticky top-0 w-full py-4 mb-4"
       >
         <div className="flex flex-col">
-          <h3 className="font-medium text-lg text-dark-green">Ваш город</h3>
+          <h3 className="font-medium text-lg text-dark-green">
+            Из какого вы города?
+          </h3>
         </div>
       </div>
 
