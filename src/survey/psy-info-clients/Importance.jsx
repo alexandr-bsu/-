@@ -38,7 +38,7 @@ const Importance = () => {
         >
           <div className="flex flex-col">
             <h3 className="font-medium text-lg text-dark-green">
-              Что вам было важно в психологе? Отметьте все подходящие варианты?
+              Что вам было важно в психологе? Отметьте все подходящие варианты
             </h3>
             <p className="text-gray-disabled text-base">
               Выберите один или несколько вариантов ответа

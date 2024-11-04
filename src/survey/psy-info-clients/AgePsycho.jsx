@@ -24,7 +24,7 @@ const AgePsycho = () => {
       >
         <div className="flex flex-col">
           <h3 className="font-medium text-lg text-dark-green">
-            Какие предпочтения у вас относительно возраста психолога?
+            Какие предпочтения у вас были относительно возраста психолога?
           </h3>
           <p className="text-gray-disabled text-base">
             Выберите один вариант ответа
