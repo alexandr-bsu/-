@@ -20,8 +20,7 @@ const hasDiagnsose = () => {
       >
         <div className="flex flex-col">
           <h3 className="font-medium text-lg text-dark-green">
-            Было ли диагностировано ли у вас какое-то психологическое
-            заболевание?
+            Было ли диагностировано у вас какое-то психологическое заболевание?
           </h3>
           <p className="text-gray-disabled text-base">
             Выберите один вариант ответа
