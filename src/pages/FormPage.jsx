@@ -47,6 +47,14 @@ const FormPage = () => {
     ignoreQueryPrefix: true,
   })?.next;
 
+  const rid = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.rid;
+
+  const bid = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.bid;
+
   const isNext = next == 1;
 
   // Повторная отправка формы
@@ -85,7 +93,6 @@ const FormPage = () => {
     })?.utm_psy;
 
     dispatch(setStatus("sending"));
-    let timer = setTimeout(() => dispatch(setStatus("error")), 10000);
 
     let data = {
       ...form,
@@ -114,37 +121,22 @@ const FormPage = () => {
     })
       .then(() => {
         dispatch(setStatus("ok"));
+        if (rid && bid) {
+          axios({
+            method: "PUT",
+            data: {
+              rid,
+              bid,
+              contactType: form.contactType,
+              contact: form.contact,
+            },
+            url: "https://n8n.hrani.live/webhook/update-contacts-stb",
+          });
+        }
       })
       .catch((e) => {
         dispatch(setStatus("error"));
       });
-
-    if (isNext) {
-      let data = {
-        ...formPsyClientInfo,
-        utm_client,
-        utm_tarif,
-        utm_campaign,
-        utm_content,
-        utm_medium,
-        utm_source,
-        utm_term,
-        utm_psy,
-      };
-
-      console.log("test", data, isNext);
-      axios({
-        method: "POST",
-        data: data,
-        url: "https://n8n.hrani.live/webhook/research-tilda-zayavka",
-      })
-        .then(() => {
-          dispatch(setStatus("ok"));
-        })
-        .catch((e) => {
-          dispatch(setStatus("error"));
-        });
-    }
   }
 
   return (

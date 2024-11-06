@@ -12,6 +12,8 @@ import QueryString from "qs";
 const FormPsyClientInfoPage = () => {
   const status = useSelector((state) => state.formStatus.status);
   const form = useSelector((state) => state.formPsyClientInfo);
+  const anxieties = useSelector((state) => state.form.anxieties);
+
   const dispatch = useDispatch();
   const okLottieOptions = {
     loop: false,
@@ -30,6 +32,15 @@ const FormPsyClientInfoPage = () => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
+
+  function getRowId() {
+    axios
+      .get("https://n8n.hrani.live/webhook/get-sheets-row-number")
+      .then((response) => {
+        setRowId(response.data.rowId);
+        setBaserowId(response.data.baserowId);
+      });
+  }
 
   // Повторная отправка формы
   function sendData() {
@@ -66,6 +77,10 @@ const FormPsyClientInfoPage = () => {
       ignoreQueryPrefix: true,
     })?.utm_psy;
 
+    const referer = QueryString.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })?.referer;
+
     dispatch(setStatus("sending"));
 
     let data = {
@@ -78,7 +93,10 @@ const FormPsyClientInfoPage = () => {
       utm_source,
       utm_term,
       utm_psy,
+      referer,
     };
+
+    data["anxieties"] = anxieties;
 
     axios({
       method: "POST",
@@ -87,6 +105,7 @@ const FormPsyClientInfoPage = () => {
     })
       .then(() => {
         dispatch(setStatus("ok"));
+        getRowId();
       })
       .catch((e) => {
         dispatch(setStatus("error"));

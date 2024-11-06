@@ -27,6 +27,7 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
   const dispatch = useDispatch();
 
   const form = useSelector((state) => state.formPsyClientInfo);
+  const formMainanxieties = useSelector((state) => state.form.anxieties);
   const isHasPsychoExperience =
     form.hasPsychoExperience == "Да, я работал(а) с психологом/психотерапевтом";
   const age = form.age;
@@ -54,7 +55,6 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
   const checkedAnxieties = form.anxieties;
   const customAnexiety = form.customAnexiety;
   const is_last_page = form.is_last_page;
-
   const [showError, setShowError] = useState(false);
 
   // Массив заголовков табов формы.
@@ -216,6 +216,11 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
     const utm_psy = QueryString.parse(window.location.search, {
       ignoreQueryPrefix: true,
     })?.utm_psy;
+
+    const referer = QueryString.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })?.referer;
+
     let data = {
       ...form,
       utm_client,
@@ -226,21 +231,37 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
       utm_source,
       utm_term,
       utm_psy,
+      referer,
     };
-    if (!isHasPsychoExperience) {
-      data["anxieties"] = [];
+
+    data["anxieties"] = formMainanxieties;
+
+    if (!is_adult) {
+      dispatch(setStatus("sending"));
     }
-    dispatch(setStatus("sending"));
+
     axios({
       method: "POST",
       data: data,
       url: "https://n8n.hrani.live/webhook/research-tilda-zayavka",
     })
       .then(() => {
-        dispatch(setStatus("ok"));
+        if (!is_adult) {
+          dispatch(setStatus("ok"));
+          getRowId();
+        }
       })
       .catch((e) => {
         dispatch(setStatus("error"));
+      });
+  }
+
+  function getRowId() {
+    axios
+      .get("https://n8n.hrani.live/webhook/get-sheets-row-number")
+      .then((response) => {
+        setRowId(response.data.rowId);
+        setBaserowId(response.data.baserowId);
       });
   }
 
@@ -304,13 +325,19 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
           )}
           {isHasPsychoExperience && activeTabIndex == 11 && <SexPsycho />}
           {!isHasPsychoExperience && activeTabIndex == 12 && (
-            <AskContacts sendFn={_sendData} />
+            <AskContacts
+              sendFn={() => _sendData()}
+              showOkFn={() => dispatch(setStatus("ok"))}
+            />
           )}
           {isHasPsychoExperience && activeTabIndex == 12 && <SessionPrice />}
           {isHasPsychoExperience && activeTabIndex == 13 && <TherapyDuring />}
           {isHasPsychoExperience && activeTabIndex == 14 && <ReasonCancel />}
           {isHasPsychoExperience && activeTabIndex == 15 && (
-            <AskContacts sendFn={_sendData} />
+            <AskContacts
+              sendFn={() => _sendData()}
+              showOkFn={() => dispatch(setStatus("ok"))}
+            />
           )}
         </div>
 

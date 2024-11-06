@@ -28,6 +28,14 @@ const Form = ({ maxTabsCount }) => {
 
   const isNext = next == 1;
 
+  const rid = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.rid;
+
+  const bid = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.bid;
+
   const form = useSelector((state) => state.form);
   const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
   const checkedAnxieties = useSelector((state) => state.form.anxieties);
@@ -210,11 +218,6 @@ const Form = ({ maxTabsCount }) => {
         data["anxieties"] = [problemFromQuery];
       }
       if (isNext) {
-        console.log(
-          "psy",
-          formPsyClientInfo.hasPsychoExperience,
-          formPsyClientInfo.durationSession
-        );
         if (
           formPsyClientInfo.hasPsychoExperience ==
           "Нет, но рассматривал(а) такую возможность"
@@ -243,37 +246,62 @@ const Form = ({ maxTabsCount }) => {
           }
 
           dispatch(setStatus("ok"));
+          if (rid && bid) {
+            axios({
+              method: "PUT",
+              data: {
+                rid,
+                bid,
+                contactType: form.contactType,
+                contact: form.contact,
+                name: form.name,
+              },
+              url: "https://n8n.hrani.live/webhook/update-contacts-stb",
+            });
+          }
         })
         .catch((e) => {
           dispatch(setStatus("error"));
         });
 
-      if (isNext) {
-        let data = {
-          ...formPsyClientInfo,
-          utm_client,
-          utm_tarif,
-          utm_campaign,
-          utm_content,
-          utm_medium,
-          utm_source,
-          utm_term,
-          utm_psy,
-        };
+      // if (isNext) {
+      //   let data = {
+      //     ...formPsyClientInfo,
+      //     utm_client,
+      //     utm_tarif,
+      //     utm_campaign,
+      //     utm_content,
+      //     utm_medium,
+      //     utm_source,
+      //     utm_term,
+      //     utm_psy,
+      //   };
 
-        console.log("test", data, isNext);
-        axios({
-          method: "POST",
-          data: data,
-          url: "https://n8n.hrani.live/webhook/research-tilda-zayavka",
-        })
-          .then(() => {
-            dispatch(setStatus("ok"));
-          })
-          .catch((e) => {
-            dispatch(setStatus("error"));
-          });
-      }
+      //   console.log("test", data, isNext);
+      //   axios({
+      //     method: "POST",
+      //     data: data,
+      //     url: "https://n8n.hrani.live/webhook/research-tilda-zayavka",
+      //   })
+      //     .then(() => {
+      //       dispatch(setStatus("ok"));
+      //       if (rid && bid) {
+      //         axios({
+      //           method: "PUT",
+      //           data: {
+      //             rid,
+      //             bid,
+      //             contactType,
+      //             contact,
+      //           },
+      //           url: "https://n8n.hrani.live/webhook-test/update-contacts-stb",
+      //         });
+      //       }
+      //     })
+      //     .catch((e) => {
+      //       dispatch(setStatus("error"));
+      //     });
+      // }
     }
   }
   return (

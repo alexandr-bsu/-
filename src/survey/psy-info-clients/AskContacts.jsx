@@ -4,8 +4,27 @@ import QueryString from "qs";
 import { Link } from "react-router-dom";
 import Lottie from "react-lottie";
 import okLottie from "../../assets/lotties/ok";
+import errorLottie from "../../assets/lotties/error";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
-const AskContacts = ({ nextBtnFn, sendFn }) => {
+const AskContacts = ({ sendFn, showOkFn }) => {
+  const form = useSelector((state) => state.formPsyClientInfo);
+  const formMainanxieties = useSelector((state) => state.form.anxieties);
+  const [rowId, setRowId] = React.useState(0);
+  const [baserowId, setBaserowId] = React.useState(0);
+  const [status, setStatus] = React.useState("sending");
+
+  const errorLottieOptions = {
+    loop: false,
+    autoplay: true,
+    animationData: errorLottie,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+
   const okLottieOptions = {
     loop: false,
     autoplay: true,
@@ -48,48 +67,182 @@ const AskContacts = ({ nextBtnFn, sendFn }) => {
     ignoreQueryPrefix: true,
   })?.utm_psy;
 
+  const referer = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.referer;
+
+  function getRowId() {
+    axios
+      .get("https://n8n.hrani.live/webhook/get-sheets-row-number")
+      .then((response) => {
+        setRowId(response.data.rowId);
+        setBaserowId(response.data.baserowId);
+      });
+  }
+
+  function _sendData() {
+    let data = {
+      ...form,
+      utm_client,
+      utm_tarif,
+      utm_campaign,
+      utm_content,
+      utm_medium,
+      utm_source,
+      utm_term,
+      utm_psy,
+      referer,
+    };
+
+    data["anxieties"] = formMainanxieties;
+    setStatus("sending");
+
+    axios({
+      method: "POST",
+      data: data,
+      url: "https://n8n.hrani.live/webhook/research-tilda-zayavka",
+    })
+      .then(() => {
+        setStatus("ok");
+        getRowId();
+      })
+      .catch((e) => {
+        setStatus("error");
+      });
+  }
+
+  useEffect(() => {
+    _sendData();
+  }, []);
+
   return (
     <>
       <div className="flex flex-col gap-10 w-full h-full justify-center items-center px-5">
-        <div className="flex flex-col justify-center items-center">
-          <Lottie options={okLottieOptions} height={200} width={200} />
-
-          <h2 className="font-medium text-center text-green text-3xl">
-            Спасибо за заполнение анкеты!
-          </h2>
-        </div>
-
-        <p className="text-black text-lg font-medium text-center max-w-[1200px]">
-          В знак благодарности мы обещали подарить вам бесплатную сессию с нашим
-          психологом. Хотели бы вы сейчас сформировать свой запрос психологу и
-          записаться на сессию ?
-        </p>
-        <div className="flex gap-4">
-          <Link
-            to={`/?utm_client=${utm_client}&utm_tarif=${utm_tarif}&utm_campaign=${utm_campaign}&utm_content=${utm_content}&utm_medium=${utm_medium}&utm_source=${utm_source}&utm_term=${utm_term}&utm_psy=${utm_psy}&next=1`}
+        {status == "sending" && (
+          <svg
+            className="justify-self-center self-center"
+            xmlns="http://www.w3.org/2000/svg"
+            width={150}
+            height={150}
+            viewBox="0 0 200 200"
           >
-            <Button
-              size="medium"
-              intent="primary"
-              hover="cream"
-              className="w-[150px]"
+            <radialGradient
+              id="a6"
+              cx=".66"
+              fx=".66"
+              cy=".3125"
+              fy=".3125"
+              gradientTransform="scale(1.5)"
             >
-              Да
-            </Button>
-          </Link>
+              <stop offset="0" stop-color="#155D5E"></stop>
+              <stop offset=".3" stop-color="#155D5E" stop-opacity=".9"></stop>
+              <stop offset=".6" stop-color="#155D5E" stop-opacity=".6"></stop>
+              <stop offset=".8" stop-color="#155D5E" stop-opacity=".3"></stop>
+              <stop offset="1" stop-color="#155D5E" stop-opacity="0"></stop>
+            </radialGradient>
+            <circle
+              transform-origin="center"
+              fill="none"
+              stroke="url(#a6)"
+              stroke-width="15"
+              stroke-linecap="round"
+              stroke-dasharray="200 1000"
+              stroke-dashoffset="0"
+              cx="100"
+              cy="100"
+              r="70"
+            >
+              <animateTransform
+                type="rotate"
+                attributeName="transform"
+                calcMode="spline"
+                dur="2"
+                values="360;0"
+                keyTimes="0;1"
+                keySplines="0 0 1 1"
+                repeatCount="indefinite"
+              ></animateTransform>
+            </circle>
+            <circle
+              transform-origin="center"
+              fill="none"
+              opacity=".2"
+              stroke="#155D5E"
+              stroke-width="15"
+              stroke-linecap="round"
+              cx="100"
+              cy="100"
+              r="70"
+            ></circle>
+          </svg>
+        )}
+        {status == "ok" && (
+          <>
+            <div className="flex flex-col justify-center items-center">
+              <Lottie options={okLottieOptions} height={200} width={200} />
 
-          <Button
-            size="medium"
-            intent="primary-transparent"
-            hover="cream"
-            className="w-[150px]"
-            onClick={() => {
-              sendFn();
-            }}
-          >
-            Нет, спасибо
-          </Button>
-        </div>
+              <h2 className="font-medium text-center text-green text-3xl">
+                Спасибо за заполнение анкеты!
+              </h2>
+            </div>
+
+            <p className="text-black text-lg font-medium text-center max-w-[1200px]">
+              В знак благодарности мы обещали подарить вам бесплатную сессию с
+              нашим психологом. Хотели бы вы сейчас сформировать свой запрос
+              психологу и записаться на сессию ?
+            </p>
+            <div className="flex gap-4">
+              <Link
+                to={`/?utm_client=${utm_client}&utm_tarif=${utm_tarif}&utm_campaign=${utm_campaign}&utm_content=${utm_content}&utm_medium=${utm_medium}&utm_source=${utm_source}&utm_term=${utm_term}&utm_psy=${utm_psy}&next=1&rid=${rowId}&bid=${baserowId}`}
+              >
+                <Button
+                  size="medium"
+                  intent="primary"
+                  hover="cream"
+                  className="w-[150px]"
+                >
+                  Да
+                </Button>
+              </Link>
+
+              <Button
+                size="medium"
+                intent="primary-transparent"
+                hover="cream"
+                className="w-[150px]"
+                onClick={() => {
+                  showOkFn();
+                }}
+              >
+                Нет, спасибо
+              </Button>
+            </div>
+          </>
+        )}
+
+        {status == "error" && (
+          <>
+            <div className="flex flex-col justify-center items-center">
+              <Lottie options={errorLottieOptions} height={200} width={200} />
+              <h2 className="font-medium text-center text-red text-xl">
+                Упс! Что-то пошло не так
+              </h2>
+              <p className="text-black font-medium text-center p-5">
+                Мы уже в курсе проблемы и работаем над её устранением.
+                Пожалуйста повторите отправку формы
+              </p>
+              <div className="p-5">
+                <Button
+                  intent="cream"
+                  hover="primary"
+                  onClick={() => _sendData()}
+                >
+                  Повторить отправку
+                </Button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </>
   );
