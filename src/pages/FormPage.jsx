@@ -47,13 +47,8 @@ const FormPage = () => {
     ignoreQueryPrefix: true,
   })?.next;
 
-  const rid = QueryString.parse(window.location.search, {
-    ignoreQueryPrefix: true,
-  })?.rid;
-
-  const bid = QueryString.parse(window.location.search, {
-    ignoreQueryPrefix: true,
-  })?.bid;
+  const rid = form.rid;
+  const bid = form.bid;
 
   const isNext = next == 1;
 
@@ -121,7 +116,7 @@ const FormPage = () => {
     })
       .then(() => {
         dispatch(setStatus("ok"));
-        if (rid && bid) {
+        if (rid && bid && rid != 0 && bid != 0) {
           axios({
             method: "PUT",
             data: {

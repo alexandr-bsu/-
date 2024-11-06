@@ -6,12 +6,16 @@ import Lottie from "react-lottie";
 import okLottie from "../../assets/lotties/ok";
 import errorLottie from "../../assets/lotties/error";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setRid, setBid } from "../../redux/slices/formSlice";
 import axios from "axios";
 
 const AskContacts = ({ sendFn, showOkFn }) => {
+  const dispatch = useDispatch();
   const form = useSelector((state) => state.formPsyClientInfo);
   const formMainanxieties = useSelector((state) => state.form.anxieties);
+  const rid = useSelector((state) => state.form.rid);
+  const bid = useSelector((state) => state.form.bid);
   const [rowId, setRowId] = React.useState(0);
   const [baserowId, setBaserowId] = React.useState(0);
   const [status, setStatus] = React.useState("sending");
@@ -75,8 +79,8 @@ const AskContacts = ({ sendFn, showOkFn }) => {
     axios
       .get("https://n8n.hrani.live/webhook/get-sheets-row-number")
       .then((response) => {
-        setRowId(response.data.rowId);
-        setBaserowId(response.data.baserowId);
+        dispatch(setRid(response.data.rowId));
+        dispatch(setBid(response.data.baserowId));
       });
   }
 
@@ -193,7 +197,7 @@ const AskContacts = ({ sendFn, showOkFn }) => {
             </p>
             <div className="flex gap-4">
               <Link
-                to={`/?utm_client=${utm_client}&utm_tarif=${utm_tarif}&utm_campaign=${utm_campaign}&utm_content=${utm_content}&utm_medium=${utm_medium}&utm_source=${utm_source}&utm_term=${utm_term}&utm_psy=${utm_psy}&next=1&rid=${rowId}&bid=${baserowId}`}
+                to={`/?utm_client=${utm_client}&utm_tarif=${utm_tarif}&utm_campaign=${utm_campaign}&utm_content=${utm_content}&utm_medium=${utm_medium}&utm_source=${utm_source}&utm_term=${utm_term}&utm_psy=${utm_psy}&next=1`}
               >
                 <Button
                   size="medium"

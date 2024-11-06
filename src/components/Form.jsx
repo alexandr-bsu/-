@@ -28,15 +28,16 @@ const Form = ({ maxTabsCount }) => {
 
   const isNext = next == 1;
 
-  const rid = QueryString.parse(window.location.search, {
-    ignoreQueryPrefix: true,
-  })?.rid;
+  // const rid = QueryString.parse(window.location.search, {
+  //   ignoreQueryPrefix: true,
+  // })?.rid;
 
-  const bid = QueryString.parse(window.location.search, {
-    ignoreQueryPrefix: true,
-  })?.bid;
-
+  // const bid = QueryString.parse(window.location.search, {
+  //   ignoreQueryPrefix: true,
+  // })?.bid;
   const form = useSelector((state) => state.form);
+  const bid = form.bid;
+  const rid = form.rid;
   const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
   const checkedAnxieties = useSelector((state) => state.form.anxieties);
   const questionToPsycologist = useSelector(
@@ -246,7 +247,7 @@ const Form = ({ maxTabsCount }) => {
           }
 
           dispatch(setStatus("ok"));
-          if (rid && bid) {
+          if (rid && bid && rid != 0 && bid != 0) {
             axios({
               method: "PUT",
               data: {

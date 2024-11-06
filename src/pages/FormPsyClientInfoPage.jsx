@@ -6,6 +6,7 @@ import errorLottie from "../assets/lotties/error";
 import Button from "../components/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { setStatus } from "../redux/slices/formStatusSlice";
+import { setRid, setBid } from "../redux/slices/formSlice";
 import axios from "axios";
 import QueryString from "qs";
 
@@ -37,8 +38,8 @@ const FormPsyClientInfoPage = () => {
     axios
       .get("https://n8n.hrani.live/webhook/get-sheets-row-number")
       .then((response) => {
-        setRowId(response.data.rowId);
-        setBaserowId(response.data.baserowId);
+        dispatch(setRid(response.data.rowId));
+        dispatch(setBid(response.data.baserowId));
       });
   }
 

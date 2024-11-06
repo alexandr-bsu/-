@@ -5,6 +5,7 @@ import { useState } from "react";
 import QueryString from "qs";
 import { useSelector, useDispatch } from "react-redux";
 import { setStatus } from "../redux/slices/formStatusSlice";
+import { setRid, setBid } from "../redux/slices/formSlice";
 import Age from "../survey/psy-info-clients/Age";
 import City from "../survey/psy-info-clients/City";
 import Sex from "../survey/psy-info-clients/Sex";
@@ -182,7 +183,14 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
       setShowError(false);
     }
   }
-
+  function getRowId() {
+    axios
+      .get("https://n8n.hrani.live/webhook/get-sheets-row-number")
+      .then((response) => {
+        dispatch(setRid(response.data.rowId));
+        dispatch(setBid(response.data.baserowId));
+      });
+  }
   function _sendData() {
     // Парсим utm метки
     const utm_client = QueryString.parse(window.location.search, {
@@ -253,15 +261,6 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
       })
       .catch((e) => {
         dispatch(setStatus("error"));
-      });
-  }
-
-  function getRowId() {
-    axios
-      .get("https://n8n.hrani.live/webhook/get-sheets-row-number")
-      .then((response) => {
-        setRowId(response.data.rowId);
-        setBaserowId(response.data.baserowId);
       });
   }
 

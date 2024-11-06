@@ -12,6 +12,8 @@ const initialState = {
   name: "",
   promocode: "",
   ticket_id: "",
+  bid: 0,
+  rid: 0,
 };
 
 function makeid(length) {
@@ -31,6 +33,14 @@ export const formSlice = createSlice({
   name: "form",
   initialState,
   reducers: {
+    setRid: (state, rid) => {
+      state.rid = rid.payload;
+    },
+
+    setBid: (state, bid) => {
+      state.bid = bid.payload;
+    },
+
     toogleAnexieties: (state, anxiety) => {
       if (state.anxieties.includes(anxiety.payload)) {
         state.anxieties.splice(state.anxieties.indexOf(anxiety.payload), 1);
@@ -97,5 +107,7 @@ export const {
   setName,
   setPromocode,
   generateTicketId,
+  setRid,
+  setBid,
 } = formSlice.actions;
 export default formSlice.reducer;
