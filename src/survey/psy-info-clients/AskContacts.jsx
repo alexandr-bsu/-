@@ -128,7 +128,7 @@ const AskContacts = ({ sendFn, showOkFn }) => {
 
   return (
     <>
-      <div className="flex flex-col gap-10 w-full h-full justify-center items-center px-5">
+      <div className="flex flex-col gap-2 w-full h-full justify-center items-center px-5">
         {status == "sending" && (
           <svg
             className="justify-self-center self-center"
@@ -190,17 +190,16 @@ const AskContacts = ({ sendFn, showOkFn }) => {
         {status == "ok" && (
           <>
             <div className="flex flex-col justify-center items-center">
-              <Lottie options={okLottieOptions} height={200} width={200} />
+              <Lottie options={okLottieOptions} height={150} width={150} />
 
-              <h2 className="font-medium text-center text-green text-3xl">
+              <h2 className="font-medium text-center text-green text-xl">
                 Спасибо за заполнение анкеты!
               </h2>
             </div>
 
-            <p className="text-black text-lg font-medium text-center max-w-[1200px]">
-              В знак благодарности мы обещали подарить вам бесплатную сессию с
-              нашим психологом. Хотели бы вы сейчас сформировать свой запрос
-              психологу и записаться на сессию ?
+            <p className="text-black text-sm font-medium text-center max-w-[1200px]">
+              В знак благодарности мы обещали подарить бесплатную сессию. Готовы
+              сейчас подобрать психолога и выбрать время?
             </p>
             <div className="flex gap-4">
               <Link
@@ -236,7 +235,7 @@ const AskContacts = ({ sendFn, showOkFn }) => {
         {status == "error" && (
           <>
             <div className="flex flex-col justify-center items-center">
-              <Lottie options={errorLottieOptions} height={200} width={200} />
+              <Lottie options={errorLottieOptions} height={100} width={100} />
               <h2 className="font-medium text-center text-red text-xl">
                 Упс! Что-то пошло не так
               </h2>
