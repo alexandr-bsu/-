@@ -25,6 +25,7 @@ const Slots = () => {
   const isNext = next == 1;
   const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
   const age = formPsyClientInfo.age;
+  const ageMainForm = useSelector((state) => state.form.age);
 
   const errorLottieOptions = {
     loop: false,
@@ -81,6 +82,23 @@ const Slots = () => {
   // Флаг показывает загружается ли расписание или нет
   const [slotStatus, setSlotStatus] = useState("loading");
 
+  function getAgeFilter() {
+    if (isNext && !isNaN(age) && age > 0 && age < 100) {
+      return age;
+    }
+
+    if (
+      !isNext &&
+      !isNaN(ageMainForm) &&
+      ageMainForm > 0 &&
+      ageMainForm < 100
+    ) {
+      return ageMainForm;
+    }
+
+    return undefined;
+  }
+
   // Получаем группы слотов и обновляем переменную groups_of_slots
   function selectFn(date) {
     let splited_dates = date.split(":");
@@ -93,12 +111,12 @@ const Slots = () => {
       params: {
         startDate,
         endDate,
-        // ageFilter: isNext && !isNaN(age) ? age : undefined,
-        psyName: selectedPsychologistsNames,
+        ageFilter: getAgeFilter(),
+        // psyName: selectedPsychologistsNames,
       },
 
-      // url: `https://n8n.hrani.live/webhook/aggregated-schedule`,
-      url: `https://n8n.hrani.live/webhook/aggregated-schedule-by-psychologists-names`,
+      url: `https://n8n.hrani.live/webhook/aggregated-schedule`,
+      // url: `https://n8n.hrani.live/webhook/aggregated-schedule-by-psychologists-names`,
     })
       .then((resp) => {
         let filtered_groups = remove_first_n_empty_groups(resp.data[0].items);

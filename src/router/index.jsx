@@ -1,12 +1,17 @@
 import * as React from "react";
 import { createBrowserRouter } from "react-router-dom";
 import FormPage from "../pages/FormPage";
+import FormPageWithoutPsychologists from "@/pages/FormPageWithoutPsycologists";
 import FormPsyClientInfoPage from "../pages/FormPsyClientInfoPage";
 import PsycoSlotsPage from "../pages/PsycoSlotsPage";
 import SaveSlotsPage from "../pages/SaveSlotsPage";
 export const router = createBrowserRouter([
   {
     path: "/",
+    element: <FormPageWithoutPsychologists />,
+  },
+  {
+    path: "/form-with-psychologists",
     element: <FormPage />,
   },
   {

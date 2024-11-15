@@ -3,11 +3,14 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   anxieties: [],
   questionToPsycologist: "",
+  selectedPsychologistsNames: [],
+  shownPsychologists: "",
+  psychos: [],
   lastExperience: "",
   amountExpectations: "",
   age: "",
   slots: [],
-  contactType: "",
+  contactType: "Telegram",
   contact: "",
   name: "",
   promocode: "",
@@ -39,6 +42,27 @@ export const formSlice = createSlice({
 
     setBid: (state, bid) => {
       state.bid = bid.payload;
+    },
+
+    tooglePsychologists: (state, psychologistsName) => {
+      if (
+        state.selectedPsychologistsNames.includes(psychologistsName.payload)
+      ) {
+        state.selectedPsychologistsNames.splice(
+          state.selectedPsychologistsNames.indexOf(psychologistsName.payload),
+          1
+        );
+      } else {
+        state.selectedPsychologistsNames.push(psychologistsName.payload);
+      }
+    },
+
+    setPsychologists: (state, ps) => {
+      state.psychos = ps.payload;
+    },
+
+    setShownPsychologists: (state, ps) => {
+      state.shownPsychologists = ps.payload;
     },
 
     toogleAnexieties: (state, anxiety) => {
@@ -109,5 +133,8 @@ export const {
   generateTicketId,
   setRid,
   setBid,
+  tooglePsychologists,
+  setPsychologists,
+  setShownPsychologists,
 } = formSlice.actions;
 export default formSlice.reducer;

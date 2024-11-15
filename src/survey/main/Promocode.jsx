@@ -12,13 +12,13 @@ const Promocode = () => {
     <div className="flex grow flex-col pb-6">
       <div
         data-name="question-block"
-        className="bg-white px-5 border-gray border-b z-10 sticky top-0 w-full py-4 mb-4"
+        className="bg-white px-5 border-gray border-b z-10 sticky top-0 w-full py-3 mb-4"
       >
         <div className="flex flex-col">
-          <h3 className="font-medium text-lg text-dark-green">
+          <h3 className="font-medium text-base text-dark-green">
             Введите промокод или номер подарочного сертификата
           </h3>
-          <p className="text-gray-disabled text-base">
+          <p className="text-gray-disabled text-sm">
             Вы можете не указывать код, если у вас его нет
           </p>
         </div>

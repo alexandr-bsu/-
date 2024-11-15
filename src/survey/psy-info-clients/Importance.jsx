@@ -34,13 +34,13 @@ const Importance = () => {
       <div className="flex flex-col grow pb-6">
         <div
           data-name="question-block"
-          className="bg-white px-5 sticky top-0 border-gray border-b z-10 w-full py-4 mb-4"
+          className="bg-white px-5 sticky top-0 border-gray border-b z-10 w-full py-3 mb-4"
         >
           <div className="flex flex-col">
-            <h3 className="font-medium text-lg text-dark-green">
+            <h3 className="font-medium text-base text-dark-green">
               Что вам было важно в психологе? Отметьте все подходящие варианты
             </h3>
-            <p className="text-gray-disabled text-base">
+            <p className="text-gray-disabled text-sm">
               Выберите один или несколько вариантов ответа
             </p>
           </div>

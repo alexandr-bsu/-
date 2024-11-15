@@ -37,8 +37,8 @@ const button = cva(
         primary: [
           "hover:bg-green",
           "hover:text-white",
-          "border",
-          "border-green",
+          "hover:border",
+          "hover:border-green",
         ],
         cream: ["hover:bg-cream", "hover:text-green", "border", "border-cream"],
         disabled: [

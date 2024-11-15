@@ -101,6 +101,7 @@ const FormPage = () => {
       utm_psy,
       ticket_id,
     };
+    delete data["psychos"];
     if (problemFromQuery) {
       data["anxieties"] = [problemFromQuery];
     }
@@ -137,11 +138,17 @@ const FormPage = () => {
   return (
     <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden">
       {status == "active" && (
-        <Form maxTabsCount={problemFromQuery ? 7 : next == 1 ? 5 : 9}></Form>
+        <>
+          <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden p-5 rounded-[30px]">
+            <Form
+              maxTabsCount={problemFromQuery ? 8 : next == 1 ? 6 : 10}
+            ></Form>
+          </div>
+        </>
       )}
       {status != "active" && (
         <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden p-5">
-          <div className=" bg-white w-full h-full rounded-lg">
+          <div className=" bg-white w-full h-full rounded-[30px]">
             <div
               data-name="result-container"
               className="flex flex-col items-center justify-center w-full h-full"

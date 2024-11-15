@@ -16,7 +16,7 @@
   /* Грид для группы слотов */
   .slot-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fit, 100px);
   }
 
   /* Грид для контейнера групп слотов */
@@ -153,5 +153,52 @@
   /* стили для радиокнопки, находящейся в состоянии disabled */
   .custom-radio:disabled + label::before {
     background-color: #a5a5a5;
+  }
+
+  /* Стили для слайдера */
+
+  .-zero-opacity-animation {
+    opacity: 0%;
+    visibility: hidden;
+  }
+
+  .-full-opacity-animation {
+    opacity: 100%;
+  }
+
+  .zero-opacity-animation {
+    transition: all 0.2s ease-in-out;
+    @apply -zero-opacity-animation;
+  }
+
+  .full-opacity-animation {
+    transition: all 0.2s ease-in-out;
+    @apply -full-opacity-animation;
+  }
+
+  .zero-opacity-animation-03 {
+    transition: all 0.3s ease-in-out;
+    @apply -zero-opacity-animation;
+  }
+
+  .full-opacity-animation-03 {
+    transition: all 0.3s ease-in-out;
+    @apply -full-opacity-animation;
+  }
+
+  /* Player styles */
+  .player {
+    aspect-ratio: unset;
+  }
+
+  video {
+    height: 395px;
+    object-fit: cover;
+  }
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
   }
 }

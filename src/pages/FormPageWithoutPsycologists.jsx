@@ -1,21 +1,26 @@
-import React from "react";
-import FormPsyClientInfo from "../components/FormPsyClientInfo";
+import React, { useEffect } from "react";
+import FormWithoutPsycologists from "../components/FormWithoutPsycologists";
 import Lottie from "react-lottie";
 import okLottie from "../assets/lotties/ok";
 import errorLottie from "../assets/lotties/error";
 import Button from "../components/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { setStatus } from "../redux/slices/formStatusSlice";
-import { setRid, setBid } from "../redux/slices/formSlice";
+import { generateTicketId } from "../redux/slices/formSlice";
 import axios from "axios";
 import QueryString from "qs";
 
-const FormPsyClientInfoPage = () => {
+const FormPage = () => {
   const status = useSelector((state) => state.formStatus.status);
-  const form = useSelector((state) => state.formPsyClientInfo);
-  const anxieties = useSelector((state) => state.form.anxieties);
-
+  const form = useSelector((state) => state.form);
+  const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
+  const ticket_id = useSelector((state) => state.form.ticket_id);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(generateTicketId());
+  }, []);
+
   const okLottieOptions = {
     loop: false,
     autoplay: true,
@@ -33,15 +38,19 @@ const FormPsyClientInfoPage = () => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
+  const problemFromQuery = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.problem;
 
-  function getRowId() {
-    axios
-      .get("https://n8n.hrani.live/webhook/get-sheets-row-number")
-      .then((response) => {
-        dispatch(setRid(response.data.rowId));
-        dispatch(setBid(response.data.baserowId));
-      });
-  }
+  // Перешёл клиент из исследовательской анкеты
+  const next = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.next;
+
+  const rid = form.rid;
+  const bid = form.bid;
+
+  const isNext = next == 1;
 
   // Повторная отправка формы
   function sendData() {
@@ -78,10 +87,6 @@ const FormPsyClientInfoPage = () => {
       ignoreQueryPrefix: true,
     })?.utm_psy;
 
-    const referer = QueryString.parse(window.location.search, {
-      ignoreQueryPrefix: true,
-    })?.referer;
-
     dispatch(setStatus("sending"));
 
     let data = {
@@ -94,50 +99,52 @@ const FormPsyClientInfoPage = () => {
       utm_source,
       utm_term,
       utm_psy,
-      referer,
+      ticket_id,
     };
+    delete data["psychos"];
+    if (problemFromQuery) {
+      data["anxieties"] = [problemFromQuery];
+    }
 
-    data["anxieties"] = anxieties;
+    if (isNext) {
+      data = { ...data, formPsyClientInfo };
+    }
 
     axios({
       method: "POST",
       data: data,
-      url: "https://n8n.hrani.live/webhook/research-tilda-zayavka",
+      url: "https://n8n.hrani.live/webhook/tilda-zayavka-test",
     })
       .then(() => {
         dispatch(setStatus("ok"));
-        getRowId();
+        if (rid && bid && rid != 0 && bid != 0) {
+          axios({
+            method: "PUT",
+            data: {
+              rid,
+              bid,
+              contactType: form.contactType,
+              contact: form.contact,
+            },
+            url: "https://n8n.hrani.live/webhook/update-contacts-stb",
+          });
+        }
       })
       .catch((e) => {
         dispatch(setStatus("error"));
       });
   }
 
-  // Рассчёт последней страницы формы
-  function getLastPage() {
-    if (
-      form.hasPsychoExperience ==
-      "Да, я работал(а) с психологом/психотерапевтом"
-    ) {
-      if (form.is_adult) {
-        return 16;
-      } else {
-        return 15;
-      }
-    } else {
-      if (form.is_adult) {
-        return 13;
-      }
-      return 12;
-    }
-  }
-
   return (
     <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden">
       {status == "active" && (
-        <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden p-5 rounded-[30px]">
-          <FormPsyClientInfo maxTabsCount={getLastPage()}></FormPsyClientInfo>
-        </div>
+        <>
+          <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden p-5 rounded-[30px]">
+            <FormWithoutPsycologists
+              maxTabsCount={problemFromQuery ? 7 : next == 1 ? 5 : 9}
+            ></FormWithoutPsycologists>
+          </div>
+        </>
       )}
       {status != "active" && (
         <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden p-5">
@@ -224,26 +231,27 @@ const FormPsyClientInfoPage = () => {
               {status == "ok" && (
                 <div className="flex flex-col justify-center items-center">
                   <Lottie options={okLottieOptions} height={200} width={200} />
-
                   <h2 className="font-medium text-center text-green text-3xl">
-                    Спасибо за заполнение анкеты!
+                    Cпасибо!
                   </h2>
-
                   <p className="text-black text-base font-medium text-center p-5">
-                    Вы можете подписаться на наш канал в Telegram, в котором мы
-                    анализируем ваши сны, работаем с МАК-картами, отвечаем на
-                    вопросы — помогаем исследовать себя. Также вы можете задать
-                    в нём анонимный вопрос психологу.
+                    Мы получили ваш запрос и сейчас психолог из нашего
+                    сообщества подтверждает время. <br /> Для получения
+                    уведомления о записи на сессию перейдите в телеграм-бота.
                   </p>
+
                   <a
-                    href="https://t.me/hrani_live"
+                    href={`https://t.me/HraniLiveBot?start=${ticket_id}`}
                     target="_top"
-                    className="rounded-[30px] font-medium text-regular flex gap-2 items-center justify-center bg-green text-white border border-green hover:bg-cream hover:text-green hover:border-cream px-5 py-3"
                   >
-                    Перейти в канал Хранителей
+                    <Button intent="cream" hover="primary">
+                      Перейти в телеграм-бот
+                    </Button>
                   </a>
                 </div>
               )}
+
+              {/* Дописать что "Расписание психологов подобранных на основании вашего запроса" */}
 
               {status == "error" && (
                 <div className="flex flex-col justify-center items-center">
@@ -278,4 +286,4 @@ const FormPsyClientInfoPage = () => {
   );
 };
 
-export default FormPsyClientInfoPage;
+export default FormPage;

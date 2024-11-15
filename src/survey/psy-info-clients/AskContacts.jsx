@@ -75,6 +75,13 @@ const AskContacts = ({ sendFn, showOkFn }) => {
     ignoreQueryPrefix: true,
   })?.referer;
 
+  // p - psychologists - если 1, то показываем страницу с психологами
+  const p = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.p;
+
+  const isP = p == 1;
+
   function getRowId() {
     axios
       .get("https://n8n.hrani.live/webhook/get-sheets-row-number")
@@ -197,7 +204,9 @@ const AskContacts = ({ sendFn, showOkFn }) => {
             </p>
             <div className="flex gap-4">
               <Link
-                to={`/?utm_client=${utm_client}&utm_tarif=${utm_tarif}&utm_campaign=${utm_campaign}&utm_content=${utm_content}&utm_medium=${utm_medium}&utm_source=${utm_source}&utm_term=${utm_term}&utm_psy=${utm_psy}&next=1`}
+                to={`${
+                  isP ? "/form-with-psychologists/" : "/"
+                }?utm_client=${utm_client}&utm_tarif=${utm_tarif}&utm_campaign=${utm_campaign}&utm_content=${utm_content}&utm_medium=${utm_medium}&utm_source=${utm_source}&utm_term=${utm_term}&utm_psy=${utm_psy}&next=1`}
               >
                 <Button
                   size="medium"

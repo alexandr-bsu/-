@@ -163,7 +163,7 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
             <p className="text-dark-green">
               <b>Клиент обращался к психологу ранее?:</b>
               <br />
-              {data["Прошлый опыт"]?.value}
+              {data["Прошлый опыт"]}
             </p>
 
             {/* <p className="text-dark-green">

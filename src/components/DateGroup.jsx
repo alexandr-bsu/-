@@ -82,64 +82,111 @@ const DateGroup = ({ group }) => {
     return new Date(date + "T" + time + ":00").toISOString();
   };
 
+  // Смотрим можем ли мы записать клиента на дату
+  const checkDayIsBusy = (group) => {
+    for (let slotTime of Object.keys(group.slots)) {
+      if (group.slots[slotTime].length != 0) {
+        return false;
+      }
+    }
+
+    for (let slotTime of Object.keys(group.slots)) {
+      if (
+        compareDatesISO(makeTimeInIso(group.date, slotTime), getMoscowTime())
+      ) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   return (
     <>
-      {getDatesBetween(currDate, nextWeekBorders.sunday).includes(group.date) &&
-      group.date != currDate ? (
-        <div
-          key={group.pretty_date}
-          data-name="date-group"
-          className="flex flex-col gap-4"
-        >
-          <h2 className="text-xl font-medium text-green pb-2 border-b border-gray w-full mb-5">
-            {group.pretty_date} {capitalize(group.day_name)}
-          </h2>
+      {
+        <>
+          {getDatesBetween(currDate, nextWeekBorders.sunday).includes(
+            group.date
+          ) && group.date != currDate ? (
+            <div
+              key={group.pretty_date}
+              data-name="date-group"
+              className="flex flex-col gap-4"
+            >
+              <h2 className="text-xl font-medium text-green pb-2 border-b border-gray w-full mb-5">
+                {group.pretty_date} {capitalize(group.day_name)}
+              </h2>
 
-          <ul className="slot-grid gap-4">
-            {Object.keys(group.slots).map((slotTime, index) => (
-              <li key={`${group.slotTime}_${index}`}>
-                {group.slots[slotTime].length == 0 ? (
-                  <Button size="small" hover="no" intent="disabled">
-                    {slotTime}
-                  </Button>
-                ) : (
-                  <>
-                    {compareDatesISO(
-                      makeTimeInIso(group.date, slotTime),
-                      getMoscowTime()
-                    ) ? (
-                      <Button size="small" hover="no" intent="disabled">
-                        {slotTime}
-                      </Button>
-                    ) : (
-                      <Button
-                        size="small"
-                        onClick={() => {
-                          dispatch(
-                            toogleSlots(`${group.pretty_date} ${slotTime}`)
-                          );
-                        }}
-                        hover="no"
-                      >
-                        {slotTime}
-                        {slotsRedux.includes(
-                          `${group.pretty_date} ${slotTime}`
-                        ) ? (
-                          <Check width={20} height={20}></Check>
-                        ) : (
-                          ""
-                        )}
-                      </Button>
-                    )}
-                  </>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        ""
-      )}
+              {!checkDayIsBusy(group) ? (
+                <ul className="slot-grid gap-2">
+                  {Object.keys(group.slots).map((slotTime, index) => (
+                    <>
+                      {group.slots[slotTime].length != 0 && (
+                        <li key={`${group.slotTime}_${index}`}>
+                          {group.slots[slotTime].length == 0 ? (
+                            <Button
+                              size="small"
+                              hover="no"
+                              intent="disabled"
+                              className="max-w-[140px]"
+                            >
+                              {slotTime}
+                            </Button>
+                          ) : (
+                            <>
+                              {compareDatesISO(
+                                makeTimeInIso(group.date, slotTime),
+                                getMoscowTime()
+                              ) ? (
+                                <Button
+                                  size="small"
+                                  className="max-w-[140px]"
+                                  hover="no"
+                                  intent="disabled"
+                                >
+                                  {slotTime}
+                                </Button>
+                              ) : (
+                                <Button
+                                  size="small"
+                                  className="max-w-[140px]"
+                                  onClick={() => {
+                                    dispatch(
+                                      toogleSlots(
+                                        `${group.pretty_date} ${slotTime}`
+                                      )
+                                    );
+                                  }}
+                                  hover="no"
+                                >
+                                  {slotTime}
+                                  {slotsRedux.includes(
+                                    `${group.pretty_date} ${slotTime}`
+                                  ) ? (
+                                    <Check width={20} height={20}></Check>
+                                  ) : (
+                                    ""
+                                  )}
+                                </Button>
+                              )}
+                            </>
+                          )}
+                        </li>
+                      )}
+                    </>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-center text-dark-green">
+                  Нет окон для записи
+                </p>
+              )}
+            </div>
+          ) : (
+            ""
+          )}
+        </>
+      }
     </>
   );
 };

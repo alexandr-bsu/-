@@ -1,5 +1,5 @@
 import React from "react";
-import Slots from "./Slots";
+import SlotsWithoutPsycologists from "./SlotsWithoutPsycologists";
 import Button from "./Button";
 import WelcomePage from "../survey/main/WelcomePage";
 import QuestionToPsycologist from "../survey/main/QuestionToPsycologist";
@@ -14,7 +14,6 @@ import { useState } from "react";
 import QueryString from "qs";
 import { useSelector, useDispatch } from "react-redux";
 import { setStatus } from "../redux/slices/formStatusSlice";
-import PsyCarousel from "@/survey/main/PsyCorousel";
 
 const Form = ({ maxTabsCount }) => {
   const dispatch = useDispatch();
@@ -29,13 +28,6 @@ const Form = ({ maxTabsCount }) => {
 
   const isNext = next == 1;
 
-  // const rid = QueryString.parse(window.location.search, {
-  //   ignoreQueryPrefix: true,
-  // })?.rid;
-
-  // const bid = QueryString.parse(window.location.search, {
-  //   ignoreQueryPrefix: true,
-  // })?.bid;
   const form = useSelector((state) => state.form);
   const bid = form.bid;
   const rid = form.rid;
@@ -140,7 +132,7 @@ const Form = ({ maxTabsCount }) => {
       (tabIndex == 6 ||
         (problemFromQuery !== undefined && tabIndex == 4) ||
         (isNext && tabIndex == 2)) &&
-      selectedPsychologistsNames.length == 0
+      slots.length == 0
     ) {
       setShowError(true);
       setTimeout(() => {
@@ -150,16 +142,6 @@ const Form = ({ maxTabsCount }) => {
       (tabIndex == 7 ||
         (problemFromQuery !== undefined && tabIndex == 5) ||
         (isNext && tabIndex == 3)) &&
-      slots.length == 0
-    ) {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } else if (
-      (tabIndex == 8 ||
-        (problemFromQuery !== undefined && tabIndex == 6) ||
-        (isNext && tabIndex == 4)) &&
       (contactType == "" || contact == "")
     ) {
       setShowError(true);
@@ -208,9 +190,9 @@ const Form = ({ maxTabsCount }) => {
     })?.utm_psy;
 
     if (
-      (activeTabIndex == 7 ||
-        (problemFromQuery !== undefined && activeTabIndex == 5) ||
-        (isNext && activeTabIndex == 3)) &&
+      (activeTabIndex == 6 ||
+        (problemFromQuery !== undefined && activeTabIndex == 4) ||
+        (isNext && activeTabIndex == 2)) &&
       (contactType == "" || contact == "")
     ) {
       setShowError(true);
@@ -301,14 +283,10 @@ const Form = ({ maxTabsCount }) => {
             showError ? "h-20" : "h-0"
           }`}
         >
-          {activeTabIndex == 7 ||
-          (problemFromQuery !== undefined && activeTabIndex == 5) ||
-          (isNext && activeTabIndex == 3)
+          {activeTabIndex == 6 ||
+          (problemFromQuery !== undefined && activeTabIndex == 4) ||
+          (isNext && activeTabIndex == 2)
             ? "Вы не выбрали время"
-            : activeTabIndex == 6 ||
-              (problemFromQuery !== undefined && activeTabIndex == 4) ||
-              (isNext && activeTabIndex == 2)
-            ? "Вы не выбрали психолога(ов)"
             : "Вы не заполнили обязательное поле"}
         </div>
         {/* <FormPager></FormPager> */}
@@ -325,10 +303,11 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 3 && <AmountExpectations></AmountExpectations>}
               {activeTabIndex == 4 && <Promocode></Promocode>}
               {activeTabIndex == 5 && <Age></Age>}
-              {activeTabIndex == 6 && <PsyCarousel></PsyCarousel>}
-              {activeTabIndex == 7 && <Slots></Slots>}
-              {activeTabIndex == 8 && <AskContacts></AskContacts>}
-              {activeTabIndex == 9 && <Name></Name>}
+              {activeTabIndex == 6 && (
+                <SlotsWithoutPsycologists></SlotsWithoutPsycologists>
+              )}
+              {activeTabIndex == 7 && <AskContacts></AskContacts>}
+              {activeTabIndex == 8 && <Name></Name>}
             </>
           )}
           {problemFromQuery !== undefined && !isNext && (
@@ -337,10 +316,11 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 1 && <AmountExpectations></AmountExpectations>}
               {activeTabIndex == 2 && <Promocode></Promocode>}
               {activeTabIndex == 3 && <Age></Age>}
-              {activeTabIndex == 4 && <PsyCarousel></PsyCarousel>}
-              {activeTabIndex == 5 && <Slots></Slots>}
-              {activeTabIndex == 6 && <AskContacts></AskContacts>}
-              {activeTabIndex == 7 && <Name></Name>}
+              {activeTabIndex == 4 && (
+                <SlotsWithoutPsycologists></SlotsWithoutPsycologists>
+              )}
+              {activeTabIndex == 5 && <AskContacts></AskContacts>}
+              {activeTabIndex == 6 && <Name></Name>}
             </>
           )}
 
@@ -350,10 +330,11 @@ const Form = ({ maxTabsCount }) => {
                 <QuestionToPsycologist></QuestionToPsycologist>
               )}
               {activeTabIndex == 1 && <AmountExpectations></AmountExpectations>}
-              {activeTabIndex == 2 && <PsyCarousel></PsyCarousel>}
-              {activeTabIndex == 3 && <Slots></Slots>}
-              {activeTabIndex == 4 && <AskContacts></AskContacts>}
-              {activeTabIndex == 5 && <Name></Name>}
+              {activeTabIndex == 2 && (
+                <SlotsWithoutPsycologists></SlotsWithoutPsycologists>
+              )}
+              {activeTabIndex == 3 && <AskContacts></AskContacts>}
+              {activeTabIndex == 4 && <Name></Name>}
             </>
           )}
         </div>

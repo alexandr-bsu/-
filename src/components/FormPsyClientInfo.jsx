@@ -288,12 +288,12 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
     <>
       {/* Не задаём ограничений  т.к ширину будет ограничивать контейнер в Tilda */}
 
-      <div className="bg-white h-full flex flex-col relative w-full">
+      <div className="bg-white  rounded-[30px] h-full flex flex-col relative w-full">
         <div
           data-name="header-block relative"
-          className="p-5 bg-[#2c3531] sticky top-0 z-20"
+          className="p-5 bg-[#2c3531] sticky top-0 z-20 rounded-t-[30px]"
         >
-          <h2 className="text-[#d1e8e2] font-medium text-lg">{headers[0]}</h2>
+          <h2 className="text-[#d1e8e2] font-medium text-base">{headers[0]}</h2>
         </div>
 
         <div
@@ -343,14 +343,14 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
         {/* Control buttons  */}
         <div
           data-name="control-block"
-          className="p-5 flex items-center sticky bottom-0 flex-wrap-reverse gap-4 bg-[#2c3531] w-full z-30"
+          className="p-5 flex items-center sticky bottom-0 gap-4 bg-[#2c3531] w-full z-30 rounded-b-[30px]"
         >
           {activeTabIndex != 0 ? (
             <Button
               size="small"
               intent="cream-transparent"
               hower="primary"
-              className="sm:max-w-64 max-sm:min-w-40 mr-auto"
+              className="sm:max-w-40 max-sm:max-w-fit mr-auto text-sm"
               onClick={() => {
                 setActiveTabIndex(activeTabIndex - 1);
               }}
@@ -365,7 +365,7 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
               size="small"
               intent="cream"
               hower="primary"
-              className="sm:max-w-64 max-sm:min-w-40 ml-auto"
+              className="sm:max-w-40 max-sm:max-w-fit ml-auto text-sm"
               onClick={() => {
                 showNextTab(activeTabIndex);
               }}
