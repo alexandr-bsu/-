@@ -26,7 +26,14 @@ import axios from "axios";
 import CustomVideoPlayer from "@/components/CustomVideoPlayer";
 
 const PsyCarousel = ({ className, ...props }) => {
-  //Получаем даты начала и конца недели
+  const ticket_id = useSelector((state) => state.form.ticket_id);
+  useEffect(() => {
+    axios({
+      method: "PUT",
+      url: "https://n8n.hrani.live/webhook/update-tracking-step",
+      data: {step: "Карточки психологов", ticket_id}
+    })
+  }, [])
 
   const dispatch = useDispatch();
   const errorLottieOptions = {

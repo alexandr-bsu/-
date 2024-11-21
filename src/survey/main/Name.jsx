@@ -1,13 +1,22 @@
 import React from "react";
 import Input from "../../components/Input";
-
+import { useEffect } from "react";
+import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { setName } from "../../redux/slices/formSlice";
 
 const Name = () => {
   const name = useSelector((state) => state.form.name);
+  const ticket_id = useSelector((state) => state.form.ticket_id);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    axios({
+      method: "PUT",
+      url: "https://n8n.hrani.live/webhook/update-tracking-step",
+      data: {step: "Имя клиента", ticket_id}
+    })
+  }, [])
   return (
     <div className="flex flex-col grow pb-6">
       <div

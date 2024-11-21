@@ -17,6 +17,16 @@ const Slots = () => {
   const selectedPsychologistsNames = useSelector(
     (state) => state.form.selectedPsychologistsNames
   );
+
+  const ticket_id = useSelector((state) => state.form.ticket_id);
+  useEffect(() => {
+    axios({
+      method: "PUT",
+      url: "https://n8n.hrani.live/webhook/update-tracking-step",
+      data: {step: "Слоты", ticket_id}
+    })
+  }, [])
+
   // Клиент перешёл из исследовательской анкеты в заявку
   const next = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
