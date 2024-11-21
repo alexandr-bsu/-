@@ -41,6 +41,7 @@ const Form = ({ maxTabsCount }) => {
   const rid = form.rid;
   const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
   const checkedAnxieties = useSelector((state) => state.form.anxieties);
+  const ticket_id = useSelector((state) => state.form.ticket_id);
   const questionToPsycologist = useSelector(
     (state) => state.form.questionToPsycologist
   );
@@ -228,6 +229,7 @@ const Form = ({ maxTabsCount }) => {
         utm_source,
         utm_term,
         utm_psy,
+        ticket_id,
       };
       delete data["psychos"];
       if (problemFromQuery) {
