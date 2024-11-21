@@ -28,11 +28,11 @@ const FormPage = () => {
     return formType
   }
   function initFormTracking(){
-    axios({
-      method: "POST",
-      url: "https://n8n.hrani.live/webhook/init-form-tracking",
-      data: {ticket_id, form_type: getFormType(), step: "Начало"}
-    })
+    // axios({
+    //   method: "POST",
+    //   url: "https://n8n.hrani.live/webhook/init-form-tracking",
+    //   data: {ticket_id, form_type: getFormType(), step: "Начало"}
+    // })
   }
 
   useEffect(() => {
@@ -154,11 +154,11 @@ const FormPage = () => {
             url: "https://n8n.hrani.live/webhook/update-contacts-stb",
           });
         }
-        axios({
-          method: "PUT",
-          url: "https://n8n.hrani.live/webhook/update-tracking-step",
-          data: {step: "Заявка отправлена", ticket_id}
-        })
+        // axios({
+        //   method: "PUT",
+        //   url: "https://n8n.hrani.live/webhook/update-tracking-step",
+        //   data: {step: "Заявка отправлена", ticket_id}
+        // })
       })
       .catch((e) => {
         dispatch(setStatus("error"));

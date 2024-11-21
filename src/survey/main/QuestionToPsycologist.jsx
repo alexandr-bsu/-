@@ -13,13 +13,13 @@ const QuestionToPsycologist = () => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    axios({
-      method: "PUT",
-      url: "https://n8n.hrani.live/webhook/update-tracking-step",
-      data: {step: "Вопрос психологу", ticket_id}
-    })
-  }, [])
+  // useEffect(() => {
+  //   axios({
+  //     method: "PUT",
+  //     url: "https://n8n.hrani.live/webhook/update-tracking-step",
+  //     data: {step: "Вопрос психологу", ticket_id}
+  //   })
+  // }, [])
 
   return (
     <div className="flex flex-col grow pb-6">

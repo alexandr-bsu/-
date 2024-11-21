@@ -16,13 +16,13 @@ import { useSelector, useDispatch } from "react-redux";
 const Slots = () => {
 
   const ticket_id = useSelector((state) => state.form.ticket_id);
-  useEffect(() => {
-    axios({
-      method: "PUT",
-      url: "https://n8n.hrani.live/webhook/update-tracking-step",
-      data: {step: "Слоты", ticket_id}
-    })
-  })
+  // useEffect(() => {
+  //   axios({
+  //     method: "PUT",
+  //     url: "https://n8n.hrani.live/webhook/update-tracking-step",
+  //     data: {step: "Слоты", ticket_id}
+  //   })
+  // })
   
   const selectedPsychologistsNames = useSelector(
     (state) => state.form.selectedPsychologistsNames
