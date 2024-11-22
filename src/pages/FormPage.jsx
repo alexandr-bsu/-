@@ -17,22 +17,21 @@ const FormPage = () => {
   const ticket_id = useSelector((state) => state.form.ticket_id);
   const dispatch = useDispatch();
 
-  function getFormType(){
-   
+  function getFormType() {
     const problemFromQuery = QueryString.parse(window.location.search, {
       ignoreQueryPrefix: true,
     })?.problem;
-    let formType = problemFromQuery ? "Короткая форма " : "Стандартная форма "
-    formType += "с визитками"
-    
-    return formType
+    let formType = problemFromQuery ? "Короткая форма " : "Стандартная форма ";
+    formType += "с визитками";
+
+    return formType;
   }
-  function initFormTracking(){
-    // axios({
-    //   method: "POST",
-    //   url: "https://n8n.hrani.live/webhook/init-form-tracking",
-    //   data: {ticket_id, form_type: getFormType(), step: "Начало"}
-    // })
+  function initFormTracking() {
+    axios({
+      method: "POST",
+      url: "https://n8n.hrani.live/webhook/init-form-tracking",
+      data: { ticket_id, form_type: getFormType(), step: "Начало" },
+    });
   }
 
   useEffect(() => {
@@ -40,11 +39,10 @@ const FormPage = () => {
   }, []);
 
   useEffect(() => {
-    if(ticket_id){
+    if (ticket_id) {
       initFormTracking();
     }
-    
-  }, [ticket_id])
+  }, [ticket_id]);
 
   const okLottieOptions = {
     loop: false,

@@ -277,11 +277,11 @@ const Form = ({ maxTabsCount }) => {
               url: "https://n8n.hrani.live/webhook/update-contacts-stb",
             });
           }
-          // axios({
-          //   method: "PUT",
-          //   url: "https://n8n.hrani.live/webhook/update-tracking-step",
-          //   data: {step: "Заявка отправлена", ticket_id}
-          // })
+          axios({
+            method: "PUT",
+            url: "https://n8n.hrani.live/webhook/update-tracking-step",
+            data: { step: "Заявка отправлена", ticket_id },
+          });
         })
         .catch((e) => {
           dispatch(setStatus("error"));

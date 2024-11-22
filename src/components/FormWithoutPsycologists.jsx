@@ -50,8 +50,6 @@ const Form = ({ maxTabsCount }) => {
   const contact = useSelector((state) => state.form.contact);
 
   const [showError, setShowError] = useState(false);
-  
-  
 
   // Массив заголовков табов формы.
   const headers = ["Заявка на подбор психолога из сообщества Хранители"];
@@ -213,7 +211,7 @@ const Form = ({ maxTabsCount }) => {
         utm_source,
         utm_term,
         utm_psy,
-        ticket_id
+        ticket_id,
       };
       delete data["psychos"];
       if (problemFromQuery) {
@@ -261,11 +259,11 @@ const Form = ({ maxTabsCount }) => {
               url: "https://n8n.hrani.live/webhook/update-contacts-stb",
             });
           }
-          // axios({
-          //   method: "PUT",
-          //   url: "https://n8n.hrani.live/webhook/update-tracking-step",
-          //   data: {step: "Заявка отправлена", ticket_id}
-          // })
+          axios({
+            method: "PUT",
+            url: "https://n8n.hrani.live/webhook/update-tracking-step",
+            data: { step: "Заявка отправлена", ticket_id },
+          });
         })
         .catch((e) => {
           dispatch(setStatus("error"));

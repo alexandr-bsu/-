@@ -10,13 +10,13 @@ const Promocode = () => {
   const ticket_id = useSelector((state) => state.form.ticket_id);
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   axios({
-  //     method: "PUT",
-  //     url: "https://n8n.hrani.live/webhook/update-tracking-step",
-  //     data: {step: "Промокод", ticket_id}
-  //   })
-  // }, [])
+  useEffect(() => {
+    axios({
+      method: "PUT",
+      url: "https://n8n.hrani.live/webhook/update-tracking-step",
+      data: { step: "Промокод", ticket_id },
+    });
+  }, []);
   return (
     <div className="flex grow flex-col pb-6">
       <div
