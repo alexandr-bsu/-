@@ -505,7 +505,7 @@ const PsyCarousel = ({ className, ...props }) => {
                     </h2>
                     <p className="">
                     <ul className="flex flex-col gap-2">
-                      <li>Телефон доверия для детей, подростков и их родителей <span className="text-nowrap">+7 495 051</span></li>
+                      <li>Телефон доверия для детей, подростков и их родителей <span className="text-nowrap">8 800 2000 122</span></li>
 
                       <li>Проект группы кризисных психологов из Петербурга
                       «Твоя территория.онлайн» <span className="text-nowrap">+7 800 200-01-22</span></li>
