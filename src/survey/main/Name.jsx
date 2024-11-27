@@ -18,7 +18,6 @@ const Name = () => {
       data: {step: "Имя клиента", ticket_id}
     })
   }, [])
-
   return (
     <div className="flex flex-col grow pb-6">
       <div

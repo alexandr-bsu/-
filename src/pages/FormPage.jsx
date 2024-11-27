@@ -17,18 +17,15 @@ const FormPage = () => {
   const ticket_id = useSelector((state) => state.form.ticket_id);
   const dispatch = useDispatch();
 
-  function getFormType(){
-   
+  function getFormType() {
     const problemFromQuery = QueryString.parse(window.location.search, {
       ignoreQueryPrefix: true,
     })?.problem;
-
     let formType = problemFromQuery ? "Короткая форма " : "Стандартная форма "
-    formType += "с визитками"
+    formType += "c визитками"
     
     return formType
   }
-
   function initFormTracking(){
     axios({
       method: "POST",
@@ -42,11 +39,10 @@ const FormPage = () => {
   }, []);
 
   useEffect(() => {
-    if(ticket_id){
+    if (ticket_id) {
       initFormTracking();
     }
-    
-  }, [ticket_id])
+  }, [ticket_id]);
 
   const okLottieOptions = {
     loop: false,

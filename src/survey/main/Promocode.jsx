@@ -18,7 +18,6 @@ const Promocode = () => {
       data: {step: "Промокод", ticket_id}
     })
   }, [])
-
   return (
     <div className="flex grow flex-col pb-6">
       <div
