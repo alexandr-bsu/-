@@ -10,7 +10,6 @@ const LastExperience = () => {
   const ticket_id = useSelector((state) => state.form.ticket_id);
   const dispatch = useDispatch();
 
-  const ticket_id = useSelector((state) => state.form.ticket_id);
   useEffect(() => {
     axios({
       method: "PUT",
