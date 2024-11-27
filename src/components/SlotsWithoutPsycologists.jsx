@@ -275,6 +275,11 @@ const Slots = () => {
   // Запрашиваем группы слотов при загрузке страницы
   useEffect(() => {
     selectFn(selectedDate);
+    axios({
+      method: "put",
+      data: {ticket_id, form, formPsyClientInfo},
+      url: "https://n8n.hrani.live/webhook/update-tracker",
+    })
   }, []);
 
   return (
