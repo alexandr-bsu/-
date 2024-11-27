@@ -8,6 +8,7 @@ import axios from "axios";
 
 
 const AskContacts = () => {
+  const dispatch = useDispatch();
   const contactType = useSelector((state) => state.form.contactType);
   const contact = useSelector((state) => state.form.contact);
   const ticket_id = useSelector((state) => state.form.ticket_id);
