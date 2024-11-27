@@ -429,7 +429,7 @@ const PsyCarousel = ({ className, ...props }) => {
         )}
         {psychoStatus == "empty" && (
           <div className="flex justify-start p-5">
-            <div className="flex-col items-start gap-4 p-2 max-w-[450px]">
+            <div className="flex-col items-start gap-4 max-w-[450px]">
               <div className="flex flex-col items-start justify-start gap-2">
                 <div>
                   <p className="text-black font-bold text-lg">

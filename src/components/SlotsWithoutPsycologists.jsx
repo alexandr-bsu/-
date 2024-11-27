@@ -406,7 +406,7 @@ const Slots = () => {
           data-name="data-groups"
           className="flex flex-col items-start justify-start w-full h-full p-5"
         >
-          <div className="flex-col gap-4 p-2 max-w-[450px]">
+          <div className="flex-col gap-4 max-w-[450px]">
             <div className="flex flex-col items-start justify-start gap-2">
               <div>
                 
