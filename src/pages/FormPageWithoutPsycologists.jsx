@@ -22,19 +22,20 @@ const FormPage = () => {
     const problemFromQuery = QueryString.parse(window.location.search, {
       ignoreQueryPrefix: true,
     })?.problem;
+
     let formType = problemFromQuery ? "Короткая форма " : "Стандартная форма "
     formType += "без визиток"
     
     return formType
   }
-  function initFormTracking(){
-    // axios({
-    //   method: "POST",
-    //   url: "https://n8n.hrani.live/webhook/init-form-tracking",
-    //   data: {ticket_id, form_type: getFormType(), step: "Начало"}
-    // })
-  }
 
+  function initFormTracking(){
+    axios({
+      method: "POST",
+      url: "https://n8n.hrani.live/webhook/init-form-tracking",
+      data: {ticket_id, form_type: getFormType(), step: "Начало"}
+    })
+  }
 
   useEffect(() => {
     dispatch(generateTicketId());
@@ -154,14 +155,16 @@ const FormPage = () => {
             url: "https://n8n.hrani.live/webhook/update-contacts-stb",
           });
         }
-        // axios({
-        //   method: "PUT",
-        //   url: "https://n8n.hrani.live/webhook/update-tracking-step",
-        //   data: {step: "Заявка отправлена", ticket_id}
-        // })
+        axios({
+          method: "PUT",
+          url: "https://n8n.hrani.live/webhook/update-tracking-step",
+          data: {step: "Заявка отправлена", ticket_id}
+        }).catch((e) => console.log('Ошибка [обновление шагов в форме]', e))
       })
       .catch((e) => {
         dispatch(setStatus("error"));
+        console.log('Ошибка [отправка формы]', e)
+
       });
   }
 
@@ -171,7 +174,7 @@ const FormPage = () => {
         <>
           <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden p-5 rounded-[30px]">
             <FormWithoutPsycologists
-              maxTabsCount={problemFromQuery ? 7 : next == 1 ? 5 : 9}
+              maxTabsCount={problemFromQuery ? 11 : next == 1 ? 8 : 11}
             ></FormWithoutPsycologists>
           </div>
         </>
@@ -271,7 +274,7 @@ const FormPage = () => {
                   </p>
 
                   <a
-                    href={`https://t.me/HraniLiveBot?start=${ticket_id}`}
+                    href={`https://t.me/hraniteli_client_test_bot?start=${ticket_id}`}
                     target="_top"
                   >
                     <Button intent="cream" hover="primary">

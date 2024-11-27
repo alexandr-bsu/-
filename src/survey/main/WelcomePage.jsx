@@ -26,6 +26,7 @@ const WelcomePage = () => {
   const checkedAnxieties = useSelector((state) => state.form.anxieties);
   const dispatch = useDispatch();
 
+
   return (
     <>
       <div className="flex flex-col grow pb-6">

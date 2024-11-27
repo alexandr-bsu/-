@@ -5,6 +5,7 @@ import FormPageWithoutPsychologists from "@/pages/FormPageWithoutPsycologists";
 import FormPsyClientInfoPage from "../pages/FormPsyClientInfoPage";
 import PsycoSlotsPage from "../pages/PsycoSlotsPage";
 import SaveSlotsPage from "../pages/SaveSlotsPage";
+import PsycologistPage from "@/pages/PsycologistPage";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -26,4 +27,6 @@ export const router = createBrowserRouter([
     path: "/slots-saved",
     element: <SaveSlotsPage />,
   },
+
+  { path: "/psycologist-anketa", element: <PsycologistPage /> },
 ]);

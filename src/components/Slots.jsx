@@ -14,16 +14,18 @@ import QueryString from "qs";
 import { useSelector, useDispatch } from "react-redux";
 
 const Slots = () => {
-
   const ticket_id = useSelector((state) => state.form.ticket_id);
-  // useEffect(() => {
-  //   axios({
-  //     method: "PUT",
-  //     url: "https://n8n.hrani.live/webhook/update-tracking-step",
-  //     data: {step: "Слоты", ticket_id}
-  //   })
-  // })
+  const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
+  const form = useSelector((state) => state.form);
   
+  useEffect(() => {
+    axios({
+      method: "PUT",
+      url: "https://n8n.hrani.live/webhook/update-tracking-step",
+      data: { step: "Слоты", ticket_id },
+    });
+  });
+
   const selectedPsychologistsNames = useSelector(
     (state) => state.form.selectedPsychologistsNames
   );
@@ -33,7 +35,6 @@ const Slots = () => {
   })?.next;
 
   const isNext = next == 1;
-  const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
   const age = formPsyClientInfo.age;
 
   const errorLottieOptions = {
@@ -103,11 +104,8 @@ const Slots = () => {
       params: {
         startDate,
         endDate,
-        // ageFilter: isNext && !isNaN(age) ? age : undefined,
         psyName: selectedPsychologistsNames,
       },
-
-      // url: `https://n8n.hrani.live/webhook/aggregated-schedule`,
       url: `https://n8n.hrani.live/webhook/aggregated-schedule-by-psychologists-names`,
     })
       .then((resp) => {
@@ -231,7 +229,7 @@ const Slots = () => {
         >
           <div className="flex flex-col">
             <h3 className="font-medium text-base text-dark-green">
-              Выберите подходящее время сессии. Время московское
+              Выберите подходящее время сессии
             </h3>
             <p className="text-gray-disabled text-base">
               Выберите один или несколько вариантов

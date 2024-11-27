@@ -2,7 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   anxieties: [],
-  questionToPsycologist: "",
+  questions: [],
+  customQuestion: [],
+  diagnoses: [],
+  diagnoseInfo: "",
+  traumaticEvents: [],
+  clientStates: [],
   selectedPsychologistsNames: [],
   shownPsychologists: "",
   psychos: [],
@@ -15,8 +20,11 @@ const initialState = {
   name: "",
   promocode: "",
   ticket_id: "",
+  emptySlots: false,
   bid: 0,
   rid: 0,
+  // Используется только при автомотчинге без карточек
+  filtered_by_automatch_psy_names: [],
 };
 
 function makeid(length) {
@@ -57,10 +65,80 @@ export const formSlice = createSlice({
       }
     },
 
+    setFilteredPsychologists: (state, psychologists) => {
+      state.filtered_by_automatch_psy_names = psychologists.payload;
+    },
+
+    toogleDiagnoses: (state, diagnose) => {
+      if (
+        state.diagnoses.includes(diagnose.payload)
+      ) {
+        state.diagnoses.splice(
+          state.diagnoses.indexOf(diagnose.payload),
+          1
+        );
+      } else {
+        state.diagnoses.push(diagnose.payload);
+      }
+    },
+
+    toogleClientStates: (state, clientState) => {
+      if (
+        state.clientStates.includes(clientState.payload)
+      ) {
+        state.clientStates.splice(
+          state.clientStates.indexOf(clientState.payload),
+          1
+        );
+      } else {
+        state.clientStates.push(clientState.payload);
+      }
+    },
+
+    toogleQuestions: (state, question) => {
+      if (
+        state.questions.includes(question.payload)
+      ) {
+        state.questions.splice(
+          state.questions.indexOf(question.payload),
+          1
+        );
+      } else {
+        state.questions.push(question.payload);
+      }
+    },
+
+    setCustomQuestion: (state, question) => {
+      state.customQuestion = question.payload
+    },
+
+    setDiagnoseInfo: (state, info) => {
+      state.diagnoseInfo = info.payload
+    },
+
+    toogleTraumaticEvents: (state, event) => {
+      if (
+        state.traumaticEvents.includes(event.payload)
+      ) {
+        state.traumaticEvents.splice(
+          state.traumaticEvents.indexOf(event.payload),
+          1
+        );
+      } else {
+        state.traumaticEvents.push(event.payload);
+      }
+    },
+
     setPsychologists: (state, ps) => {
       state.psychos = ps.payload;
     },
 
+    setEmptySlots: (state) => {
+      state.emptySlots = true;
+    },
+    removeEmptySlots: (state) => {
+      state.emptySlots = false;
+    },
     setShownPsychologists: (state, ps) => {
       state.shownPsychologists = ps.payload;
     },
@@ -71,10 +149,6 @@ export const formSlice = createSlice({
       } else {
         state.anxieties.push(anxiety.payload);
       }
-    },
-
-    setQuestionToPsycologist: (state, question) => {
-      state.questionToPsycologist = question.payload;
     },
 
     setLastExperience: (state, experience) => {
@@ -121,7 +195,6 @@ export const formSlice = createSlice({
 
 export const {
   toogleAnexieties,
-  setQuestionToPsycologist,
   setLastExperience,
   setAmountExpectations,
   setAge,
@@ -136,5 +209,14 @@ export const {
   tooglePsychologists,
   setPsychologists,
   setShownPsychologists,
+  toogleClientStates,
+  setDiagnoseInfo,
+  toogleTraumaticEvents,
+  toogleDiagnoses,
+  toogleQuestions,
+  setCustomQuestion,
+  setEmptySlots,
+  removeEmptySlots,
+  setFilteredPsychologists
 } = formSlice.actions;
 export default formSlice.reducer;

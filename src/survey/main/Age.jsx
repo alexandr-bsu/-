@@ -1,23 +1,23 @@
 import React from "react";
-import Input from "../../components/Input";
 import { useEffect } from "react";
-import axios from "axios";
+import Input from "../../components/Input";
 
 import { useSelector, useDispatch } from "react-redux";
 import { setAge } from "../../redux/slices/formSlice";
+import axios from "axios";
 
 const Age = () => {
   const age = useSelector((state) => state.form.age);
   const ticket_id = useSelector((state) => state.form.ticket_id);
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   axios({
-  //     method: "PUT",
-  //     url: "https://n8n.hrani.live/webhook/update-tracking-step",
-  //     data: {step: "Возраст клиента", ticket_id}
-  //   })
-  // }, [])
+  useEffect(() => {
+    axios({
+      method: "PUT",
+      url: "https://n8n.hrani.live/webhook/update-tracking-step",
+      data: {step: "Возраст клиента", ticket_id}
+    })
+  }, [])
 
   return (
     <div className="flex grow flex-col pb-6">

@@ -1,30 +1,30 @@
 import React from "react";
-
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setAmountExpectations } from "../../redux/slices/formSlice";
 import Radio from "../../components/Radio";
-import { useEffect } from "react";
 import axios from "axios";
 
 const AmountExpectations = () => {
   const amountExpectations = useSelector(
     (state) => state.form.amountExpectations
   );
-  const dispatch = useDispatch();
   const ticket_id = useSelector((state) => state.form.ticket_id);
+  const dispatch = useDispatch();
+
   const expectationList = [
     "За 1 сессию",
     "За 2 и более сессии",
     "За несколько месяцев",
   ];
 
-  // useEffect(() => {
-  //   axios({
-  //     method: "PUT",
-  //     url: "https://n8n.hrani.live/webhook/update-tracking-step",
-  //     data: {step: "Ожидания клиента", ticket_id}
-  //   })
-  // }, [])
+  useEffect(() => {
+    axios({
+      method: "PUT",
+      url: "https://n8n.hrani.live/webhook/update-tracking-step",
+      data: { step: "Ожидания клиента", ticket_id },
+    });
+  }, []);
 
   return (
     <div className="flex grow flex-col pb-6">

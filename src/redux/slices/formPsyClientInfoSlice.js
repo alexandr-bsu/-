@@ -7,7 +7,6 @@ const initialState = {
   psychoEducated: "",
   anxieties: [],
   customAnexiety: "",
-  hasDiagnsose: "",
   hasPsychoExperience: "",
   meetType: "",
   selectionСriteria: "",
@@ -88,9 +87,6 @@ export const formPsyClientInfoSlice = createSlice({
       }
     },
 
-    setHasDiagnsose: (state, diagnos) => {
-      state.hasDiagnsose = diagnos.payload;
-    },
 
     setHasPsychoExperience: (state, experience) => {
       state.hasPsychoExperience = experience.payload;
@@ -151,7 +147,6 @@ export const {
   setReasonCancel,
   setPsychoEducated,
   toogleAnexieties,
-  setHasDiagnsose,
   setHasPsychoExperience,
   setMeetType,
   setSelectionСriteria,

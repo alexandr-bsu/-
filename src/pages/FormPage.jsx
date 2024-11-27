@@ -22,17 +22,19 @@ const FormPage = () => {
     const problemFromQuery = QueryString.parse(window.location.search, {
       ignoreQueryPrefix: true,
     })?.problem;
+
     let formType = problemFromQuery ? "Короткая форма " : "Стандартная форма "
     formType += "с визитками"
     
     return formType
   }
+
   function initFormTracking(){
-    // axios({
-    //   method: "POST",
-    //   url: "https://n8n.hrani.live/webhook/init-form-tracking",
-    //   data: {ticket_id, form_type: getFormType(), step: "Начало"}
-    // })
+    axios({
+      method: "POST",
+      url: "https://n8n.hrani.live/webhook/init-form-tracking",
+      data: {ticket_id, form_type: getFormType(), step: "Начало"}
+    })
   }
 
   useEffect(() => {
@@ -154,11 +156,11 @@ const FormPage = () => {
             url: "https://n8n.hrani.live/webhook/update-contacts-stb",
           });
         }
-        // axios({
-        //   method: "PUT",
-        //   url: "https://n8n.hrani.live/webhook/update-tracking-step",
-        //   data: {step: "Заявка отправлена", ticket_id}
-        // })
+        axios({
+          method: "PUT",
+          url: "https://n8n.hrani.live/webhook/update-tracking-step",
+          data: {step: "Заявка отправлена", ticket_id}
+        })
       })
       .catch((e) => {
         dispatch(setStatus("error"));
@@ -171,7 +173,7 @@ const FormPage = () => {
         <>
           <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden p-5 rounded-[30px]">
             <Form
-              maxTabsCount={problemFromQuery ? 8 : next == 1 ? 6 : 10}
+              maxTabsCount={problemFromQuery ? 12 : next == 1 ? 9 : 12}
             ></Form>
           </div>
         </>
@@ -271,7 +273,7 @@ const FormPage = () => {
                   </p>
 
                   <a
-                    href={`https://t.me/HraniLiveBot?start=${ticket_id}`}
+                    href={`https://t.me/hraniteli_client_test_bot?start=${ticket_id}`}
                     target="_top"
                   >
                     <Button intent="cream" hover="primary">

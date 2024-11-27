@@ -1,25 +1,26 @@
 import React from "react";
 import TextArea from "../../components/TextArea";
 import { useEffect } from "react";
-import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { setQuestionToPsycologist } from "../../redux/slices/formSlice";
+import axios from "axios";
 
 const QuestionToPsycologist = () => {
   const questionToPsycologist = useSelector(
     (state) => state.form.questionToPsycologist
   );
+
   const ticket_id = useSelector((state) => state.form.ticket_id);
 
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   axios({
-  //     method: "PUT",
-  //     url: "https://n8n.hrani.live/webhook/update-tracking-step",
-  //     data: {step: "Вопрос психологу", ticket_id}
-  //   })
-  // }, [])
+  useEffect(() => {
+    axios({
+      method: "PUT",
+      url: "https://n8n.hrani.live/webhook/update-tracking-step",
+      data: {step: "Вопрос психологу", ticket_id}
+    })
+  }, [])
 
   return (
     <div className="flex flex-col grow pb-6">

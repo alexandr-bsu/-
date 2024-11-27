@@ -1,23 +1,22 @@
 import React from "react";
-
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setLastExperience } from "../../redux/slices/formSlice";
 import Radio from "../../components/Radio";
-import { useEffect } from "react";
 import axios from "axios";
 
 const LastExperience = () => {
   const lastExperience = useSelector((state) => state.form.lastExperience);
+  const ticket_id = useSelector((state) => state.form.ticket_id);
   const dispatch = useDispatch();
 
-  const ticket_id = useSelector((state) => state.form.ticket_id);
-  // useEffect(() => {
-  //   axios({
-  //     method: "PUT",
-  //     url: "https://n8n.hrani.live/webhook/update-tracking-step",
-  //     data: {step: "Обращался ли к психологу", ticket_id}
-  //   })
-  // }, [])
+  useEffect(() => {
+    axios({
+      method: "PUT",
+      url: "https://n8n.hrani.live/webhook/update-tracking-step",
+      data: {step: "Обращался ли к психологу", ticket_id}
+    })
+  }, [])
 
   const experienceList = [
     "Нет, это первый опыт",

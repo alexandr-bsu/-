@@ -1,9 +1,23 @@
 import React, { useState } from "react";
 
-const Checkbox = ({ children, id, classLabel, ...props }) => {
+const Checkbox = ({
+  children,
+  id,
+  classLabel,
+  intent = "primary",
+  ...props
+}) => {
   return (
     <>
-      <input type="checkbox" id={id} className="custom-checkbox" {...props} />
+      <input
+        type="checkbox"
+        id={id}
+        className={
+          intent === "primary" ? `custom-checkbox` : `custom-checkbox-cream`
+        }
+        name="custom-checkbox"
+        {...props}
+      />
       <label htmlFor={id} className={classLabel}>
         {children}
       </label>

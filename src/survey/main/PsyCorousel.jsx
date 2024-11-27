@@ -20,6 +20,7 @@ import {
   tooglePsychologists,
   setPsychologists,
   setShownPsychologists,
+  setEmptySlots
 } from "@/redux/slices/formSlice";
 import VideoPlayer from "@/components/VideoPlayer";
 import axios from "axios";
@@ -27,14 +28,6 @@ import CustomVideoPlayer from "@/components/CustomVideoPlayer";
 
 const PsyCarousel = ({ className, ...props }) => {
   const ticket_id = useSelector((state) => state.form.ticket_id);
-  // useEffect(() => {
-  //   axios({
-  //     method: "PUT",
-  //     url: "https://n8n.hrani.live/webhook/update-tracking-step",
-  //     data: {step: "Карточки психологов", ticket_id}
-  //   })
-  // }, [])
-
   const dispatch = useDispatch();
   const errorLottieOptions = {
     loop: false,
@@ -45,6 +38,14 @@ const PsyCarousel = ({ className, ...props }) => {
     },
   };
 
+  useEffect(() => {
+    axios({
+      method: "PUT",
+      url: "https://n8n.hrani.live/webhook/update-tracking-step",
+      data: { step: "Карточки психологов", ticket_id },
+    });
+  }, []);
+
   const next = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
   })?.next;
@@ -54,6 +55,7 @@ const PsyCarousel = ({ className, ...props }) => {
 
   const isNext = next == 1;
   const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
+  const form = useSelector((state) => state.form);
   const pNames = useSelector((state) => state.form.selectedPsychologistsNames);
   const psychos = useSelector((state) => state.form.psychos);
   const age = formPsyClientInfo.age;
@@ -93,13 +95,17 @@ const PsyCarousel = ({ className, ...props }) => {
 
     setPsychoStatus("loading");
     axios({
-      url: "https://n8n.hrani.live/webhook/get-filtered-psychologists-names",
-      method: "GET",
-      params: {
+      url: "https://n8n.hrani.live/webhook/get-filtered-psychologists-names-new",
+      method: "POST",
+      data: {
         ageFilter: getAgeFilter(),
+        formPsyClientInfo,
+        form,
+        ticket_id,
       },
     })
       .then((resp) => {
+       
         if (resp.data[0].filteredPsychologists.length <= 3) {
           dispatch(setPsychologists(resp.data[0].filteredPsychologists));
           let randomThree = resp.data[0].filteredPsychologists;
@@ -148,7 +154,13 @@ const PsyCarousel = ({ className, ...props }) => {
 
           dispatch(setShownPsychologists(names.join("; ")));
         }
-        setPsychoStatus("active");
+
+        if (resp.data[0].filteredPsychologists.length <= 0) {
+          setPsychoStatus("empty");
+          dispatch(setEmptySlots())
+        } else {
+          setPsychoStatus("active");
+        }
       })
       .catch((err) => {
         setPsychoStatus("error");
@@ -397,6 +409,91 @@ const PsyCarousel = ({ className, ...props }) => {
               <CarouselPrevious />
               <CarouselNext />
             </Carousel>
+          </div>
+        )}
+        {psychoStatus == "empty" && (
+          <div className="flex justify-start p-5">
+            <div className="flex-col items-start gap-4 p-2 max-w-[450px]">
+              <div className="flex flex-col items-start justify-start gap-2">
+                <div>
+                  <p className="text-black font-bold text-lg">
+                    Нет слотов
+                  </p>
+                  <p className="text-black text-base mb-10">
+                    К сожалению, наши психологи не специализируются на вашей
+                    ситуации. Но вы можете обратиться в другие организации, в
+                    которых вам непременно помогут.
+                  </p>
+                </div>
+
+                <div className="w-full flex flex-col flex-wrap items-start ">
+                  <div
+                    data-name="extra-contacts"
+                    className="flex flex-col mb-5"
+                  >
+                    <h2 className="text-black font-bold text-base">
+                      Универсальные службы:
+                    </h2>
+                    <p>
+                      - Горячая линия Центра экстренной психологической помощи
+                      МЧС России +7 495 989-50-50
+                      <br />
+                      - Телефон экстренной психологической помощи для детей и
+                      взрослых Института «Гармония» +7 800 500-22-87 <br />
+                      - Горячая линия психологической помощи Московского
+                      института психоанализа +7 800 500-22-87 <br />
+                    </p>
+                  </div>
+
+                  <div
+                    data-name="extra-contacts"
+                    className="flex flex-col mb-5"
+                  >
+                    <h2 className="text-black font-bold text-base">
+                      Помощь женщинам в кризисе:
+                    </h2>
+
+                    <p className="">
+                      - Центр «Насилию.нет» +7 495 916-30-00 <br />- Телефон
+                      доверия для женщин, пострадавших от домашнего насилия
+                      кризисного Центра «АННА»: 8 800 7000 600
+                    </p>
+                  </div>
+
+                  <div
+                    data-name="extra-contacts"
+                    className="flex flex-col mb-5"
+                  >
+                    <h2 className="text-black  font-bold text-base">
+                      Помощь людям с тяжёлыми заболеваниями:
+                    </h2>
+                    <p className="">
+                      - Горячая линия Центра экстренной психологической помощи
+                      МЧС России +7 495 989-50-50
+                      <br />- Горячая линия службы «Ясное утро» +7 800 100-01-91{" "}
+                      <br />
+                      -Горячая линия помощи неизлечимо больным людям +7 800
+                      700-84-36
+                    </p>
+                  </div>
+
+                  <div
+                    data-name="extra-contacts"
+                    className="flex flex-col mb-5"
+                  >
+                    <h2 className="text-black  font-bold text-base">
+                      Помощь детям и подросткам:
+                    </h2>
+                    <p className="">
+                      - Телефон доверия для детей, подростков и их родителей +7
+                      495 051
+                      <br />- Проект группы кризисных психологов из Петербурга
+                      «Твоя территория.онлайн» +7 800 200-01-22
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>

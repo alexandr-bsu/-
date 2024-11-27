@@ -12,28 +12,34 @@ import Lottie from "react-lottie";
 import errorLottie from "../assets/lotties/error";
 import QueryString from "qs";
 import { useSelector, useDispatch } from "react-redux";
+import { removeEmptySlots, setEmptySlots, setFilteredPsychologists  } from "@/redux/slices/formSlice";
 
 const Slots = () => {
+  const dispatch = useDispatch();
+  const ticket_id = useSelector((state) => state.form.ticket_id);
+  const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
+  const form = useSelector((state) => state.form);
+  
+
+  useEffect(() => {
+    axios({
+      method: "PUT",
+      url: "https://n8n.hrani.live/webhook/update-tracking-step",
+      data: { step: "Слоты", ticket_id },
+    });
+  });
+
   const selectedPsychologistsNames = useSelector(
     (state) => state.form.selectedPsychologistsNames
   );
-
-  const ticket_id = useSelector((state) => state.form.ticket_id);
-  // useEffect(() => {
-  //   axios({
-  //     method: "PUT",
-  //     url: "https://n8n.hrani.live/webhook/update-tracking-step",
-  //     data: {step: "Слоты", ticket_id}
-  //   })
-  // }, [])
-
   // Клиент перешёл из исследовательской анкеты в заявку
   const next = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
   })?.next;
 
   const isNext = next == 1;
-  const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
+
+
   const age = formPsyClientInfo.age;
   const ageMainForm = useSelector((state) => state.form.age);
 
@@ -109,6 +115,19 @@ const Slots = () => {
     return undefined;
   }
 
+  function checkNoSlots(groups) {
+    let noSlots = true;
+    for (let group of groups) {
+      for (let slot in group.slots) {
+        if (group.slots[slot].length != 0) {
+          noSlots = false;
+          break;
+        }
+      }
+    }
+    return noSlots;
+  }
+
   // Получаем группы слотов и обновляем переменную groups_of_slots
   function selectFn(date) {
     let splited_dates = date.split(":");
@@ -117,24 +136,44 @@ const Slots = () => {
     setSlotStatus("loading");
 
     axios({
-      method: "GET",
-      params: {
+      method: "POST",
+      data: {
         startDate,
         endDate,
         ageFilter: getAgeFilter(),
-        // psyName: selectedPsychologistsNames,
+        formPsyClientInfo,
+        form,
+        ticket_id,
       },
 
-      url: `https://n8n.hrani.live/webhook/aggregated-schedule`,
-      // url: `https://n8n.hrani.live/webhook/aggregated-schedule-by-psychologists-names`,
+      url: `https://n8n.hrani.live/webhook/get-agregated-schedule-v2`,
     })
       .then((resp) => {
         let filtered_groups = remove_first_n_empty_groups(resp.data[0].items);
         setGroupsOfSlots(filtered_groups);
-        setSlotStatus("active");
+        if (checkNoSlots(filtered_groups)) {
+          setSlotStatus("empty");
+          dispatch(setEmptySlots());
+        } else {
+          setSlotStatus("active");
+          
+          let filtered_names = []
+          for(let group of filtered_groups) {
+            for(let s in group.slots){
+              for(let p of group.slots[s]){
+                
+                if(!filtered_names.includes(p?.name))
+                filtered_names.push(p?.name)
+              }
+            }
+          }
+          dispatch(setFilteredPsychologists(filtered_names))
+          dispatch(removeEmptySlots());
+        }
       })
       .catch((thrown) => {
         setSlotStatus("error");
+        console.log(thrown);
       });
   }
 
@@ -225,7 +264,7 @@ const Slots = () => {
 
     // Индекс группы слотов в исходном массиве прошедший фильтрацию
     let validFirstGroupIndex = groups.findIndex(
-      (g) => g.date == free_groups[0].date
+      (g) => g.date == free_groups[0]?.date
     );
 
     // Возвращаем все группы слотов начиная с validFirstGroupIndex индекса
@@ -249,10 +288,10 @@ const Slots = () => {
         >
           <div className="flex flex-col">
             <h3 className="font-medium text-base text-dark-green">
-              Выберите подходящее время сессии. Время московское
+              {slotStatus != "empty" ? "Выберите подходящее время сессии" : "Нет слотов"}
             </h3>
             <p className="text-gray-disabled text-base">
-              Выберите один или несколько вариантов
+              {slotStatus != "empty" ? "Выберите один или несколько вариантов" : ""}
             </p>
           </div>
         </div>
@@ -352,6 +391,81 @@ const Slots = () => {
               >
                 Повторить
               </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {slotStatus == "empty" && (
+        <div
+          data-name="data-groups"
+          className="flex flex-col items-start justify-start w-full h-full p-5"
+        >
+          <div className="flex-col gap-4 p-2 max-w-[450px]">
+            <div className="flex flex-col items-start justify-start gap-2">
+              <div>
+                
+                <p className="text-black text-base mb-10">
+                  К сожалению, наши психологи не специализируются на вашей
+                  ситуации. Но вы можете обратиться в другие организации, в
+                  которых вам непременно помогут.
+                </p>
+              </div>
+
+              <div className="w-full flex flex-col flex-wrap items-start ">
+                <div data-name="extra-contacts" className="flex flex-col mb-5">
+                  <h2 className="text-black font-bold text-base">
+                    Универсальные службы:
+                  </h2>
+                  <p>
+                    - Горячая линия Центра экстренной психологической помощи МЧС
+                    России +7 495 989-50-50
+                    <br />
+                    - Телефон экстренной психологической помощи для детей и
+                    взрослых Института «Гармония» +7 800 500-22-87 <br />
+                    - Горячая линия психологической помощи Московского института
+                    психоанализа +7 800 500-22-87 <br />
+                  </p>
+                </div>
+
+                <div data-name="extra-contacts" className="flex flex-col mb-5">
+                  <h2 className="text-black font-bold text-base">
+                    Помощь женщинам в кризисе:
+                  </h2>
+
+                  <p className="">
+                    - Центр «Насилию.нет» +7 495 916-30-00 <br />- Телефон
+                    доверия для женщин, пострадавших от домашнего насилия
+                    кризисного Центра «АННА»: 8 800 7000 600
+                  </p>
+                </div>
+
+                <div data-name="extra-contacts" className="flex flex-col mb-5">
+                  <h2 className="text-black  font-bold text-base">
+                    Помощь людям с тяжёлыми заболеваниями:
+                  </h2>
+                  <p className="">
+                    - Горячая линия Центра экстренной психологической помощи МЧС
+                    России +7 495 989-50-50
+                    <br />- Горячая линия службы «Ясное утро» +7 800 100-01-91{" "}
+                    <br />
+                    -Горячая линия помощи неизлечимо больным людям +7 800
+                    700-84-36
+                  </p>
+                </div>
+
+                <div data-name="extra-contacts" className="flex flex-col mb-5">
+                  <h2 className="text-black  font-bold text-base">
+                    Помощь детям и подросткам:
+                  </h2>
+                  <p className="">
+                    - Телефон доверия для детей, подростков и их родителей +7
+                    495 051
+                    <br />- Проект группы кризисных психологов из Петербурга
+                    «Твоя территория.онлайн» +7 800 200-01-22
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

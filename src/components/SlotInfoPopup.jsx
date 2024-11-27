@@ -38,21 +38,64 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
         if (JSON.stringify(resp.data) == JSON.stringify({})) {
           setStatus("empty");
         } else {
-          console.log(
-            "data",
-            resp.data["Время выбранного слота"][0]?.value,
-            resp.data["Дата  выбранного слота"][0]?.value,
-            queryDate
-          );
-
           if ("Что беспокоит" in resp.data) {
             resp.data["Что беспокоит"] = resp.data["Что беспокоит"].split(";");
+            if (
+              resp.data["Что беспокоит"][0] == "" &&
+              resp.data["Что беспокоит"].length == 1
+            ) {
+              resp.data["Что беспокоит"] = [];
+            }
           }
 
-          // if (queryDate == resp.data["Дата  выбранного слота"][0]?.value) {
+          if ("Псих. заболевание" in resp.data) {
+            resp.data["Псих. заболевание"] =
+              resp.data["Псих. заболевание"].split(";");
+            if (
+              resp.data["Псих. заболевание"][0] == "" &&
+              resp.data["Псих. заболевание"].length == 1
+            ) {
+              resp.data["Псих. заболевание"] = [];
+            }
+          }
+
+          if ("Состояние клиента" in resp.data) {
+            resp.data["Состояние клиента"] =
+              resp.data["Состояние клиента"].split(";");
+            if (
+              resp.data["Состояние клиента"][0] == "" &&
+              resp.data["Состояние клиента"].length == 1
+            ) {
+              resp.data["Состояние клиента"] = [];
+            }
+          }
+
+          if ("Травмирующие события" in resp.data) {
+            resp.data["Травмирующие события"] =
+              resp.data["Травмирующие события"].split(";");
+            if (
+              resp.data["Травмирующие события"][0] == "" &&
+              resp.data["Травмирующие события"].length == 1
+            ) {
+              resp.data["Травмирующие события"] = [];
+            }
+          }
+
+          if ("Запросы психологу" in resp.data) {
+            resp.data["Запросы психологу"] =
+              resp.data["Запросы психологу"].split(";");
+            if (
+              resp.data["Запросы психологу"][0] == "" &&
+              resp.data["Запросы психологу"].length == 1
+            ) {
+              resp.data["Запросы психологу"] = [];
+            }
+          }
+
+          console.log("data", resp.data);
+
           setData(resp.data);
           setStatus("ok");
-          // }
         }
       })
       .catch((error) => {
@@ -147,18 +190,65 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
               <b>Возраст: </b> {data["Возраст"]}
             </p>
 
-            <p className="text-dark-green">
-              <b>Что беспокоит клиента: </b>{" "}
-              {data["Что беспокоит"]?.map((a) => {
-                return <li>{a}</li>;
-              })}
-            </p>
+            {data["Что беспокоит"]?.length != 0 && (
+              <p className="text-dark-green">
+                <b>Что беспокоит клиента: </b>{" "}
+                {data["Что беспокоит"]?.map((a) => {
+                  return <li>{a}</li>;
+                })}
+              </p>
+            )}
 
+            {data["Запросы психологу"]?.length != 0 && (
+              <p className="text-dark-green">
+                <b>Запросы психологу: </b>{" "}
+                {data["Запросы психологу"]?.map((a) => {
+                  return <li>{a}</li>;
+                })}
+              </p>
+            )}
+
+            {data["Псих. заболевание"]?.length != 0 && (
+              <p className="text-dark-green">
+                <b>Псих. заболевание: </b>{" "}
+                {data["Псих. заболевание"]?.map((a) => {
+                  return <li>{a}</li>;
+                })}
+              </p>
+            )}
+
+            {data["Подробности о заболевании"] && (
+              <p className="text-dark-green">
+                <b>Подробности о заболевании: </b>
+                <br />
+                {data["Подробности о заболевании"]}
+              </p>
+            )}
+
+            {data["Состояние клиента"]?.length != 0 && (
+              <p className="text-dark-green">
+                <b>Состояние клиента: </b>{" "}
+                {data["Состояние клиента"]?.map((a) => {
+                  return <li>{a}</li>;
+                })}
+              </p>
+            )}
+
+            {data["Травмирующие события"]?.length != 0 && (
+              <p className="text-dark-green">
+                <b>Травмирующие события: </b>{" "}
+                {data["Травмирующие события"]?.map((a) => {
+                  return <li>{a}</li>;
+                })}
+              </p>
+            )}
+
+            {/* 
             <p className="text-dark-green max-w-2xl">
               <b>Вопрос психологу:</b>
               <br />
               {data["Вопрос писхологу"]}
-            </p>
+            </p> */}
 
             <p className="text-dark-green">
               <b>Клиент обращался к психологу ранее?:</b>
