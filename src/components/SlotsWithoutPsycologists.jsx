@@ -285,12 +285,15 @@ const Slots = () => {
   return (
     <div className="flex grow flex-col">
       <div className="sticky top-0">
+        <>
+        {slotStatus != "empty" &&
         <div
           data-name="question-block"
           className={`bg-white px-5 ${
             !isNext ? " border-gray border-b" : ""
           } z-10 w-full py-4 `}
         >
+           
           <div className="flex flex-col">
             <h3 className="font-medium text-base text-dark-green">
               {slotStatus != "empty" ? "Выберите подходящее время сессии. Время московское" : "Нет слотов"}
@@ -299,7 +302,8 @@ const Slots = () => {
               {slotStatus != "empty" ? "Выберите один или несколько вариантов" : ""}
             </p>
           </div>
-        </div>
+        </div>}
+        </>
         {/* {isNext && !isNaN(age) && ( */}
         {/* <div className="w-full flex justify-center items-center gap-2 py-2 font-medium text-[13px] text-dark-green bg-[#d5e2e2] px-5">
           На основании вашего запроса мы подобрали для вас психологов. Выберите
@@ -406,30 +410,33 @@ const Slots = () => {
           data-name="data-groups"
           className="flex flex-col items-start justify-start w-full h-full p-5"
         >
-          <div className="flex-col gap-4 max-w-[450px]">
+          <div className="flex-col gap-4 w-full">
             <div className="flex flex-col items-start justify-start gap-2">
               <div>
-                
-                <p className="text-black text-base mb-10">
+                <p className="text-base mb-10 p-2 border border-green text-dark-green rounded-[15px]">
                   К сожалению, наши психологи не специализируются на вашей
                   ситуации. Но вы можете обратиться в другие организации, в
                   которых вам непременно помогут.
                 </p>
               </div>
 
-              <div className="w-full flex flex-col flex-wrap items-start ">
-                <div data-name="extra-contacts" className="flex flex-col mb-5">
+              <div className="w-full md:contact-grid-container-2 lg:contact-grid-container-2 sm:contact-grid-container-2 xs:contact-grid-container-1">
+                <div data-name="extra-contacts" className="flex flex-col mb-5 w-full">
                   <h2 className="text-black font-bold text-base">
                     Универсальные службы:
                   </h2>
                   <p>
-                    - Горячая линия Центра экстренной психологической помощи МЧС
-                    России +7 495 989-50-50
-                    <br />
-                    - Телефон экстренной психологической помощи для детей и
-                    взрослых Института «Гармония» +7 800 500-22-87 <br />
-                    - Горячая линия психологической помощи Московского института
-                    психоанализа +7 800 500-22-87 <br />
+                    <ul className="flex flex-col gap-2">
+                    <li>
+                    Горячая линия Центра экстренной психологической помощи МЧС
+                    России <span className="text-nowrap">+7 495 989-50-50</span>
+                    </li>
+                    
+                    <li>Телефон экстренной психологической помощи для детей и
+                    взрослых Института «Гармония» <span className="text-nowrap">+7 800 500-22-87</span></li>
+                    <li>Горячая линия психологической помощи Московского института
+                    психоанализа <span className="text-nowrap">+7 800 500-22-87</span></li>
+                    </ul> 
                   </p>
                 </div>
 
@@ -439,9 +446,10 @@ const Slots = () => {
                   </h2>
 
                   <p className="">
-                    - Центр «Насилию.нет» +7 495 916-30-00 <br />- Телефон
-                    доверия для женщин, пострадавших от домашнего насилия
-                    кризисного Центра «АННА»: 8 800 7000 600
+                  <ul className="flex flex-col gap-2">
+                   <li>Центр «Насилию.нет» <span className="text-nowrap">+7 495 916-30-00</span></li>
+                   <li>Телефон доверия для женщин, пострадавших от домашнего насилия кризисного Центра «АННА»:<span className="text-nowrap"> 8 800 7000 600 </span></li>
+                    </ul>
                   </p>
                 </div>
 
@@ -450,12 +458,14 @@ const Slots = () => {
                     Помощь людям с тяжёлыми заболеваниями:
                   </h2>
                   <p className="">
-                    - Горячая линия Центра экстренной психологической помощи МЧС
-                    России +7 495 989-50-50
-                    <br />- Горячая линия службы «Ясное утро» +7 800 100-01-91{" "}
-                    <br />
-                    -Горячая линия помощи неизлечимо больным людям +7 800
-                    700-84-36
+                  <ul className="flex flex-col gap-2">
+                    <li>Горячая линия Центра экстренной психологической помощи МЧС
+                    России +7 495 989-50-50</li>
+                    <li>Горячая линия службы «Ясное утро» <span className="text-nowrap">+7 800 100-01-91</span></li>
+                    
+                    <li>Горячая линия помощи неизлечимо больным людям <span className="text-nowrap">+7 800
+                    700-84-36</span></li>
+                    </ul>
                   </p>
                 </div>
 
@@ -464,10 +474,12 @@ const Slots = () => {
                     Помощь детям и подросткам:
                   </h2>
                   <p className="">
-                    - Телефон доверия для детей, подростков и их родителей +7
-                    495 051
-                    <br />- Проект группы кризисных психологов из Петербурга
-                    «Твоя территория.онлайн» +7 800 200-01-22
+                  <ul className="flex flex-col gap-2">
+                    <li>Телефон доверия для детей, подростков и их родителей <span className="text-nowrap">+7
+                    495 051</span></li>
+                    <li>Проект группы кризисных психологов из Петербурга
+                    «Твоя территория.онлайн» <span className="text-nowrap">+7 800 200-01-22</span></li>
+                    </ul>
                   </p>
                 </div>
               </div>

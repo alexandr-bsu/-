@@ -324,6 +324,21 @@ input::-webkit-inner-spin-button {
     height: 395px;
     object-fit: cover;
   }
+
+   
+
+  /* Грид для контейнера групп контактов */
+  .contact-grid-container-2 {
+    display: grid;
+    grid-template-columns: repeat(2,  1fr);
+    gap: 20px;
+  }
+
+  .contact-grid-container-1 {
+    display: grid;
+    grid-template-columns: repeat(1,  1fr);
+    gap: 20px;
+  }
 }
 
 @layer base {

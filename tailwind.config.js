@@ -23,6 +23,7 @@ export default {
         "tilda-s": "385px",
         "tilda-xs": "320px",
         "tilda-680": "680px",
+        "tilda-895": "895px",
       },
       borderRadius: {
         lg: "var(--radius)",
