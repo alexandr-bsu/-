@@ -15,6 +15,8 @@ import { useSelector, useDispatch } from "react-redux";
 
 const Slots = () => {
   const ticket_id = useSelector((state) => state.form.ticket_id);
+  const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
+  
   useEffect(() => {
     axios({
       method: "PUT",
@@ -226,7 +228,7 @@ const Slots = () => {
         >
           <div className="flex flex-col">
             <h3 className="font-medium text-base text-dark-green">
-              Выберите подходящее время сессии
+              Выберите подходящее время сессии. Время московское
             </h3>
             <p className="text-gray-disabled text-base">
               Выберите один или несколько вариантов

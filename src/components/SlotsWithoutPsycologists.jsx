@@ -293,7 +293,7 @@ const Slots = () => {
         >
           <div className="flex flex-col">
             <h3 className="font-medium text-base text-dark-green">
-              {slotStatus != "empty" ? "Выберите подходящее время сессии" : "Нет слотов"}
+              {slotStatus != "empty" ? "Выберите подходящее время сессии. Время московское" : "Нет слотов"}
             </h3>
             <p className="text-gray-disabled text-base">
               {slotStatus != "empty" ? "Выберите один или несколько вариантов" : ""}

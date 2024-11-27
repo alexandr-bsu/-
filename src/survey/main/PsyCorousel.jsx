@@ -28,6 +28,9 @@ import CustomVideoPlayer from "@/components/CustomVideoPlayer";
 
 const PsyCarousel = ({ className, ...props }) => {
   const ticket_id = useSelector((state) => state.form.ticket_id);
+  const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
+  const form = useSelector((state) => state.form);
+  
   useEffect(() => {
     axios({
       method: "PUT",
@@ -52,6 +55,12 @@ const PsyCarousel = ({ className, ...props }) => {
       url: "https://n8n.hrani.live/webhook/update-tracking-step",
       data: { step: "Карточки психологов", ticket_id },
     });
+
+    axios({
+      method: "put",
+      data: {ticket_id, form, formPsyClientInfo},
+      url: "https://n8n.hrani.live/webhook/update-tracker",
+    })
   }, []);
 
   const next = QueryString.parse(window.location.search, {
@@ -62,8 +71,7 @@ const PsyCarousel = ({ className, ...props }) => {
   const [psychoStatus, setPsychoStatus] = useState("loading");
 
   const isNext = next == 1;
-  const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
-  const form = useSelector((state) => state.form);
+ 
   const pNames = useSelector((state) => state.form.selectedPsychologistsNames);
   const psychos = useSelector((state) => state.form.psychos);
   const age = formPsyClientInfo.age;

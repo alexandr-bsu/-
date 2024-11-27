@@ -177,6 +177,10 @@ const Form = ({ maxTabsCount }) => {
       return true
     }
 
+    else if (activeTabIndex == maxTabsCount - 1){
+      return false
+    }
+
     return true
   }
 
