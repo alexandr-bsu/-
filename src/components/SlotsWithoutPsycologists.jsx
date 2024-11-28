@@ -501,7 +501,7 @@ const Slots = () => {
           </div>
           <div
             id="scroll"
-            className="w-full sticky bottom-0 py-5 flex justify-center items-center"
+            className="mx-auto sticky bottom-0 pb-5 flex justify-center items-center"
           >
             <div className="p-2 rounded-full bg-gray">
               <ChevronsDown size={12} color="black" />
