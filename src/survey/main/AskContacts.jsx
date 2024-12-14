@@ -6,20 +6,19 @@ import Radio from "../../components/Radio";
 import Input from "../../components/Input";
 import axios from "axios";
 
-
 const AskContacts = () => {
   const dispatch = useDispatch();
   const contactType = useSelector((state) => state.form.contactType);
   const contact = useSelector((state) => state.form.contact);
   const ticket_id = useSelector((state) => state.form.ticket_id);
 
-useEffect(() => {
+  useEffect(() => {
     axios({
       method: "PUT",
       url: "https://n8n.hrani.live/webhook/update-tracking-step",
-      data: {step: "Заполнение контактов", ticket_id}
-    })
-  }, [])
+      data: { step: "Заполнение контактов", ticket_id },
+    });
+  }, []);
   // const contactList = ["Whatsapp", "Telegram"];
 
   return (
@@ -33,14 +32,14 @@ useEffect(() => {
             Как с вами связаться?
           </h3>
           <p className="text-gray-disabled text-sm">
-            Укажите свой номер телефона или @username в Telegram
+            Укажите свой @username в Telegram
           </p>
         </div>
       </div>
 
       <div className="px-5 flex flex-col gap-10">
         <Input
-          placeholder="номер телефона или @username в Telegram"
+          placeholder="@username в Telegram"
           value={contact}
           onChangeFn={(e) => dispatch(setContact(e))}
         />

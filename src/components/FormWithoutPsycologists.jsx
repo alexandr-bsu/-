@@ -52,15 +52,13 @@ const Form = ({ maxTabsCount }) => {
   const customQuestion = form.customQuestion;
 
   const [showError, setShowError] = useState(false);
-  
-  
 
   // Массив заголовков табов формы.
   const headers = ["Заявка на подбор психолога из сообщества Хранители"];
 
   const [activeTabIndex, setActiveTabIndex] = useState(0);
-  
-  const areSlotsEmpty = useSelector((state) => state.form.emptySlots) 
+
+  const areSlotsEmpty = useSelector((state) => state.form.emptySlots);
 
   function setGoalReached(tabIndex) {
     let counter_number = 96890969;
@@ -139,7 +137,7 @@ const Form = ({ maxTabsCount }) => {
       (tabIndex == 9 ||
         (problemFromQuery !== undefined && tabIndex == 9) ||
         (isNext && tabIndex == 6)) &&
-      (contactType == "" || contact == "")
+      (contactType == "" || contact.length <= 1)
     ) {
       setShowError(true);
       setTimeout(() => {
@@ -190,7 +188,7 @@ const Form = ({ maxTabsCount }) => {
       (activeTabIndex == 7 ||
         (problemFromQuery !== undefined && activeTabIndex == 7) ||
         (isNext && activeTabIndex == 4)) &&
-      (contactType == "" || contact == "")
+      (contactType == "" || contact.length <= 1)
     ) {
       setShowError(true);
       setTimeout(() => {
@@ -258,8 +256,8 @@ const Form = ({ maxTabsCount }) => {
           axios({
             method: "PUT",
             url: "https://n8n.hrani.live/webhook/update-tracking-step",
-            data: {step: "Заявка отправлена", ticket_id}
-          })
+            data: { step: "Заявка отправлена", ticket_id },
+          });
         })
         .catch((e) => {
           dispatch(setStatus("error"));
@@ -268,21 +266,21 @@ const Form = ({ maxTabsCount }) => {
     }
   }
 
-  function showForwardBtn(){
-    
-    if((activeTabIndex == 8 || (problemFromQuery !== undefined && activeTabIndex == 8) || (isNext && activeTabIndex == 5)) && areSlotsEmpty){
-      return false
+  function showForwardBtn() {
+    if (
+      (activeTabIndex == 8 ||
+        (problemFromQuery !== undefined && activeTabIndex == 8) ||
+        (isNext && activeTabIndex == 5)) &&
+      areSlotsEmpty
+    ) {
+      return false;
+    } else if (activeTabIndex != maxTabsCount - 1) {
+      return true;
+    } else if (activeTabIndex == maxTabsCount - 1) {
+      return false;
     }
 
-    else if (activeTabIndex != maxTabsCount - 1){
-      return true
-    }
-
-    else if (activeTabIndex == maxTabsCount - 1){
-      return false
-    }
-
-    return true
+    return true;
   }
   return (
     <>
@@ -378,7 +376,7 @@ const Form = ({ maxTabsCount }) => {
               className="sm:max-w-40 max-sm:max-w-fit mr-auto text-sm"
               onClick={() => {
                 setActiveTabIndex(activeTabIndex - 1);
-                dispatch(removeEmptySlots())
+                dispatch(removeEmptySlots());
               }}
             >
               Назад

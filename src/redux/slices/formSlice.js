@@ -70,22 +70,15 @@ export const formSlice = createSlice({
     },
 
     toogleDiagnoses: (state, diagnose) => {
-      if (
-        state.diagnoses.includes(diagnose.payload)
-      ) {
-        state.diagnoses.splice(
-          state.diagnoses.indexOf(diagnose.payload),
-          1
-        );
+      if (state.diagnoses.includes(diagnose.payload)) {
+        state.diagnoses.splice(state.diagnoses.indexOf(diagnose.payload), 1);
       } else {
         state.diagnoses.push(diagnose.payload);
       }
     },
 
     toogleClientStates: (state, clientState) => {
-      if (
-        state.clientStates.includes(clientState.payload)
-      ) {
+      if (state.clientStates.includes(clientState.payload)) {
         state.clientStates.splice(
           state.clientStates.indexOf(clientState.payload),
           1
@@ -96,30 +89,23 @@ export const formSlice = createSlice({
     },
 
     toogleQuestions: (state, question) => {
-      if (
-        state.questions.includes(question.payload)
-      ) {
-        state.questions.splice(
-          state.questions.indexOf(question.payload),
-          1
-        );
+      if (state.questions.includes(question.payload)) {
+        state.questions.splice(state.questions.indexOf(question.payload), 1);
       } else {
         state.questions.push(question.payload);
       }
     },
 
     setCustomQuestion: (state, question) => {
-      state.customQuestion = question.payload
+      state.customQuestion = question.payload;
     },
 
     setDiagnoseInfo: (state, info) => {
-      state.diagnoseInfo = info.payload
+      state.diagnoseInfo = info.payload;
     },
 
     toogleTraumaticEvents: (state, event) => {
-      if (
-        state.traumaticEvents.includes(event.payload)
-      ) {
+      if (state.traumaticEvents.includes(event.payload)) {
         state.traumaticEvents.splice(
           state.traumaticEvents.indexOf(event.payload),
           1
@@ -176,6 +162,10 @@ export const formSlice = createSlice({
     },
 
     setContact: (state, contact) => {
+      if (!contact.payload.startsWith("@")) {
+        contact.payload = "@" + contact.payload;
+      }
+
       state.contact = contact.payload;
     },
 
@@ -217,6 +207,6 @@ export const {
   setCustomQuestion,
   setEmptySlots,
   removeEmptySlots,
-  setFilteredPsychologists
+  setFilteredPsychologists,
 } = formSlice.actions;
 export default formSlice.reducer;

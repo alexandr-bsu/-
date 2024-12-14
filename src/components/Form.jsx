@@ -153,7 +153,7 @@ const Form = ({ maxTabsCount }) => {
       (tabIndex == 10 ||
         (problemFromQuery !== undefined && tabIndex == 10) ||
         (isNext && tabIndex == 7)) &&
-      (contactType == "" || contact == "")
+      (contactType == "" || contact.length <= 1)
     ) {
       setShowError(true);
       setTimeout(() => {
@@ -166,22 +166,22 @@ const Form = ({ maxTabsCount }) => {
     }
   }
 
-  const areSlotsEmpty = useSelector((state) => state.form.emptySlots) 
-  function showForwardBtn(){
-    
-    if((activeTabIndex == 8 || (problemFromQuery !== undefined && activeTabIndex == 8) || (isNext && activeTabIndex == 5)) && areSlotsEmpty){
-      return false
+  const areSlotsEmpty = useSelector((state) => state.form.emptySlots);
+  function showForwardBtn() {
+    if (
+      (activeTabIndex == 8 ||
+        (problemFromQuery !== undefined && activeTabIndex == 8) ||
+        (isNext && activeTabIndex == 5)) &&
+      areSlotsEmpty
+    ) {
+      return false;
+    } else if (activeTabIndex != maxTabsCount - 1) {
+      return true;
+    } else if (activeTabIndex == maxTabsCount - 1) {
+      return false;
     }
 
-    else if (activeTabIndex != maxTabsCount - 1){
-      return true
-    }
-
-    else if (activeTabIndex == maxTabsCount - 1){
-      return false
-    }
-
-    return true
+    return true;
   }
 
   function sendData() {
@@ -222,7 +222,7 @@ const Form = ({ maxTabsCount }) => {
       (activeTabIndex == 10 ||
         (problemFromQuery !== undefined && activeTabIndex == 10) ||
         (isNext && activeTabIndex == 7)) &&
-      (contactType == "" || contact == "")
+      (contactType == "" || contact.length <= 1)
     ) {
       setShowError(true);
       setTimeout(() => {
@@ -394,7 +394,7 @@ const Form = ({ maxTabsCount }) => {
               className="sm:max-w-40 max-sm:max-w-fit mr-auto text-sm"
               onClick={() => {
                 setActiveTabIndex(activeTabIndex - 1);
-                dispatch(removeEmptySlots())
+                dispatch(removeEmptySlots());
               }}
             >
               Назад
