@@ -21,6 +21,15 @@ const AskContacts = () => {
   }, []);
   // const contactList = ["Whatsapp", "Telegram"];
 
+  function checkKey(event){
+  var regex = new RegExp("^[a-zA-Z0-9_]+$");
+    var key = event.key;
+    if (!regex.test(key)) {
+       event.preventDefault();
+       return false;
+      }
+    }
+
   return (
     <div className="flex flex-col grow pb-6">
       <div
@@ -42,6 +51,7 @@ const AskContacts = () => {
           placeholder="@username в Telegram"
           value={contact}
           onChangeFn={(e) => dispatch(setContact(e))}
+          onKeyPress={(e) => checkKey(e)}
         />
       </div>
     </div>
