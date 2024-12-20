@@ -6,7 +6,7 @@ import errorLottie from "../assets/lotties/error";
 import Button from "../components/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { setStatus } from "../redux/slices/formStatusSlice";
-import { generateTicketId } from "../redux/slices/formSlice";
+import { generateTicketId, setUserTimeZone } from "../redux/slices/formSlice";
 import axios from "axios";
 import QueryString from "qs";
 
@@ -21,21 +21,22 @@ const FormPage = () => {
     const problemFromQuery = QueryString.parse(window.location.search, {
       ignoreQueryPrefix: true,
     })?.problem;
-    let formType = problemFromQuery ? "Короткая форма " : "Стандартная форма "
-    formType += "без визиток"
-    
-    return formType
+    let formType = problemFromQuery ? "Короткая форма " : "Стандартная форма ";
+    formType += "без визиток";
+
+    return formType;
   }
-  function initFormTracking(){
+  function initFormTracking() {
     axios({
       method: "POST",
       url: "https://n8n.hrani.live/webhook/init-form-tracking",
-      data: {ticket_id, form_type: getFormType(), step: "Начало"}
-    })
+      data: { ticket_id, form_type: getFormType(), step: "Начало" },
+    });
   }
 
   useEffect(() => {
     dispatch(generateTicketId());
+    dispatch(setUserTimeZone());
   }, []);
 
   useEffect(() => {
@@ -155,13 +156,12 @@ const FormPage = () => {
         axios({
           method: "PUT",
           url: "https://n8n.hrani.live/webhook/update-tracking-step",
-          data: {step: "Заявка отправлена", ticket_id}
-        })
+          data: { step: "Заявка отправлена", ticket_id },
+        });
       })
       .catch((e) => {
         dispatch(setStatus("error"));
-        console.log('Ошибка [отправка формы]', e)
-
+        console.log("Ошибка [отправка формы]", e);
       });
   }
 
@@ -265,13 +265,14 @@ const FormPage = () => {
                     Cпасибо!
                   </h2>
                   <p className="text-black text-base font-medium text-center p-5">
-                    Мы получили ваш запрос и сейчас психолог из нашего
-                    сообщества подтверждает время. <br /> Для получения
-                    уведомления о записи на сессию перейдите в телеграм-бота.
+                    Cпасибо! Мы получили ваш запрос и сейчас психолог
+                    подтверждает время.
+                    <br /> Запустите телеграм-бот, чтобы получить подтверждение
+                    записи и ссылку сессию.
                   </p>
 
                   <a
-                    href={`https://t.me/HraniLiveBot?start=${ticket_id}`}
+                    href={`https://t.me/hraniteli_client_test_bot?start=${ticket_id}`}
                     target="_top"
                   >
                     <Button intent="cream" hover="primary">

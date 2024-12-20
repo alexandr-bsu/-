@@ -15,9 +15,9 @@ const Name = () => {
     axios({
       method: "PUT",
       url: "https://n8n.hrani.live/webhook/update-tracking-step",
-      data: {step: "Имя клиента", ticket_id}
-    })
-  }, [])
+      data: { step: "Имя клиента", ticket_id },
+    });
+  }, []);
   return (
     <div className="flex flex-col grow pb-6">
       <div

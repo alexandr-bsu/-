@@ -15,9 +15,9 @@ const Promocode = () => {
     axios({
       method: "PUT",
       url: "https://n8n.hrani.live/webhook/update-tracking-step",
-      data: {step: "Промокод", ticket_id}
-    })
-  }, [])
+      data: { step: "Промокод", ticket_id },
+    });
+  }, []);
   return (
     <div className="flex grow flex-col pb-6">
       <div

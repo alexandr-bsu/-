@@ -14,9 +14,9 @@ const LastExperience = () => {
     axios({
       method: "PUT",
       url: "https://n8n.hrani.live/webhook/update-tracking-step",
-      data: {step: "Обращался ли к психологу", ticket_id}
-    })
-  }, [])
+      data: { step: "Обращался ли к психологу", ticket_id },
+    });
+  }, []);
 
   const experienceList = [
     "Нет, это первый опыт",

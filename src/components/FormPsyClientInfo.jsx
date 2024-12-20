@@ -82,8 +82,7 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
       setTimeout(() => {
         setShowError(false);
       }, 3000);
-    } 
-     else if (tabIndex == 4 && hasPsychoExperience == "") {
+    } else if (tabIndex == 4 && hasPsychoExperience == "") {
       setShowError(true);
       setTimeout(() => {
         setShowError(false);

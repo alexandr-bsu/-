@@ -20,7 +20,7 @@ import {
   tooglePsychologists,
   setPsychologists,
   setShownPsychologists,
-  setEmptySlots
+  setEmptySlots,
 } from "@/redux/slices/formSlice";
 import VideoPlayer from "@/components/VideoPlayer";
 import axios from "axios";
@@ -30,14 +30,14 @@ const PsyCarousel = ({ className, ...props }) => {
   const ticket_id = useSelector((state) => state.form.ticket_id);
   const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
   const form = useSelector((state) => state.form);
-  
+
   useEffect(() => {
     axios({
       method: "PUT",
       url: "https://n8n.hrani.live/webhook/update-tracking-step",
-      data: {step: "Карточки психологов", ticket_id}
-    })
-  }, [])
+      data: { step: "Карточки психологов", ticket_id },
+    });
+  }, []);
 
   const dispatch = useDispatch();
   const errorLottieOptions = {
@@ -58,9 +58,9 @@ const PsyCarousel = ({ className, ...props }) => {
 
     axios({
       method: "put",
-      data: {ticket_id, form, formPsyClientInfo},
+      data: { ticket_id, form, formPsyClientInfo },
       url: "https://n8n.hrani.live/webhook/update-tracker",
-    })
+    });
   }, []);
 
   const next = QueryString.parse(window.location.search, {
@@ -71,7 +71,7 @@ const PsyCarousel = ({ className, ...props }) => {
   const [psychoStatus, setPsychoStatus] = useState("loading");
 
   const isNext = next == 1;
- 
+
   const pNames = useSelector((state) => state.form.selectedPsychologistsNames);
   const psychos = useSelector((state) => state.form.psychos);
   const age = formPsyClientInfo.age;
@@ -121,7 +121,6 @@ const PsyCarousel = ({ className, ...props }) => {
       },
     })
       .then((resp) => {
-       
         if (resp.data[0].filteredPsychologists.length <= 3) {
           dispatch(setPsychologists(resp.data[0].filteredPsychologists));
           let randomThree = resp.data[0].filteredPsychologists;
@@ -173,7 +172,7 @@ const PsyCarousel = ({ className, ...props }) => {
 
         if (resp.data[0].filteredPsychologists.length <= 0) {
           setPsychoStatus("empty");
-          dispatch(setEmptySlots())
+          dispatch(setEmptySlots());
         } else {
           setPsychoStatus("active");
         }
@@ -449,14 +448,23 @@ const PsyCarousel = ({ className, ...props }) => {
                     </h2>
                     <p>
                       <ul className="flex flex-col gap-2">
-                      <li>Горячая линия Центра экстренной психологической помощи
-                      МЧС России <span className="text-nowrap">+7 495 989-50-50</span></li>
-                      
-                      <li>Телефон экстренной психологической помощи для детей и
-                      взрослых Института «Гармония» <span className="text-nowrap">+7 800 500-22-87 </span></li>
+                        <li>
+                          Горячая линия Центра экстренной психологической помощи
+                          МЧС России{" "}
+                          <span className="text-nowrap">+7 495 989-50-50</span>
+                        </li>
 
-                      <li>Горячая линия психологической помощи Московского
-                      института психоанализа <span className="text-nowrap">+7 800 500-22-87 </span></li>
+                        <li>
+                          Телефон экстренной психологической помощи для детей и
+                          взрослых Института «Гармония»{" "}
+                          <span className="text-nowrap">+7 800 500-22-87 </span>
+                        </li>
+
+                        <li>
+                          Горячая линия психологической помощи Московского
+                          института психоанализа{" "}
+                          <span className="text-nowrap">+7 800 500-22-87 </span>
+                        </li>
                       </ul>
                     </p>
                   </div>
@@ -470,11 +478,18 @@ const PsyCarousel = ({ className, ...props }) => {
                     </h2>
 
                     <p className="">
-                    <ul className="flex flex-col gap-2">
-                      <li>Центр «Насилию.нет» <span className="text-nowrap">+7 495 916-30-00 </span></li>
+                      <ul className="flex flex-col gap-2">
+                        <li>
+                          Центр «Насилию.нет»{" "}
+                          <span className="text-nowrap">+7 495 916-30-00 </span>
+                        </li>
 
-                      <li>Телефон доверия для женщин, пострадавших от домашнего насилия кризисного Центра «АННА»: <span className="text-nowrap">8 800 7000 600</span></li>
-                    </ul>
+                        <li>
+                          Телефон доверия для женщин, пострадавших от домашнего
+                          насилия кризисного Центра «АННА»:{" "}
+                          <span className="text-nowrap">8 800 7000 600</span>
+                        </li>
+                      </ul>
                     </p>
                   </div>
 
@@ -486,13 +501,22 @@ const PsyCarousel = ({ className, ...props }) => {
                       Помощь людям с тяжёлыми заболеваниями:
                     </h2>
                     <p className="">
-                    <ul className="flex flex-col gap-2">
-                      <li>Горячая линия Центра экстренной психологической помощи
-                      МЧС России <span className="text-nowrap">+7 495 989-50-50</span></li>
+                      <ul className="flex flex-col gap-2">
+                        <li>
+                          Горячая линия Центра экстренной психологической помощи
+                          МЧС России{" "}
+                          <span className="text-nowrap">+7 495 989-50-50</span>
+                        </li>
 
-                      <li>Горячая линия службы «Ясное утро» <span className="text-nowrap">+7 800 100-01-91</span></li>
-                      <li>Горячая линия помощи неизлечимо больным людям <span className="text-nowrap">+7 800 700-84-36</span></li>
-                    </ul>
+                        <li>
+                          Горячая линия службы «Ясное утро»{" "}
+                          <span className="text-nowrap">+7 800 100-01-91</span>
+                        </li>
+                        <li>
+                          Горячая линия помощи неизлечимо больным людям{" "}
+                          <span className="text-nowrap">+7 800 700-84-36</span>
+                        </li>
+                      </ul>
                     </p>
                   </div>
 
@@ -504,11 +528,17 @@ const PsyCarousel = ({ className, ...props }) => {
                       Помощь детям и подросткам:
                     </h2>
                     <p className="">
-                    <ul className="flex flex-col gap-2">
-                      <li>Телефон доверия для детей, подростков и их родителей <span className="text-nowrap">8 800 2000 122</span></li>
+                      <ul className="flex flex-col gap-2">
+                        <li>
+                          Телефон доверия для детей, подростков и их родителей{" "}
+                          <span className="text-nowrap">8 800 2000 122</span>
+                        </li>
 
-                      <li>Проект группы кризисных психологов из Петербурга
-                      «Твоя территория.онлайн» <span className="text-nowrap">+7 800 200-01-22</span></li>
+                        <li>
+                          Проект группы кризисных психологов из Петербурга «Твоя
+                          территория.онлайн»{" "}
+                          <span className="text-nowrap">+7 800 200-01-22</span>
+                        </li>
                       </ul>
                     </p>
                   </div>

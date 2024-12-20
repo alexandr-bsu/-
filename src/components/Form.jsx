@@ -153,7 +153,7 @@ const Form = ({ maxTabsCount }) => {
       (tabIndex == 10 ||
         (problemFromQuery !== undefined && tabIndex == 10) ||
         (isNext && tabIndex == 7)) &&
-      (contactType == "" || contact.length <= 1)
+      (contactType == "" || contact == "")
     ) {
       setShowError(true);
       setTimeout(() => {
@@ -222,7 +222,7 @@ const Form = ({ maxTabsCount }) => {
       (activeTabIndex == 10 ||
         (problemFromQuery !== undefined && activeTabIndex == 10) ||
         (isNext && activeTabIndex == 7)) &&
-      (contactType == "" || contact.length <= 1)
+      (contactType == "" || contact == "")
     ) {
       setShowError(true);
       setTimeout(() => {

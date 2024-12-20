@@ -4,7 +4,7 @@ import Check from "../assets/check.svg?react";
 import { startOfWeek, endOfWeek } from "date-fns";
 import { useSelector, useDispatch } from "react-redux";
 import { toogleSlots } from "../redux/slices/formSlice";
-
+import { subHours } from "date-fns";
 const DateGroup = ({ group }) => {
   const slotsRedux = useSelector((state) => state.form.slots);
   const dispatch = useDispatch();
@@ -76,6 +76,37 @@ const DateGroup = ({ group }) => {
       userTime.getTime() + userTimeZoneOffset + moscowOffset
     );
     return moscowTime;
+  };
+
+  // Конвертируем текущее время в МСК
+  const getMoscowTimeByLocalTime = (datetime) => {
+    const userTime = new Date(datetime);
+    const userTimeZoneOffset = userTime.getTimezoneOffset() * 60 * 1000; // get user's time zone offset in milliseconds
+    const moscowOffset = 3 * 60 * 60 * 1000; // Moscow is UTC+3
+    const moscowTime = new Date(
+      userTime.getTime() + userTimeZoneOffset + moscowOffset
+    );
+    return moscowTime;
+  };
+
+  // Получить разницу в часовых поясах между московским временем и временем пользователя
+  const getTimeDifference = () => {
+    const userTime = new Date();
+    const moscowTime = getMoscowTime();
+    const timeDifference = Math.round((userTime - moscowTime) / 1000 / 60 / 60);
+    return timeDifference;
+  };
+
+  // Преобразуем местное время время слота в московское время
+  const convertMskSlotTimeToLocal = (date, time) => {
+    const timeDifference = getTimeDifference();
+    let local_datetime = new Date(date + "T" + time + ":00");
+    let msk_datetime = subHours(local_datetime, getTimeDifference());
+    let result = `${msk_datetime.getDate()}.${
+      msk_datetime.getMonth() + 1
+    } ${msk_datetime.getHours()}:00`;
+
+    return result;
   };
 
   const makeTimeInIso = (date, time) => {
@@ -151,9 +182,19 @@ const DateGroup = ({ group }) => {
                                   size="small"
                                   className="max-w-[140px]"
                                   onClick={() => {
+                                    console.log(
+                                      "slot_time_msk",
+                                      convertMskSlotTimeToLocal(
+                                        group.date,
+                                        slotTime
+                                      )
+                                    );
                                     dispatch(
                                       toogleSlots(
-                                        `${group.pretty_date} ${slotTime}`
+                                        `${convertMskSlotTimeToLocal(
+                                          group.date,
+                                          slotTime
+                                        )}`
                                       )
                                     );
                                   }}
@@ -161,7 +202,10 @@ const DateGroup = ({ group }) => {
                                 >
                                   {slotTime}
                                   {slotsRedux.includes(
-                                    `${group.pretty_date} ${slotTime}`
+                                    `${convertMskSlotTimeToLocal(
+                                      group.date,
+                                      slotTime
+                                    )}`
                                   ) ? (
                                     <Check width={20} height={20}></Check>
                                   ) : (

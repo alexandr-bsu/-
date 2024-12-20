@@ -102,7 +102,7 @@ const FormPsyClientInfoPage = () => {
     axios({
       method: "POST",
       data: data,
-      url: "https://n8n.hrani.live/webhook/research-tilda-zayavka",
+      url: "https://n8n.hrani.live/webhook/research-tilda-zayavka-test",
     })
       .then(() => {
         dispatch(setStatus("ok"));

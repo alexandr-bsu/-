@@ -1,3 +1,4 @@
+// Перенести изменения от 14-12-2024 (Показывать слоты по локальному времени)
 import React from "react";
 import { useEffect, useState } from "react";
 import { ChevronsDown } from "lucide-react";
@@ -16,15 +17,15 @@ import { useSelector, useDispatch } from "react-redux";
 const Slots = () => {
   const ticket_id = useSelector((state) => state.form.ticket_id);
   const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
-  
+
   useEffect(() => {
     axios({
       method: "PUT",
       url: "https://n8n.hrani.live/webhook/update-tracking-step",
-      data: {step: "Слоты", ticket_id}
-    })
-  })
-  
+      data: { step: "Слоты", ticket_id },
+    });
+  });
+
   const selectedPsychologistsNames = useSelector(
     (state) => state.form.selectedPsychologistsNames
   );

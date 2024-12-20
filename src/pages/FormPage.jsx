@@ -6,7 +6,7 @@ import errorLottie from "../assets/lotties/error";
 import Button from "../components/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { setStatus } from "../redux/slices/formStatusSlice";
-import { generateTicketId } from "../redux/slices/formSlice";
+import { generateTicketId, setUserTimeZone } from "../redux/slices/formSlice";
 import axios from "axios";
 import QueryString from "qs";
 
@@ -36,6 +36,7 @@ const FormPage = () => {
 
   useEffect(() => {
     dispatch(generateTicketId());
+    dispatch(setUserTimeZone());
   }, []);
 
   useEffect(() => {
@@ -266,11 +267,11 @@ const FormPage = () => {
                     Cпасибо! Мы получили ваш запрос и сейчас психолог
                     подтверждает время.
                     <br /> Запустите телеграм-бот, чтобы получить подтверждение
-                    записи и ссылку на сессию
+                    записи и ссылку сессию.
                   </p>
 
                   <a
-                    href={`https://t.me/HraniLiveBot?start=${ticket_id}`}
+                    href={`https://t.me/hraniteli_client_test_bot?start=${ticket_id}`}
                     target="_top"
                   >
                     <Button intent="cream" hover="primary">

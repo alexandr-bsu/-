@@ -21,6 +21,7 @@ const initialState = {
   promocode: "",
   ticket_id: "",
   emptySlots: false,
+  userTimeZone: "МСК",
   bid: 0,
   rid: 0,
   // Используется только при автомотчинге без карточек
@@ -115,6 +116,39 @@ export const formSlice = createSlice({
       }
     },
 
+    setUserTimeZone: (state) => {
+      // Конвертируем текущее время в МСК
+      const getMoscowTime = () => {
+        const userTime = new Date();
+        const userTimeZoneOffset = userTime.getTimezoneOffset() * 60 * 1000; // get user's time zone offset in milliseconds
+        const moscowOffset = 3 * 60 * 60 * 1000; // Moscow is UTC+3
+        const moscowTime = new Date(
+          userTime.getTime() + userTimeZoneOffset + moscowOffset
+        );
+
+        return moscowTime;
+      };
+
+      // Получить разницу в часовых поясах между московским временем и временем пользователя
+      const getTimeDifference = () => {
+        const userTime = new Date();
+        const moscowTime = getMoscowTime();
+        const timeDifference = Math.round(
+          (userTime - moscowTime) / 1000 / 60 / 60
+        );
+        return timeDifference;
+      };
+
+      let diff = getTimeDifference();
+      if (diff > 0) {
+        state.userTimeZone = `МСК+${diff}`;
+      } else if (diff < 0) {
+        state.userTimeZone = `МСК-${diff}`;
+      } else {
+        state.userTimeZone = "МСК";
+      }
+    },
+
     setPsychologists: (state, ps) => {
       state.psychos = ps.payload;
     },
@@ -166,6 +200,7 @@ export const formSlice = createSlice({
         contact.payload = "@" + contact.payload;
       }
 
+      contact.payload = contact.payload.replace(/\s|[а-яА-Я]/g, "");      
       state.contact = contact.payload;
     },
 
@@ -208,5 +243,6 @@ export const {
   setEmptySlots,
   removeEmptySlots,
   setFilteredPsychologists,
+  setUserTimeZone,
 } = formSlice.actions;
 export default formSlice.reducer;

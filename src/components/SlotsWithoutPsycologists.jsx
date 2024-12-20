@@ -12,14 +12,17 @@ import Lottie from "react-lottie";
 import errorLottie from "../assets/lotties/error";
 import QueryString from "qs";
 import { useSelector, useDispatch } from "react-redux";
-import { removeEmptySlots, setEmptySlots, setFilteredPsychologists  } from "@/redux/slices/formSlice";
+import {
+  removeEmptySlots,
+  setEmptySlots,
+  setFilteredPsychologists,
+} from "@/redux/slices/formSlice";
 
 const Slots = () => {
   const dispatch = useDispatch();
   const ticket_id = useSelector((state) => state.form.ticket_id);
   const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
   const form = useSelector((state) => state.form);
-  
 
   useEffect(() => {
     axios({
@@ -38,7 +41,6 @@ const Slots = () => {
   })?.next;
 
   const isNext = next == 1;
-
 
   const age = formPsyClientInfo.age;
   const ageMainForm = useSelector((state) => state.form.age);
@@ -128,6 +130,39 @@ const Slots = () => {
     return noSlots;
   }
 
+  function convertUTCDateToLocalDate(date) {
+    let newDate = new Date(
+      date.getTime() + date.getTimezoneOffset() * 60 * 1000
+    );
+
+    let offset = date.getTimezoneOffset() / 60;
+    let hours = date.getHours();
+
+    newDate.setHours(hours - offset);
+
+    return newDate;
+  }
+
+  // Конвертируем текущее время в МСК
+  const getMoscowTime = () => {
+    const userTime = new Date();
+    const userTimeZoneOffset = userTime.getTimezoneOffset() * 60 * 1000; // get user's time zone offset in milliseconds
+    const moscowOffset = 3 * 60 * 60 * 1000; // Moscow is UTC+3
+    const moscowTime = new Date(
+      userTime.getTime() + userTimeZoneOffset + moscowOffset
+    );
+
+    return moscowTime;
+  };
+
+  // Получить разницу в часовых поясах между московским временем и временем пользователя
+  const getTimeDifference = () => {
+    const userTime = new Date();
+    const moscowTime = getMoscowTime();
+    const timeDifference = Math.round((userTime - moscowTime) / 1000 / 60 / 60);
+    return timeDifference;
+  };
+
   // Получаем группы слотов и обновляем переменную groups_of_slots
   function selectFn(date) {
     let splited_dates = date.split(":");
@@ -144,6 +179,7 @@ const Slots = () => {
         formPsyClientInfo,
         form,
         ticket_id,
+        userTimeOffsetMsk: getTimeDifference(),
       },
 
       url: `https://n8n.hrani.live/webhook/get-agregated-schedule-v2`,
@@ -156,18 +192,18 @@ const Slots = () => {
           dispatch(setEmptySlots());
         } else {
           setSlotStatus("active");
-          
-          let filtered_names = []
-          for(let group of filtered_groups) {
-            for(let s in group.slots){
-              for(let p of group.slots[s]){
-                
-                if(!filtered_names.includes(p?.name))
-                filtered_names.push(p?.name)
+
+          let filtered_names = [];
+          for (let group of filtered_groups) {
+            for (let s in group.slots) {
+              for (let p of group.slots[s]) {
+                console.log("psy psy psy", p?.Психолог[0]?.value);
+                if (!filtered_names.includes(p?.Психолог[0]?.value))
+                  filtered_names.push(p?.Психолог[0]?.value);
               }
             }
           }
-          dispatch(setFilteredPsychologists(filtered_names))
+          dispatch(setFilteredPsychologists(filtered_names));
           dispatch(removeEmptySlots());
         }
       })
@@ -203,17 +239,6 @@ const Slots = () => {
       new Date(date1) <=
       new Date(new Date(date2).getTime() + 3 * 60 * 60 * 1000)
     );
-  };
-
-  // Конвертируем текущее время в МСК
-  const getMoscowTime = () => {
-    const userTime = new Date();
-    const userTimeZoneOffset = userTime.getTimezoneOffset() * 60 * 1000; // get user's time zone offset in milliseconds
-    const moscowOffset = 3 * 60 * 60 * 1000; // Moscow is UTC+3
-    const moscowTime = new Date(
-      userTime.getTime() + userTimeZoneOffset + moscowOffset
-    );
-    return moscowTime;
   };
 
   const makeTimeInIso = (date, time) => {
@@ -277,32 +302,36 @@ const Slots = () => {
     selectFn(selectedDate);
     axios({
       method: "put",
-      data: {ticket_id, form, formPsyClientInfo},
+      data: { ticket_id, form, formPsyClientInfo },
       url: "https://n8n.hrani.live/webhook/update-tracker",
-    })
+    });
   }, []);
 
   return (
     <div className="flex grow flex-col">
       <div className="sticky top-0">
         <>
-        {slotStatus != "empty" &&
-        <div
-          data-name="question-block"
-          className={`bg-white px-5 ${
-            !isNext ? " border-gray border-b" : ""
-          } z-10 w-full py-4 `}
-        >
-           
-          <div className="flex flex-col">
-            <h3 className="font-medium text-base text-dark-green">
-              {slotStatus != "empty" ? "Выберите подходящее время сессии. Время московское" : "Нет слотов"}
-            </h3>
-            <p className="text-gray-disabled text-base">
-              {slotStatus != "empty" ? "Выберите один или несколько вариантов" : ""}
-            </p>
-          </div>
-        </div>}
+          {slotStatus != "empty" && (
+            <div
+              data-name="question-block"
+              className={`bg-white px-5 ${
+                !isNext ? " border-gray border-b" : ""
+              } z-10 w-full py-4 `}
+            >
+              <div className="flex flex-col">
+                <h3 className="font-medium text-base text-dark-green">
+                  {slotStatus != "empty"
+                    ? "Выберите подходящее время сессии."
+                    : "Нет слотов"}
+                </h3>
+                <p className="text-gray-disabled text-base">
+                  {slotStatus != "empty"
+                    ? "Выберите один или несколько вариантов"
+                    : ""}
+                </p>
+              </div>
+            </div>
+          )}
         </>
         {/* {isNext && !isNaN(age) && ( */}
         {/* <div className="w-full flex justify-center items-center gap-2 py-2 font-medium text-[13px] text-dark-green bg-[#d5e2e2] px-5">
@@ -421,22 +450,32 @@ const Slots = () => {
               </div>
 
               <div className="w-full md:contact-grid-container-2 lg:contact-grid-container-2 sm:contact-grid-container-2 xs:contact-grid-container-1">
-                <div data-name="extra-contacts" className="flex flex-col mb-5 w-full">
+                <div
+                  data-name="extra-contacts"
+                  className="flex flex-col mb-5 w-full"
+                >
                   <h2 className="text-black font-bold text-base">
                     Универсальные службы:
                   </h2>
                   <p>
                     <ul className="flex flex-col gap-2">
-                    <li>
-                    Горячая линия Центра экстренной психологической помощи МЧС
-                    России <span className="text-nowrap">+7 495 989-50-50</span>
-                    </li>
-                    
-                    <li>Телефон экстренной психологической помощи для детей и
-                    взрослых Института «Гармония» <span className="text-nowrap">+7 800 500-22-87</span></li>
-                    <li>Горячая линия психологической помощи Московского института
-                    психоанализа <span className="text-nowrap">+7 800 500-22-87</span></li>
-                    </ul> 
+                      <li>
+                        Горячая линия Центра экстренной психологической помощи
+                        МЧС России{" "}
+                        <span className="text-nowrap">+7 495 989-50-50</span>
+                      </li>
+
+                      <li>
+                        Телефон экстренной психологической помощи для детей и
+                        взрослых Института «Гармония»{" "}
+                        <span className="text-nowrap">+7 800 500-22-87</span>
+                      </li>
+                      <li>
+                        Горячая линия психологической помощи Московского
+                        института психоанализа{" "}
+                        <span className="text-nowrap">+7 800 500-22-87</span>
+                      </li>
+                    </ul>
                   </p>
                 </div>
 
@@ -446,9 +485,16 @@ const Slots = () => {
                   </h2>
 
                   <p className="">
-                  <ul className="flex flex-col gap-2">
-                   <li>Центр «Насилию.нет» <span className="text-nowrap">+7 495 916-30-00</span></li>
-                   <li>Телефон доверия для женщин, пострадавших от домашнего насилия кризисного Центра «АННА»:<span className="text-nowrap"> 8 800 7000 600 </span></li>
+                    <ul className="flex flex-col gap-2">
+                      <li>
+                        Центр «Насилию.нет»{" "}
+                        <span className="text-nowrap">+7 495 916-30-00</span>
+                      </li>
+                      <li>
+                        Телефон доверия для женщин, пострадавших от домашнего
+                        насилия кризисного Центра «АННА»:
+                        <span className="text-nowrap"> 8 800 7000 600 </span>
+                      </li>
                     </ul>
                   </p>
                 </div>
@@ -458,13 +504,20 @@ const Slots = () => {
                     Помощь людям с тяжёлыми заболеваниями:
                   </h2>
                   <p className="">
-                  <ul className="flex flex-col gap-2">
-                    <li>Горячая линия Центра экстренной психологической помощи МЧС
-                    России +7 495 989-50-50</li>
-                    <li>Горячая линия службы «Ясное утро» <span className="text-nowrap">+7 800 100-01-91</span></li>
-                    
-                    <li>Горячая линия помощи неизлечимо больным людям <span className="text-nowrap">+7 800
-                    700-84-36</span></li>
+                    <ul className="flex flex-col gap-2">
+                      <li>
+                        Горячая линия Центра экстренной психологической помощи
+                        МЧС России +7 495 989-50-50
+                      </li>
+                      <li>
+                        Горячая линия службы «Ясное утро»{" "}
+                        <span className="text-nowrap">+7 800 100-01-91</span>
+                      </li>
+
+                      <li>
+                        Горячая линия помощи неизлечимо больным людям{" "}
+                        <span className="text-nowrap">+7 800 700-84-36</span>
+                      </li>
                     </ul>
                   </p>
                 </div>
@@ -474,10 +527,16 @@ const Slots = () => {
                     Помощь детям и подросткам:
                   </h2>
                   <p className="">
-                  <ul className="flex flex-col gap-2">
-                    <li>Телефон доверия для детей, подростков и их родителей <span className="text-nowrap">8 800 2000 122</span></li>
-                    <li>Проект группы кризисных психологов из Петербурга
-                    «Твоя территория.онлайн» <span className="text-nowrap">+7 800 200-01-22</span></li>
+                    <ul className="flex flex-col gap-2">
+                      <li>
+                        Телефон доверия для детей, подростков и их родителей{" "}
+                        <span className="text-nowrap">8 800 2000 122</span>
+                      </li>
+                      <li>
+                        Проект группы кризисных психологов из Петербурга «Твоя
+                        территория.онлайн»{" "}
+                        <span className="text-nowrap">+7 800 200-01-22</span>
+                      </li>
                     </ul>
                   </p>
                 </div>

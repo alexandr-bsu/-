@@ -15,9 +15,9 @@ const Age = () => {
     axios({
       method: "PUT",
       url: "https://n8n.hrani.live/webhook/update-tracking-step",
-      data: {step: "Возраст клиента", ticket_id}
-    })
-  }, [])
+      data: { step: "Возраст клиента", ticket_id },
+    });
+  }, []);
 
   return (
     <div className="flex grow flex-col pb-6">

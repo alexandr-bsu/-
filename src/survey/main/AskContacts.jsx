@@ -11,6 +11,17 @@ const AskContacts = () => {
   const contactType = useSelector((state) => state.form.contactType);
   const contact = useSelector((state) => state.form.contact);
   const ticket_id = useSelector((state) => state.form.ticket_id);
+  
+  function checkKey(event){
+    var regex = new RegExp("^[a-zA-Z0-9_]+$");
+      var key = event.key;
+      if (!regex.test(key)) {
+         event.preventDefault();
+         return false;
+        }
+      }
+    
+  
 
   useEffect(() => {
     axios({
@@ -20,15 +31,6 @@ const AskContacts = () => {
     });
   }, []);
   // const contactList = ["Whatsapp", "Telegram"];
-
-  function checkKey(event){
-  var regex = new RegExp("^[a-zA-Z0-9_]+$");
-    var key = event.key;
-    if (!regex.test(key)) {
-       event.preventDefault();
-       return false;
-      }
-    }
 
   return (
     <div className="flex flex-col grow pb-6">
@@ -41,17 +43,17 @@ const AskContacts = () => {
             Как с вами связаться?
           </h3>
           <p className="text-gray-disabled text-sm">
-            Укажите свой @username в Telegram
+            Укажите свой номер телефона или @username в Telegram
           </p>
         </div>
       </div>
 
       <div className="px-5 flex flex-col gap-10">
         <Input
-          placeholder="@username в Telegram"
+          placeholder="номер телефона или @username в Telegram"
           value={contact}
           onChangeFn={(e) => dispatch(setContact(e))}
-          onKeyPress={(e) => checkKey(e)}
+          // onKeyPress={(e) => checkKey(e)}
         />
       </div>
     </div>
