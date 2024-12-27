@@ -4,6 +4,7 @@ import formStatusSlice from "./slices/formStatusSlice";
 import psycoSlotsSlice from "./slices/psycoSlotsSlice";
 import formPsyClientInfoSlice from "./slices/formPsyClientInfoSlice";
 import psySlice from "./slices/psy";
+import clientFeedbackSlice  from "./slices/clientFeedback";
 export const store = configureStore({
   reducer: {
     form: formReducer,
@@ -11,5 +12,6 @@ export const store = configureStore({
     formStatus: formStatusSlice,
     psyco: psycoSlotsSlice,
     psyAnketa: psySlice,
+    clientFeedback: clientFeedbackSlice
   },
 });

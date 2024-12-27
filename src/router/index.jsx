@@ -6,6 +6,7 @@ import FormPsyClientInfoPage from "../pages/FormPsyClientInfoPage";
 import PsycoSlotsPage from "../pages/PsycoSlotsPage";
 import SaveSlotsPage from "../pages/SaveSlotsPage";
 import PsycologistPage from "@/pages/PsycologistPage";
+import ClientFeedbackPage from "@/pages/ClientFeedbackPage";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -29,4 +30,5 @@ export const router = createBrowserRouter([
   },
 
   { path: "/psycologist-anketa", element: <PsycologistPage /> },
+  { path: "/client-feedback-anketa", element: <ClientFeedbackPage /> },
 ]);

@@ -200,7 +200,7 @@ export const formSlice = createSlice({
         contact.payload = "@" + contact.payload;
       }
 
-      contact.payload = contact.payload.replace(/\s|[а-яА-Я]/g, "");      
+      contact.payload = contact.payload.replace(/\s|[а-яА-Я]/g, "");
       state.contact = contact.payload;
     },
 

@@ -8,7 +8,7 @@ const textarea = cva(["appearance-none"], {
         "border-b-dark-green border-b-2 bg-[#155d5e2e] outline-none p-3 text-dark-green placeholder:text-[#204b4a76]",
       ],
       cream: [
-        "border-cream border rounded-[15px] px-[20px] outline-none py-[10px] text-white placeholder:text-disabled",
+        "border-cream border rounded-[15px] bg-[#155d5e2e] px-[20px] outline-none py-[10px] text-white placeholder:text-disabled",
       ],
     },
   },

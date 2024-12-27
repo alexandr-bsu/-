@@ -11,17 +11,6 @@ const AskContacts = () => {
   const contactType = useSelector((state) => state.form.contactType);
   const contact = useSelector((state) => state.form.contact);
   const ticket_id = useSelector((state) => state.form.ticket_id);
-  
-  function checkKey(event){
-    var regex = new RegExp("^[a-zA-Z0-9_]+$");
-      var key = event.key;
-      if (!regex.test(key)) {
-         event.preventDefault();
-         return false;
-        }
-      }
-    
-  
 
   useEffect(() => {
     axios({
@@ -53,7 +42,6 @@ const AskContacts = () => {
           placeholder="номер телефона или @username в Telegram"
           value={contact}
           onChangeFn={(e) => dispatch(setContact(e))}
-          // onKeyPress={(e) => checkKey(e)}
         />
       </div>
     </div>
