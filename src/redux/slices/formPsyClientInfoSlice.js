@@ -25,6 +25,7 @@ const initialState = {
   name: "",
   is_adult: false,
   is_last_page: false,
+  occupation: "",
 };
 
 export const formPsyClientInfoSlice = createSlice({
@@ -87,7 +88,6 @@ export const formPsyClientInfoSlice = createSlice({
       }
     },
 
-
     setHasPsychoExperience: (state, experience) => {
       state.hasPsychoExperience = experience.payload;
     },
@@ -134,6 +134,10 @@ export const formPsyClientInfoSlice = createSlice({
     setName: (state, name) => {
       state.name = name.payload;
     },
+
+    setOccupation: (state, occupation) => {
+      state.occupation = occupation.payload;
+    },
   },
 });
 
@@ -160,5 +164,6 @@ export const {
   setCustomAnexiety,
   setCustomCreteria,
   setCustomImportance,
+  setOccupation,
 } = formPsyClientInfoSlice.actions;
 export default formPsyClientInfoSlice.reducer;

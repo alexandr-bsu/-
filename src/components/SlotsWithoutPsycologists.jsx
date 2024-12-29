@@ -182,7 +182,7 @@ const Slots = () => {
         userTimeOffsetMsk: getTimeDifference(),
       },
 
-      url: `https://n8n.hrani.live/webhook/get-agregated-schedule-v2`,
+      url: `https://n8n.hrani.live/webhook/get-agregated-schedule-v2-test-contur`,
     })
       .then((resp) => {
         let filtered_groups = remove_first_n_empty_groups(resp.data[0].items);

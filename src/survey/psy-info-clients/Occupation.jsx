@@ -1,18 +1,18 @@
 import React from "react";
 
 import { useSelector, useDispatch } from "react-redux";
-import { setHasPsychoExperience } from "../../redux/slices/formPsyClientInfoSlice";
+import { setOccupation } from "../../redux/slices/formPsyClientInfoSlice";
 import Radio from "../../components/Radio";
 
-const hasDiagnsose = () => {
-  const hasPsychoExperience = useSelector(
-    (state) => state.formPsyClientInfo.hasPsychoExperience
-  );
+const Occupation = () => {
+  const occupation = useSelector((state) => state.formPsyClientInfo.occupation);
   const dispatch = useDispatch();
 
-  const expList = [
-    "Да, я работал(а) с психологом/психотерапевтом",
-    "Нет, но рассматривал(а) такую возможность",
+  const occupationList = [
+    "Постоянная работа в найме",
+    "Фрилансер/самозанятый/работаю на себя",
+    "Предприниматель",
+    "Сейчас без работы",
   ];
 
   return (
@@ -23,7 +23,7 @@ const hasDiagnsose = () => {
       >
         <div className="flex flex-col">
           <h3 className="font-medium text-base text-dark-green">
-            У вас есть опыт работы с психологом/психотерапевтом?
+            Какое в данный момент у вас трудовое положение?
           </h3>
           <p className="text-gray-disabled text-sm">
             Выберите один вариант ответа
@@ -33,13 +33,13 @@ const hasDiagnsose = () => {
 
       <div className="px-5">
         <ul data-name="question-inputs">
-          {expList.map((e, index) => (
+          {occupationList.map((e, index) => (
             <li key={e} className="mt-2">
               <Radio
-                name="expClient"
-                id={`exp_client_${index}`}
-                onChange={() => dispatch(setHasPsychoExperience(e))}
-                checked={hasPsychoExperience == e ? true : false}
+                name="occupationClient"
+                id={`occupation_client_${index}`}
+                onChange={() => dispatch(setOccupation(e))}
+                checked={occupation == e ? true : false}
               >
                 {e}
               </Radio>
@@ -51,4 +51,4 @@ const hasDiagnsose = () => {
   );
 };
 
-export default hasDiagnsose;
+export default Occupation;

@@ -120,15 +120,15 @@ const FormPsyClientInfoPage = () => {
       "Да, я работал(а) с психологом/психотерапевтом"
     ) {
       if (form.is_adult) {
-        return 14;
+        return 15;
       } else {
-        return 12;
+        return 13;
       }
     } else {
       if (form.is_adult) {
-        return 11;
+        return 12;
       }
-      return 10;
+      return 11;
     }
   }
 

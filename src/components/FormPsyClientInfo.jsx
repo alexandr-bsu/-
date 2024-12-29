@@ -23,6 +23,7 @@ import SexPsycho from "../survey/psy-info-clients/SexPsycho";
 import SessionPrice from "../survey/psy-info-clients/SessionPrice";
 import TherapyDuring from "../survey/psy-info-clients/TherapyDuring";
 import ReasonCancel from "../survey/psy-info-clients/ReasonCancel";
+import Occupation from "@/survey/psy-info-clients/Occupation";
 const FormPsyClientInfo = ({ maxTabsCount }) => {
   const dispatch = useDispatch();
 
@@ -54,6 +55,7 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
   const checkedAnxieties = form.anxieties;
   const customAnexiety = form.customAnexiety;
   const is_last_page = form.is_last_page;
+  const occupation = form.occupation;
   const [showError, setShowError] = useState(false);
 
   // Массив заголовков табов формы.
@@ -132,6 +134,11 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
       setTimeout(() => {
         setShowError(false);
       }, 3000);
+    } else if (tabIndex == 10 && occupation == "" && !isHasPsychoExperience) {
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
     } else if (tabIndex == 9 && sexPsyco == "" && isHasPsychoExperience) {
       setShowError(true);
       setTimeout(() => {
@@ -156,6 +163,11 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
         setShowError(false);
       }, 3000);
     } else if (tabIndex == 12 && reasonCancel == "" && isHasPsychoExperience) {
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
+    } else if (tabIndex == 13 && occupation == "" && isHasPsychoExperience) {
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
@@ -247,14 +259,14 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
   }
 
   function sendData() {
-    if (activeTabIndex == 12 && reasonCancel == "" && isHasPsychoExperience) {
+    if (activeTabIndex == 13 && occupation == "" && isHasPsychoExperience) {
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
       }, 3000);
     } else if (
-      activeTabIndex == 9 &&
-      reasonNonApplication == "" &&
+      activeTabIndex == 10 &&
+      occupation == "" &&
       !isHasPsychoExperience
     ) {
       setShowError(true);
@@ -303,16 +315,19 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
             <ReasonNonApplication />
           )}
           {isHasPsychoExperience && activeTabIndex == 9 && <SexPsycho />}
-          {!isHasPsychoExperience && activeTabIndex == 10 && (
+          {!isHasPsychoExperience && activeTabIndex == 10 && <Occupation />}
+          {!isHasPsychoExperience && activeTabIndex == 11 && (
             <AskContacts
               sendFn={() => _sendData()}
               showOkFn={() => dispatch(setStatus("ok"))}
             />
           )}
+
           {isHasPsychoExperience && activeTabIndex == 10 && <SessionPrice />}
           {isHasPsychoExperience && activeTabIndex == 11 && <TherapyDuring />}
           {isHasPsychoExperience && activeTabIndex == 12 && <ReasonCancel />}
-          {isHasPsychoExperience && activeTabIndex == 13 && (
+          {isHasPsychoExperience && activeTabIndex == 13 && <Occupation />}
+          {isHasPsychoExperience && activeTabIndex == 14 && (
             <AskContacts
               sendFn={() => _sendData()}
               showOkFn={() => dispatch(setStatus("ok"))}
