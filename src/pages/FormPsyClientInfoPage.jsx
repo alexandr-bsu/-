@@ -36,7 +36,7 @@ const FormPsyClientInfoPage = () => {
 
   function getRowId() {
     axios
-      .get("https://n8n.hrani.live/webhook/get-sheets-row-number")
+      .get("https://n8n-v2.hrani.live/webhook/get-sheets-row-number")
       .then((response) => {
         dispatch(setRid(response.data.rowId));
         dispatch(setBid(response.data.baserowId));
@@ -102,7 +102,7 @@ const FormPsyClientInfoPage = () => {
     axios({
       method: "POST",
       data: data,
-      url: "https://n8n.hrani.live/webhook/research-tilda-zayavka",
+      url: "https://n8n-v2.hrani.live/webhook/research-tilda-zayavka",
     })
       .then(() => {
         dispatch(setStatus("ok"));

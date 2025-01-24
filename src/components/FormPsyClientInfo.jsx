@@ -179,7 +179,7 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
   }
   function getRowId() {
     axios
-      .get("https://n8n.hrani.live/webhook/get-sheets-row-number")
+      .get("https://n8n-v2.hrani.live/webhook/get-sheets-row-number")
       .then((response) => {
         dispatch(setRid(response.data.rowId));
         dispatch(setBid(response.data.baserowId));
@@ -245,7 +245,7 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
     axios({
       method: "POST",
       data: data,
-      url: "https://n8n.hrani.live/webhook/research-tilda-zayavka",
+      url: "https://n8n-v2.hrani.live/webhook/research-tilda-zayavka",
     })
       .then(() => {
         if (!is_adult) {
@@ -322,7 +322,6 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
               showOkFn={() => dispatch(setStatus("ok"))}
             />
           )}
-
           {isHasPsychoExperience && activeTabIndex == 10 && <SessionPrice />}
           {isHasPsychoExperience && activeTabIndex == 11 && <TherapyDuring />}
           {isHasPsychoExperience && activeTabIndex == 12 && <ReasonCancel />}
@@ -372,8 +371,8 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
           )}
 
           {activeTabIndex == maxTabsCount - 1 &&
-          ((!isHasPsychoExperience && activeTabIndex != 10) ||
-            (isHasPsychoExperience && activeTabIndex != 13)) ? (
+          ((!isHasPsychoExperience && activeTabIndex != 11) ||
+            (isHasPsychoExperience && activeTabIndex != 14)) ? (
             <Button
               size="small"
               intent="cream"

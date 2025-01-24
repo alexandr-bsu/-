@@ -230,7 +230,7 @@ const Form = ({ maxTabsCount }) => {
       axios({
         method: "POST",
         data: data,
-        url: "https://n8n.hrani.live/webhook/tilda-zayavka-test",
+        url: "https://n8n-v2.hrani.live/webhook/tilda-zayavka",
       })
         .then(() => {
           if (problemFromQuery) {
@@ -250,12 +250,12 @@ const Form = ({ maxTabsCount }) => {
                 contact: form.contact,
                 name: form.name,
               },
-              url: "https://n8n.hrani.live/webhook/update-contacts-stb",
+              url: "https://n8n-v2.hrani.live/webhook/update-contacts-stb",
             });
           }
           axios({
             method: "PUT",
-            url: "https://n8n.hrani.live/webhook/update-tracking-step",
+            url: "https://n8n-v2.hrani.live/webhook/update-tracking-step",
             data: { step: "Заявка отправлена", ticket_id },
           });
         })

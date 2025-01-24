@@ -34,7 +34,7 @@ const PsyCarousel = ({ className, ...props }) => {
   useEffect(() => {
     axios({
       method: "PUT",
-      url: "https://n8n.hrani.live/webhook/update-tracking-step",
+      url: "https://n8n-v2.hrani.live/webhook/update-tracking-step",
       data: { step: "Карточки психологов", ticket_id },
     });
   }, []);
@@ -52,14 +52,14 @@ const PsyCarousel = ({ className, ...props }) => {
   useEffect(() => {
     axios({
       method: "PUT",
-      url: "https://n8n.hrani.live/webhook/update-tracking-step",
+      url: "https://n8n-v2.hrani.live/webhook/update-tracking-step",
       data: { step: "Карточки психологов", ticket_id },
     });
 
     axios({
       method: "put",
       data: { ticket_id, form, formPsyClientInfo },
-      url: "https://n8n.hrani.live/webhook/update-tracker",
+      url: "https://n8n-v2.hrani.live/webhook/update-tracker",
     });
   }, []);
 
@@ -111,7 +111,7 @@ const PsyCarousel = ({ className, ...props }) => {
 
     setPsychoStatus("loading");
     axios({
-      url: "https://n8n.hrani.live/webhook/get-filtered-psychologists-names-new-test-contur",
+      url: "https://n8n-v2.hrani.live/webhook/get-filtered-psychologists-names-new",
       method: "POST",
       data: {
         ageFilter: getAgeFilter(),

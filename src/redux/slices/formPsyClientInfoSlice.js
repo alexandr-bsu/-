@@ -134,7 +134,6 @@ export const formPsyClientInfoSlice = createSlice({
     setName: (state, name) => {
       state.name = name.payload;
     },
-
     setOccupation: (state, occupation) => {
       state.occupation = occupation.payload;
     },

@@ -29,7 +29,7 @@ const FormPage = () => {
   function initFormTracking() {
     axios({
       method: "POST",
-      url: "https://n8n.hrani.live/webhook/init-form-tracking",
+      url: "https://n8n-v2.hrani.live/webhook/init-form-tracking",
       data: { ticket_id, form_type: getFormType(), step: "Начало" },
     });
   }
@@ -137,7 +137,7 @@ const FormPage = () => {
     axios({
       method: "POST",
       data: data,
-      url: "https://n8n.hrani.live/webhook/tilda-zayavka-test",
+      url: "https://n8n-v2.hrani.live/webhook/tilda-zayavka",
     })
       .then(() => {
         dispatch(setStatus("ok"));
@@ -150,12 +150,12 @@ const FormPage = () => {
               contactType: form.contactType,
               contact: form.contact,
             },
-            url: "https://n8n.hrani.live/webhook/update-contacts-stb",
+            url: "https://n8n-v2.hrani.live/webhook/update-contacts-stb",
           });
         }
         axios({
           method: "PUT",
-          url: "https://n8n.hrani.live/webhook/update-tracking-step",
+          url: "https://n8n-v2.hrani.live/webhook/update-tracking-step",
           data: { step: "Заявка отправлена", ticket_id },
         });
       })
@@ -272,7 +272,7 @@ const FormPage = () => {
                   </p>
 
                   <a
-                    href={`https://t.me/HraniLiveBot?start=${ticket_id}`}
+                    href={`https://t.me/hraniteli_client_test_bot?start=${ticket_id}`}
                     target="_top"
                   >
                     <Button intent="cream" hover="primary">

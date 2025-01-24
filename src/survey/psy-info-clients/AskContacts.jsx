@@ -84,7 +84,7 @@ const AskContacts = ({ sendFn, showOkFn }) => {
 
   function getRowId() {
     axios
-      .get("https://n8n.hrani.live/webhook/get-sheets-row-number")
+      .get("https://n8n-v2.hrani.live/webhook/get-sheets-row-number")
       .then((response) => {
         dispatch(setRid(response.data.rowId));
         dispatch(setBid(response.data.baserowId));
@@ -111,7 +111,7 @@ const AskContacts = ({ sendFn, showOkFn }) => {
     axios({
       method: "POST",
       data: data,
-      url: "https://n8n.hrani.live/webhook/research-tilda-zayavka",
+      url: "https://n8n-v2.hrani.live/webhook/research-tilda-zayavka",
     })
       .then(() => {
         setStatus("ok");
@@ -119,6 +119,7 @@ const AskContacts = ({ sendFn, showOkFn }) => {
       })
       .catch((e) => {
         setStatus("error");
+        // setStatus("ok");
       });
   }
 
@@ -197,28 +198,24 @@ const AskContacts = ({ sendFn, showOkFn }) => {
               </h2>
             </div>
 
-            <p className="text-black text-sm font-medium text-center max-w-[1200px]">
-              В знак благодарности мы обещали подарить бесплатную сессию с
-              аналитическим психологом из Хранителей. Сессия - 55 минут, онлайн,
-              по видеосвязи. Готовы сейчас оставить запрос и выбрать время?
+            <p className="text-black text-sm font-medium text-center max-w-[1200px] mb-[20px]">
+            В знак благодарности мы обещали подобрать для вас подходящего аналитического психолога из Хранителей. Сессия - 55 минут, онлайн, по видеосвязи. Первая сессия будет бесплатная, далее от 1 до 5 тыс. рублей, в зависимости от психолога. У вас есть запрос на работу с психологом? Подбираем?
             </p>
             <div className="flex gap-4">
               <Link
-                to={`${
-                  isP ? "/form-with-psychologists/" : "/"
-                }?utm_client=${utm_client}&utm_tarif=${utm_tarif}&utm_campaign=${utm_campaign}&utm_content=${utm_content}&utm_medium=${utm_medium}&utm_source=${utm_source}&utm_term=${utm_term}&utm_psy=${utm_psy}&next=1`}
+                to={`/?utm_client=${utm_client}&utm_tarif=${utm_tarif}&utm_campaign=${utm_campaign}&utm_content=${utm_content}&utm_medium=${utm_medium}&utm_source=${utm_source}&utm_term=${utm_term}&utm_psy=${utm_psy}&next=1`}
               >
                 <Button
                   size="medium"
                   intent="primary"
                   hover="cream"
-                  className="w-[150px]"
+                  className="w-[250px]"
                 >
                   Да
                 </Button>
               </Link>
 
-              <Button
+              {/* <Button
                 size="medium"
                 intent="primary-transparent"
                 hover="cream"
@@ -228,7 +225,7 @@ const AskContacts = ({ sendFn, showOkFn }) => {
                 }}
               >
                 Нет, спасибо
-              </Button>
+              </Button> */}
             </div>
           </>
         )}

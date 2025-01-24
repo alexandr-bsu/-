@@ -46,7 +46,7 @@ const PopupPsyAnketa = ({ isVisible = true, closeFn }) => {
 
     axios({
       method: "post",
-      url: "https://n8n.hrani.live/webhook/update-psychologists",
+      url: "https://n8n-v2.hrani.live/webhook/update-psychologists",
       data: { anketa, psychologist_id },
     })
       .then((resp) => {

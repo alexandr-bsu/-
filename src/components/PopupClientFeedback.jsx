@@ -53,7 +53,7 @@ const PopupPsyAnketa = ({ isVisible = true, closeFn }) => {
     
     axios({
       method: "post",
-      url: "https://n8n.hrani.live/webhook/client-os",
+      url: "https://n8n-v2.hrani.live/webhook/client-os",
       data: { anketa, telegram_id, psychologist_name, utm_client, client_name,client_username, telegram_id_psychologist },
     })
       .then((resp) => {

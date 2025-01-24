@@ -21,7 +21,7 @@ const Slots = () => {
   useEffect(() => {
     axios({
       method: "PUT",
-      url: "https://n8n.hrani.live/webhook/update-tracking-step",
+      url: "https://n8n-v2.hrani.live/webhook/update-tracking-step",
       data: { step: "Слоты", ticket_id },
     });
   });
@@ -106,7 +106,7 @@ const Slots = () => {
         endDate,
         psyName: selectedPsychologistsNames,
       },
-      url: `https://n8n.hrani.live/webhook/aggregated-schedule-by-psychologists-names`,
+      url: `https://n8n-v2.hrani.live/webhook/aggregated-schedule-by-psychologists-names`,
     })
       .then((resp) => {
         let filtered_groups = remove_first_n_empty_groups(resp.data[0].items);

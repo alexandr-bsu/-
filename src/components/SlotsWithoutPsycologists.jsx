@@ -27,7 +27,7 @@ const Slots = () => {
   useEffect(() => {
     axios({
       method: "PUT",
-      url: "https://n8n.hrani.live/webhook/update-tracking-step",
+      url: "https://n8n-v2.hrani.live/webhook/update-tracking-step",
       data: { step: "Слоты", ticket_id },
     });
   });
@@ -84,15 +84,11 @@ const Slots = () => {
 
   // Даты начала и конца следующей недели
   let next_date = new Date();
-  next_date.setDate(next_date.getDate() + 7);
-  const nextWeekBorders = getWeekStartEnd(next_date);
+  next_date.setDate(next_date.getDate() + 7*3);
 
-  // Даты для поиска слотов по неделям
-  // Временно заменяем 2 недели на 14 дней
-  // const dates = [
-  // `${currWeekBorders.monday}:${currWeekBorders.sunday}`,
-  // `${nextWeekBorders.monday}:${nextWeekBorders.sunday}`,
-  // ];
+  console.log('nextdate', next_date)
+  const nextWeekBorders = getWeekStartEnd(next_date);
+  console.log('nextWeekBorders', nextWeekBorders)
 
   const dates = [`${currWeekBorders.monday}:${nextWeekBorders.sunday}`];
   const [selectedDate, setSelectedDate] = useState(dates[0]);
@@ -182,11 +178,12 @@ const Slots = () => {
         userTimeOffsetMsk: getTimeDifference(),
       },
 
-      url: `https://n8n.hrani.live/webhook/get-agregated-schedule-v2`,
+      url: `https://n8n-v2.hrani.live/webhook/get-agregated-schedule-v2`,
     })
       .then((resp) => {
         let filtered_groups = remove_first_n_empty_groups(resp.data[0].items);
         setGroupsOfSlots(filtered_groups);
+
         if (checkNoSlots(filtered_groups)) {
           setSlotStatus("empty");
           dispatch(setEmptySlots());
@@ -197,9 +194,9 @@ const Slots = () => {
           for (let group of filtered_groups) {
             for (let s in group.slots) {
               for (let p of group.slots[s]) {
-                console.log("psy psy psy", p?.Психолог[0]?.value);
-                if (!filtered_names.includes(p?.Психолог[0]?.value))
-                  filtered_names.push(p?.Психолог[0]?.value);
+                console.log("psy psy psy", p?.psychologist);
+                if (!filtered_names.includes(p?.psychologist))
+                  filtered_names.push(p?.psychologist);
               }
             }
           }
@@ -303,7 +300,7 @@ const Slots = () => {
     axios({
       method: "put",
       data: { ticket_id, form, formPsyClientInfo },
-      url: "https://n8n.hrani.live/webhook/update-tracker",
+      url: "https://n8n-v2.hrani.live/webhook/update-tracker",
     });
   }, []);
 
@@ -553,7 +550,8 @@ const Slots = () => {
             id="data-groups"
             data-name="data-groups"
             className="slot-grid-container px-5 pt-5 pb-10 min-h-screen gap-10 overflow-y-scroll"
-          >
+          > 
+            {/* <pre>{JSON.stringify(groups_of_slots)}</pre> */}
             {groups_of_slots?.map((group) => (
               <DateGroup group={group}></DateGroup>
             ))}

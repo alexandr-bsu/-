@@ -14,7 +14,7 @@ const Age = () => {
   useEffect(() => {
     axios({
       method: "PUT",
-      url: "https://n8n.hrani.live/webhook/update-tracking-step",
+      url: "https://n8n-v2.hrani.live/webhook/update-tracking-step",
       data: { step: "Возраст клиента", ticket_id },
     });
   }, []);

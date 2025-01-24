@@ -29,7 +29,7 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
     })?.secret;
 
     axios({
-      url: "https://n8n.hrani.live/webhook/get-ticket-for-slot",
+      url: "https://n8n-v2.hrani.live/webhook/get-ticket-for-slot",
       method: "GET",
       params: { date: queryDate, time: queryTime, secret: secret },
     })
@@ -38,69 +38,76 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
         if (JSON.stringify(resp.data) == JSON.stringify({})) {
           setStatus("empty");
         } else {
-          if ("Что беспокоит" in resp.data) {
-            resp.data["Что беспокоит"] = resp.data["Что беспокоит"].split(";");
+
+          resp.data['troubles'] = resp.data['troubles'] == null ? '' : resp.data['troubles']
+          resp.data['mentall_illnes'] = resp.data['mentall_illnes'] == null ? '' : resp.data['mentall_illnes']
+          resp.data['troublclient_statees'] = resp.data['client_state'] == null ? '' : resp.data['client_state'] 
+          resp.data['traumatic_events'] = resp.data['traumatic_events'] == null ? '' : resp.data['traumatic_events']
+          resp.data['queries_to_psychologist'] = resp.data['queries_to_psychologist'] == null ? '' : resp.data['queries_to_psychologist']
+
+          if ("troubles" in resp.data) {
+            resp.data["troubles"] = resp.data["troubles"].split(";");
             if (
-              resp.data["Что беспокоит"][0] == "" &&
-              resp.data["Что беспокоит"].length == 1
+              resp.data["troubles"][0] == "" &&
+              resp.data["troubles"].length == 1
             ) {
-              resp.data["Что беспокоит"] = [];
+              resp.data["troubles"] = [];
             }
           }
 
           if (
-            "Псих. заболевание" in resp.data &&
-            resp.data["Псих. заболевание"]
+            "mentall_illnes" in resp.data &&
+            resp.data["mentall_illnes"]
           ) {
-            resp.data["Псих. заболевание"] =
-              resp.data["Псих. заболевание"].split(";");
+            resp.data["mentall_illnes"] =
+              resp.data["mentall_illnes"].split(";");
             if (
-              resp.data["Псих. заболевание"][0] == "" &&
-              resp.data["Псих. заболевание"].length == 1
+              resp.data["mentall_illnes"][0] == "" &&
+              resp.data["mentall_illnes"].length == 1
             ) {
-              resp.data["Псих. заболевание"] = [];
+              resp.data["mentall_illnes"] = [];
             }
           }
 
           if (
-            "Состояние клиента" in resp.data &&
-            resp.data["Состояние клиента"]
+            "client_state" in resp.data &&
+            resp.data["client_state"]
           ) {
-            resp.data["Состояние клиента"] =
-              resp.data["Состояние клиента"].split(";");
+            resp.data["client_state"] =
+              resp.data["client_state"].split(";");
             if (
-              resp.data["Состояние клиента"][0] == "" &&
-              resp.data["Состояние клиента"].length == 1
+              resp.data["client_state"][0] == "" &&
+              resp.data["client_state"].length == 1
             ) {
-              resp.data["Состояние клиента"] = [];
+              resp.data["client_state"] = [];
             }
           }
 
           if (
-            "Травмирующие события" in resp.data &&
-            resp.data["Травмирующие события"]
+            "traumatic_events" in resp.data &&
+            resp.data["traumatic_events"]
           ) {
-            resp.data["Травмирующие события"] =
-              resp.data["Травмирующие события"].split(";");
+            resp.data["traumatic_events"] =
+              resp.data["traumatic_events"].split(";");
             if (
-              resp.data["Травмирующие события"][0] == "" &&
-              resp.data["Травмирующие события"].length == 1
+              resp.data["traumatic_events"][0] == "" &&
+              resp.data["traumatic_events"].length == 1
             ) {
-              resp.data["Травмирующие события"] = [];
+              resp.data["traumatic_events"] = [];
             }
           }
 
           if (
-            "Запросы психологу" in resp.data &&
-            resp.data["Запросы психологу"]
+            "queries_to_psychologist" in resp.data &&
+            resp.data["queries_to_psychologist"]
           ) {
-            resp.data["Запросы психологу"] =
-              resp.data["Запросы психологу"].split(";");
+            resp.data["queries_to_psychologist"] =
+              resp.data["queries_to_psychologist"].split(";");
             if (
-              resp.data["Запросы психологу"][0] == "" &&
-              resp.data["Запросы психологу"].length == 1
+              resp.data["queries_to_psychologist"][0] == "" &&
+              resp.data["queries_to_psychologist"].length == 1
             ) {
-              resp.data["Запросы психологу"] = [];
+              resp.data["queries_to_psychologist"] = [];
             }
           }
 
@@ -196,61 +203,62 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
         {status == "ok" && (
           <div data-name="slot-data" className="p-5 flex flex-col gap-8">
             <p className="text-dark-green flex gap-2">
-              <b>Имя: </b> {data["Имя"]}
+              <b>Имя: </b> {data["client_name"]}
             </p>
 
             <p className="text-dark-green flex gap-2">
-              <b>Возраст: </b> {data["Возраст"]}
+              <b>Возраст: </b> {data["client_age"]}
             </p>
 
-            {data["Что беспокоит"]?.length != 0 && (
+            {data["troubles"]?.length != 0 && (
               <p className="text-dark-green">
                 <b>Что беспокоит клиента: </b>{" "}
-                {data["Что беспокоит"]?.map((a) => {
+                {data["troubles"]?.map((a) => {
                   return <li>{a}</li>;
                 })}
               </p>
             )}
 
-            {data["Запросы психологу"]?.length != 0 && (
+            {data["queries_to_psychologist"]?.length != 0 && (
               <p className="text-dark-green">
                 <b>Запросы психологу: </b>{" "}
-                {data["Запросы психологу"]?.map((a) => {
+                {data["queries_to_psychologist"]?.map((a) => {
                   return <li>{a}</li>;
                 })}
               </p>
             )}
 
-            {data["Псих. заболевание"]?.length != 0 && (
+            {data["mentall_illnes"]?.length != 0 && (
               <p className="text-dark-green">
                 <b>Псих. заболевание: </b>{" "}
-                {data["Псих. заболевание"]?.map((a) => {
+                {data["mentall_illnes"]?.map((a) => {
                   return <li>{a}</li>;
                 })}
               </p>
             )}
 
-            {data["Подробности о заболевании"] && (
+            {data["illness_details"] && (
               <p className="text-dark-green">
                 <b>Подробности о заболевании: </b>
                 <br />
-                {data["Подробности о заболевании"]}
+                {data["illness_details"]}
               </p>
             )}
 
-            {data["Состояние клиента"]?.length != 0 && (
+            {data["client_state"]?.length != 0 && (
+              
               <p className="text-dark-green">
                 <b>Состояние клиента: </b>{" "}
-                {data["Состояние клиента"]?.map((a) => {
+                {data["client_state"]?.map((a) => {
                   return <li>{a}</li>;
                 })}
               </p>
             )}
 
-            {data["Травмирующие события"]?.length != 0 && (
+            {data["traumatic_events"]?.length != 0 && (
               <p className="text-dark-green">
                 <b>Травмирующие события: </b>{" "}
-                {data["Травмирующие события"]?.map((a) => {
+                {data["traumatic_events"]?.map((a) => {
                   return <li>{a}</li>;
                 })}
               </p>
@@ -266,7 +274,7 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
             <p className="text-dark-green">
               <b>Клиент обращался к психологу ранее?:</b>
               <br />
-              {data["Прошлый опыт"]}
+              {data["experience"]}
             </p>
 
             {/* <p className="text-dark-green">

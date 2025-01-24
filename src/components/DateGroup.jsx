@@ -45,7 +45,7 @@ const DateGroup = ({ group }) => {
 
   // Даты начала и конца следующей недели
   let next_date = new Date();
-  next_date.setDate(next_date.getDate() + 7);
+  next_date.setDate(next_date.getDate() + 7*3);
   const nextWeekBorders = getWeekStartEnd(next_date);
 
   function getDatesBetween(startDate, endDate) {

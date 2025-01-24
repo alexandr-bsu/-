@@ -3,6 +3,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setHasPsychoExperience } from "../../redux/slices/formPsyClientInfoSlice";
 import Radio from "../../components/Radio";
+import { eachDayOfInterval } from "date-fns";
 
 const hasDiagnsose = () => {
   const hasPsychoExperience = useSelector(

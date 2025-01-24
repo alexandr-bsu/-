@@ -60,7 +60,7 @@ const PsycoSlots = () => {
 
   // Даты начала и конца следующей недели
   let next_date = new Date();
-  next_date.setDate(next_date.getDate() + 7);
+  next_date.setDate(next_date.getDate() + 7*3);
   const nextWeekBorders = getWeekStartEnd(next_date);
 
   // Даты для поиска слотов по неделям
@@ -95,7 +95,7 @@ const PsycoSlots = () => {
         endDate,
         secret: secret,
       },
-      url: "https://n8n.hrani.live/webhook/get-slot",
+      url: "https://n8n-v2.hrani.live/webhook/get-slot",
     })
       .then((resp) => {
         if (resp.data?.error == "unauthored") {
@@ -252,7 +252,7 @@ const PsycoSlots = () => {
                         intent="cream"
                         hover="primary"
                         onClick={() => {
-                          selectFn(selectedDate);
+                          selectFn(selectedDate, secret);
                         }}
                       >
                         Повторить

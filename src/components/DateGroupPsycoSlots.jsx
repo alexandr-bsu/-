@@ -49,7 +49,7 @@ const DateGroupPsycoSlots = ({ group }) => {
 
   // Даты начала и конца следующей недели
   let next_date = new Date();
-  next_date.setDate(next_date.getDate() + 7);
+  next_date.setDate(next_date.getDate() + 7*3);
   const nextWeekBorders = getWeekStartEnd(next_date);
 
   function getDatesBetween(startDate, endDate) {
@@ -88,8 +88,7 @@ const DateGroupPsycoSlots = ({ group }) => {
 
     if (index != -1) {
       let Tpromise = axios({
-        url: "https://n8n.hrani.live/webhook/delete-slot",
-        // signal: AbortSignal.timeout(500), //Aborts request after 5 seconds
+        url: "https://n8n-v2.hrani.live/webhook/delete-slot",
 
         data: {
           slot: slot,
@@ -109,7 +108,7 @@ const DateGroupPsycoSlots = ({ group }) => {
         });
     } else {
       let Tpromise = axios({
-        url: "https://n8n.hrani.live/webhook/add-slot",
+        url: "https://n8n-v2.hrani.live/webhook/add-slot",
         // signal: AbortSignal.timeout(500),
         data: {
           secret: secret,
