@@ -209,7 +209,7 @@ const AskContacts = ({ sendFn, showOkFn }) => {
                   size="medium"
                   intent="primary"
                   hover="cream"
-                  className="w-[250px]"
+                  className="w-[350px]"
                 >
                   Да
                 </Button>

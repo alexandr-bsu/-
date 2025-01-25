@@ -272,7 +272,7 @@ const FormPage = () => {
                   </p>
 
                   <a
-                    href={`https://t.me/hraniteli_client_test_bot?start=${ticket_id}`}
+                    href={`https://t.me/HraniLiveBot?start=${ticket_id}`}
                     target="_top"
                   >
                     <Button intent="cream" hover="primary">
