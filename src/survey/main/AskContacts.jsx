@@ -13,13 +13,22 @@ const AskContacts = () => {
   const ticket_id = useSelector((state) => state.form.ticket_id);
 
   function checkKey(event){
-    var regex = new RegExp("^[a-zA-Z0-9_]+$");
+    var regex = new RegExp("^[a-zA-Z0-9_@+-]+$");
       var key = event.key;
       if (!regex.test(key)) {
          event.preventDefault();
          return false;
         }
       }
+
+      function checkUsername(username){
+        var regex = new RegExp("^[a-zA-Z0-9_@+-]+$");
+          if (!regex.test(username)){
+            return false
+          }
+    
+          return true
+          }    
 
   useEffect(() => {
     axios({
@@ -38,21 +47,25 @@ const AskContacts = () => {
       >
         <div className="flex flex-col">
           <h3 className="font-medium text-base text-dark-green">
-            Как с вами связаться?
+          Оставьте ваш Телеграм аккаунт для связи
           </h3>
           <p className="text-gray-disabled text-sm">
-            Укажите свой номер телефона или @username в Telegram
+          Телеграм аккаунт повысит вашу конфиденциальность. Рекламу не присылаем. Психологи не видят ваши контакты. Только вы решаете кому их показать после сессии
           </p>
         </div>
       </div>
 
       <div className="px-5 flex flex-col gap-10">
+        <div className="flex flex-col gap-2">
         <Input
-          placeholder="номер телефона или @username в Telegram"
+          placeholder="Например, @moi_akkaunt или @71234567890"
           value={contact}
           onChangeFn={(e) => dispatch(setContact(e))}
           onKeyPress={(e) => checkKey(e)}
+          intent={!checkUsername(contact) && contact.length >= 1 ? 'error' : 'primary'}
         />
+        {!checkUsername(contact) && contact.length >= 1 && <p className="font-medium text-sm text-red">Введите корректный @username или номер телефона для связи в Telegram</p>}
+      </div>
       </div>
     </div>
   );

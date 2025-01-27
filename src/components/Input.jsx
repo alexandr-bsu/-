@@ -10,6 +10,9 @@ const input = cva(["appearance-none"], {
       cream: [
         "border-cream border outline-none rounded-[15px] px-[20px] py-[10px]  text-corp-white placeholder:text-disabled bg-[#ffffff00]",
       ],
+      'error': [
+        "border-b-red border-b-2 bg-[#ffc9c9] outline-none p-3 text-red placeholder:text-red"
+      ]
     },
   },
 

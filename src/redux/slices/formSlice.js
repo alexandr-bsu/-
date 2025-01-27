@@ -16,7 +16,7 @@ const initialState = {
   age: "",
   slots: [],
   contactType: "Telegram",
-  contact: "@",
+  contact: "",
   name: "",
   promocode: "",
   ticket_id: "",

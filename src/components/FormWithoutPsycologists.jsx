@@ -28,6 +28,15 @@ const Form = ({ maxTabsCount }) => {
     ignoreQueryPrefix: true,
   })?.next;
 
+  function checkUsername(username){
+    var regex = new RegExp("^[a-zA-Z0-9_@+-]+$");
+      if (!regex.test(username)){
+        return false
+      }
+
+      return true
+      }
+
   const isNext = next == 1;
 
   const form = useSelector((state) => state.form);
@@ -137,7 +146,7 @@ const Form = ({ maxTabsCount }) => {
       (tabIndex == 9 ||
         (problemFromQuery !== undefined && tabIndex == 9) ||
         (isNext && tabIndex == 6)) &&
-      (contactType == "" || contact.length <= 1)
+      (contactType == "" || contact.length <= 1 || !checkUsername(contact))
     ) {
       setShowError(true);
       setTimeout(() => {
@@ -185,10 +194,10 @@ const Form = ({ maxTabsCount }) => {
     })?.utm_psy;
 
     if (
-      (activeTabIndex == 7 ||
-        (problemFromQuery !== undefined && activeTabIndex == 7) ||
-        (isNext && activeTabIndex == 4)) &&
-      (contactType == "" || contact.length <= 1)
+      (activeTabIndex == 9 ||
+        (problemFromQuery !== undefined && activeTabIndex == 9) ||
+        (isNext && activeTabIndex == 6)) &&
+      (contactType == "" || contact.length <= 1 || !checkUsername(contact))
     ) {
       setShowError(true);
       setTimeout(() => {
@@ -306,7 +315,9 @@ const Form = ({ maxTabsCount }) => {
           (problemFromQuery !== undefined && activeTabIndex == 8) ||
           (isNext && activeTabIndex == 5)
             ? "Вы не выбрали время"
-            : "Вы не заполнили обязательное поле"}
+            : activeTabIndex == 9 ||
+            (problemFromQuery !== undefined && activeTabIndex == 9) ||
+            (isNext && activeTabIndex == 6) ? "Введите корректный @username или номер телефона для связи в Telegram" : "Вы не заполнили обязательное поле"}
         </div>
         {/* <FormPager></FormPager> */}
 
