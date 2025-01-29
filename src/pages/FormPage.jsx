@@ -170,7 +170,7 @@ const FormPage = () => {
         <>
           <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden p-5 rounded-[30px]">
             <Form
-              maxTabsCount={problemFromQuery ? 12 : next == 1 ? 9 : 12}
+              maxTabsCount={problemFromQuery ? 13 : next == 1 ? 10 : 13}
             ></Form>
           </div>
         </>

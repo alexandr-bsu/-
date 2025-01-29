@@ -24,6 +24,7 @@ const initialState = {
   userTimeZone: "МСК",
   bid: 0,
   rid: 0,
+  categoryType: '',
   // Используется только при автомотчинге без карточек
   filtered_by_automatch_psy_names: [],
 };
@@ -51,6 +52,10 @@ export const formSlice = createSlice({
 
     setBid: (state, bid) => {
       state.bid = bid.payload;
+    },
+
+    setCategoryType: (state, category) => {
+      state.categoryType = category.payload;
     },
 
     tooglePsychologists: (state, psychologistsName) => {
@@ -243,5 +248,6 @@ export const {
   removeEmptySlots,
   setFilteredPsychologists,
   setUserTimeZone,
+  setCategoryType
 } = formSlice.actions;
 export default formSlice.reducer;

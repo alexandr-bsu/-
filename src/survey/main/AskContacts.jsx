@@ -64,8 +64,9 @@ const AskContacts = () => {
           onKeyPress={(e) => checkKey(e)}
           intent={!checkUsername(contact) && contact.length >= 1 ? 'error' : 'primary'}
         />
+
         {!checkUsername(contact) && contact.length >= 1 && <p className="font-medium text-sm text-red">Введите корректный @username или номер телефона для связи в Telegram</p>}
-      </div>
+        </div>
       </div>
     </div>
   );

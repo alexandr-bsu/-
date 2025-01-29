@@ -16,6 +16,7 @@ import Diagnoses from "../survey/main/Diagnoses";
 import ClientSatate from "../survey/main/ClientsStates";
 import TraumaticEvents from "../survey/main/TraumaticEvents";
 import Questions from "../survey/main/Questions";
+import PsychologistCategory from '../survey/main/PsychologistCategory'
 
 const Form = ({ maxTabsCount }) => {
   const dispatch = useDispatch();
@@ -27,15 +28,6 @@ const Form = ({ maxTabsCount }) => {
   const next = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
   })?.next;
-
-  function checkUsername(username){
-    var regex = new RegExp("^[a-zA-Z0-9_@+-]+$");
-      if (!regex.test(username)){
-        return false
-      }
-
-      return true
-      }
 
   const isNext = next == 1;
 
@@ -59,6 +51,7 @@ const Form = ({ maxTabsCount }) => {
 
   const questions = form.questions;
   const customQuestion = form.customQuestion;
+  const categoryType = form.categoryType
 
   const [showError, setShowError] = useState(false);
 
@@ -132,10 +125,24 @@ const Form = ({ maxTabsCount }) => {
       setTimeout(() => {
         setShowError(false);
       }, 3000);
-    } else if (
+
+    }
+    else if (
       (tabIndex == 8 ||
         (problemFromQuery !== undefined && tabIndex == 8) ||
         (isNext && tabIndex == 5)) &&
+        categoryType == ''
+    ) {
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
+    }
+
+    else if (
+      (tabIndex == 9 ||
+        (problemFromQuery !== undefined && tabIndex == 9) ||
+        (isNext && tabIndex == 6)) &&
       slots.length == 0
     ) {
       setShowError(true);
@@ -143,9 +150,9 @@ const Form = ({ maxTabsCount }) => {
         setShowError(false);
       }, 3000);
     } else if (
-      (tabIndex == 9 ||
-        (problemFromQuery !== undefined && tabIndex == 9) ||
-        (isNext && tabIndex == 6)) &&
+      (tabIndex == 10 ||
+        (problemFromQuery !== undefined && tabIndex == 10) ||
+        (isNext && tabIndex == 7)) &&
       (contactType == "" || contact.length <= 1 || !checkUsername(contact))
     ) {
       setShowError(true);
@@ -158,6 +165,15 @@ const Form = ({ maxTabsCount }) => {
       setShowError(false);
     }
   }
+
+  function checkUsername(username){
+    var regex = new RegExp("^[a-zA-Z0-9_@+-]+$");
+      if (!regex.test(username)){
+        return false
+      }
+
+      return true
+      }
 
   function sendData() {
     // Парсим utm метки
@@ -194,9 +210,9 @@ const Form = ({ maxTabsCount }) => {
     })?.utm_psy;
 
     if (
-      (activeTabIndex == 9 ||
-        (problemFromQuery !== undefined && activeTabIndex == 9) ||
-        (isNext && activeTabIndex == 6)) &&
+      (activeTabIndex == 10 ||
+        (problemFromQuery !== undefined && activeTabIndex == 10) ||
+        (isNext && activeTabIndex == 7)) &&
       (contactType == "" || contact.length <= 1 || !checkUsername(contact))
     ) {
       setShowError(true);
@@ -277,9 +293,9 @@ const Form = ({ maxTabsCount }) => {
 
   function showForwardBtn() {
     if (
-      (activeTabIndex == 8 ||
-        (problemFromQuery !== undefined && activeTabIndex == 8) ||
-        (isNext && activeTabIndex == 5)) &&
+      (activeTabIndex == 9 ||
+        (problemFromQuery !== undefined && activeTabIndex == 9) ||
+        (isNext && activeTabIndex == 6)) &&
       areSlotsEmpty
     ) {
       return false;
@@ -311,13 +327,13 @@ const Form = ({ maxTabsCount }) => {
             showError ? "h-20" : "h-0"
           }`}
         >
-          {activeTabIndex == 8 ||
-          (problemFromQuery !== undefined && activeTabIndex == 8) ||
-          (isNext && activeTabIndex == 5)
+          {activeTabIndex == 9 ||
+          (problemFromQuery !== undefined && activeTabIndex == 9) ||
+          (isNext && activeTabIndex == 6)
             ? "Вы не выбрали время"
-            : activeTabIndex == 9 ||
-            (problemFromQuery !== undefined && activeTabIndex == 9) ||
-            (isNext && activeTabIndex == 6) ? "Введите корректный @username или номер телефона для связи в Telegram" : "Вы не заполнили обязательное поле"}
+            : activeTabIndex == 10 ||
+              (problemFromQuery !== undefined && activeTabIndex == 10) ||
+              (isNext && activeTabIndex == 7) ? "Введите корректный @username или номер телефона для связи в Telegram" : "Вы не заполнили обязательное поле"}
         </div>
         {/* <FormPager></FormPager> */}
 
@@ -334,10 +350,13 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 6 && <Promocode></Promocode>}
               {activeTabIndex == 7 && <Age></Age>}
               {activeTabIndex == 8 && (
+                <PsychologistCategory></PsychologistCategory>
+              )}
+              {activeTabIndex == 9 && (
                 <SlotsWithoutPsycologists></SlotsWithoutPsycologists>
               )}
-              {activeTabIndex == 9 && <AskContacts></AskContacts>}
-              {activeTabIndex == 10 && <Name></Name>}
+              {activeTabIndex == 10 && <AskContacts></AskContacts>}
+              {activeTabIndex == 11 && <Name></Name>}
             </>
           )}
           {problemFromQuery !== undefined && !isNext && (
@@ -351,10 +370,13 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 6 && <Promocode></Promocode>}
               {activeTabIndex == 7 && <Age></Age>}
               {activeTabIndex == 8 && (
+                <PsychologistCategory></PsychologistCategory>
+              )}
+              {activeTabIndex == 9 && (
                 <SlotsWithoutPsycologists></SlotsWithoutPsycologists>
               )}
-              {activeTabIndex == 9 && <AskContacts></AskContacts>}
-              {activeTabIndex == 10 && <Name></Name>}
+              {activeTabIndex == 10 && <AskContacts></AskContacts>}
+              {activeTabIndex == 11 && <Name></Name>}
             </>
           )}
 
@@ -366,10 +388,13 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 3 && <Questions />}
               {activeTabIndex == 4 && <AmountExpectations></AmountExpectations>}
               {activeTabIndex == 5 && (
+                <PsychologistCategory></PsychologistCategory>
+              )}
+              {activeTabIndex == 6 && (
                 <SlotsWithoutPsycologists></SlotsWithoutPsycologists>
               )}
-              {activeTabIndex == 6 && <AskContacts></AskContacts>}
-              {activeTabIndex == 7 && <Name></Name>}
+              {activeTabIndex == 7 && <AskContacts></AskContacts>}
+              {activeTabIndex == 8 && <Name></Name>}
             </>
           )}
         </div>

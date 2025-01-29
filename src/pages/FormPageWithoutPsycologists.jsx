@@ -171,7 +171,7 @@ const FormPage = () => {
         <>
           <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden p-5 rounded-[30px]">
             <FormWithoutPsycologists
-              maxTabsCount={problemFromQuery ? 11 : next == 1 ? 8 : 11}
+              maxTabsCount={problemFromQuery ? 12 : next == 1 ? 9 : 12}
             ></FormWithoutPsycologists>
           </div>
         </>
@@ -265,7 +265,7 @@ const FormPage = () => {
                     Cпасибо!
                   </h2>
                   <p className="text-black text-base font-medium text-center p-5">
-                    Cпасибо! Мы получили ваш запрос и сейчас психолог
+                    Мы получили ваш запрос и сейчас психолог
                     подтверждает время.
                     <br /> Запустите телеграм-бот, чтобы получить подтверждение
                     записи и ссылку сессию.

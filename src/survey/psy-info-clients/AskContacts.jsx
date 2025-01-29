@@ -119,7 +119,6 @@ const AskContacts = ({ sendFn, showOkFn }) => {
       })
       .catch((e) => {
         setStatus("error");
-        // setStatus("ok");
       });
   }
 
@@ -198,7 +197,7 @@ const AskContacts = ({ sendFn, showOkFn }) => {
               </h2>
             </div>
 
-            <p className="text-black text-sm font-medium text-center max-w-[1200px] mb-[20px]">
+            <p className="text-black text-sm font-medium text-center max-w-[1200px]">
             В знак благодарности мы обещали подарить бесплатную сессию с аналитическим психологом из Хранителей. Сессия - 55 минут, онлайн, по видеосвязи. Готовы сейчас оставить запрос и выбрать время?
             </p>
             <div className="flex gap-4">
@@ -209,7 +208,7 @@ const AskContacts = ({ sendFn, showOkFn }) => {
                   size="medium"
                   intent="primary"
                   hover="cream"
-                  className="w-[350px]"
+                  className="w-[150px]"
                 >
                   Да
                 </Button>

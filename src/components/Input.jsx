@@ -1,6 +1,5 @@
 import React from "react";
 import { cva } from "class-variance-authority";
-
 const input = cva(["appearance-none"], {
   variants: {
     intent: {
