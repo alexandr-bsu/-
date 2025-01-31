@@ -193,7 +193,7 @@ const AskContacts = ({ sendFn, showOkFn }) => {
               <Lottie options={okLottieOptions} height={150} width={150} />
 
               <h2 className="font-medium text-center text-green text-xl">
-                Спасибо за заполнение анкеты!
+              Спасибо за заполнение анкеты!
               </h2>
             </div>
 
@@ -213,18 +213,6 @@ const AskContacts = ({ sendFn, showOkFn }) => {
                   Да
                 </Button>
               </Link>
-
-              {/* <Button
-                size="medium"
-                intent="primary-transparent"
-                hover="cream"
-                className="w-[150px]"
-                onClick={() => {
-                  showOkFn();
-                }}
-              >
-                Нет, спасибо
-              </Button> */}
             </div>
           </>
         )}
