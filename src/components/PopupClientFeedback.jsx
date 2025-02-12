@@ -44,9 +44,11 @@ const PopupPsyAnketa = ({ isVisible = true, closeFn }) => {
   const client_username = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
   })?.client_username;
+
   const telegram_id_psychologist = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
   })?.telegram_id_psychologist;
+  
   const session_date = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
   })?.session_date;

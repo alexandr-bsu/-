@@ -1,9 +1,8 @@
 import React from "react";
-import Checkbox from "../../components/Checkbox";
+import Radio from "../../components/Radio";
 import TextArea from "@/components/TextArea";
 import { useSelector, useDispatch } from "react-redux";
-import { toogleDiagnoses, setDiagnoseInfo } from "../../redux/slices/formSlice";
-import Input from "../../components/Input";
+import { setDiagnoses, setDiagnoseMedicaments } from "../../redux/slices/formSlice";
 import axios from "axios";
 import { useEffect } from "react";
 
@@ -11,11 +10,12 @@ const Diagnoses = () => {
   const diagnosesList = [
     "Есть диагностированное психическое заболевание (РПП, СДВГ и прочее)",
     "Есть диагностированное психиатрическое заболевание (ПРЛ, БАР, ПТСР, депрессивное расстройство и прочее)",
-    "Прохожу/назначено медикаментозное лечение от невролога/психиатра",
+    "Нет",
   ];
 
   const checkedDiagnoses = useSelector((state) => state.form.diagnoses);
   const diagnoseInfo = useSelector((state) => state.form.diagnoseInfo);
+  const diagnoseMedicaments = useSelector((state) => state.form.diagnoseMedicaments);
   const dispatch = useDispatch();
   const ticket_id = useSelector((state) => state.form.ticket_id);
 
@@ -49,37 +49,41 @@ const Diagnoses = () => {
           <ul data-name="question-inputs" className="mb-6">
             {diagnosesList.map((diagnose, index) => (
               <li key={diagnose} className="mt-2">
-                <Checkbox
+                <Radio
                   id={`diagnoses_${index}`}
-                  onChange={() => dispatch(toogleDiagnoses(diagnose))}
+                  onChange={() => dispatch(setDiagnoses(diagnose))}
                   checked={
-                    checkedDiagnoses.indexOf(diagnose) > -1 ? true : false
+                    checkedDiagnoses[0] == diagnose ? true : false
                   }
                 >
                   {diagnose}
-                </Checkbox>
+                </Radio>
               </li>
             ))}
-            {/* <li className="mt-2 flex gap-4 h-9">
-              
-              {checkedAnxieties.indexOf("Свой вариант") > -1 && (
-                <Input
-                  value={customAnexiety}
-                  onChangeFn={(e) => dispatch(setCustomAnexiety(e))}
-                ></Input>
-              )}
-            </li> */}
+       
           </ul>
-          {checkedDiagnoses.length > 0 && (
+         
+          {(checkedDiagnoses.length > 0 && checkedDiagnoses[0] != "Нет") && (
             <div className="flex flex-col gap-4">
               <p className="text-dark-green text-base ">
-                Напишите чуть подробнее о диагнозе и лечении
+              Принимаете ли вы медикаменты по назначению психиатра?
               </p>
-              <TextArea
-                value={diagnoseInfo}
-                rows={5}
-                onChangeFn={(e) => dispatch(setDiagnoseInfo(e))}
-              ></TextArea>
+              <ul data-name="question-inputs" className="mb-6">
+            {["Да", "Нет"].map((diagnose_med, index) => (
+              <li key={diagnose_med} className="mt-2">
+                <Radio
+                  id={`diagnoses_med_${index}`}
+                  onChange={() => dispatch(setDiagnoseMedicaments(diagnose_med))}
+                  checked={
+                    diagnoseMedicaments == diagnose_med ? true : false
+                  }
+                >
+                  {diagnose_med}
+                </Radio>
+              </li>
+            ))}
+       
+          </ul>
             </div>
           )}
         </div>

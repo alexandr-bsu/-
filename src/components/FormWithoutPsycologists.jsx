@@ -17,6 +17,7 @@ import ClientSatate from "../survey/main/ClientsStates";
 import TraumaticEvents from "../survey/main/TraumaticEvents";
 import Questions from "../survey/main/Questions";
 import PsychologistCategory from '../survey/main/PsychologistCategory'
+import QuestionToPsychologist from "@/survey/main/QuestionToPsycologist";
 
 const Form = ({ maxTabsCount }) => {
   const dispatch = useDispatch();
@@ -53,6 +54,9 @@ const Form = ({ maxTabsCount }) => {
   const customQuestion = form.customQuestion;
   const categoryType = form.categoryType
 
+  const questionToPsychologist = form.question_to_psychologist
+  const diagnoseMedicaments = form.diagnoseMedicaments
+  const diagnose = form.diagnoses
   const [showError, setShowError] = useState(false);
 
   // Массив заголовков табов формы.
@@ -87,12 +91,13 @@ const Form = ({ maxTabsCount }) => {
 
   function showNextTab(tabIndex) {
     // Валидация перед переходом на следущую вкладку
-    if (
-      (tabIndex == 3 && JSON.stringify(questions) == JSON.stringify([])) ||
-      (tabIndex == 3 &&
-        questions.includes("Свой вариант") &&
-        customQuestion == "")
-    ) {
+    if(tabIndex == 0 && (diagnose.length == 0 || (diagnose[0] != "Нет" && diagnoseMedicaments == ''))){
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
+    }
+    else if (tabIndex == 3 && questionToPsychologist == "") {
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
@@ -162,6 +167,7 @@ const Form = ({ maxTabsCount }) => {
     } else {
       setGoalReached(tabIndex);
       setActiveTabIndex(tabIndex + 1);
+      console.log('test')
       setShowError(false);
     }
   }
@@ -344,7 +350,7 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 0 && <Diagnoses></Diagnoses>}
               {activeTabIndex == 1 && <ClientSatate></ClientSatate>}
               {activeTabIndex == 2 && <TraumaticEvents></TraumaticEvents>}
-              {activeTabIndex == 3 && <Questions />}
+              {activeTabIndex == 3 && <QuestionToPsychologist />}
               {activeTabIndex == 4 && <LastExperience></LastExperience>}
               {activeTabIndex == 5 && <AmountExpectations></AmountExpectations>}
               {activeTabIndex == 6 && <Promocode></Promocode>}
@@ -364,7 +370,7 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 0 && <Diagnoses></Diagnoses>}
               {activeTabIndex == 1 && <ClientSatate></ClientSatate>}
               {activeTabIndex == 2 && <TraumaticEvents></TraumaticEvents>}
-              {activeTabIndex == 3 && <Questions />}
+              {activeTabIndex == 3 && <QuestionToPsychologist />}
               {activeTabIndex == 4 && <LastExperience></LastExperience>}
               {activeTabIndex == 5 && <AmountExpectations></AmountExpectations>}
               {activeTabIndex == 6 && <Promocode></Promocode>}
@@ -385,7 +391,7 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 0 && <Diagnoses></Diagnoses>}
               {activeTabIndex == 1 && <ClientSatate></ClientSatate>}
               {activeTabIndex == 2 && <TraumaticEvents></TraumaticEvents>}
-              {activeTabIndex == 3 && <Questions />}
+              {activeTabIndex == 3 && <QuestionToPsychologist />}
               {activeTabIndex == 4 && <AmountExpectations></AmountExpectations>}
               {activeTabIndex == 5 && (
                 <PsychologistCategory></PsychologistCategory>

@@ -6,6 +6,7 @@ const initialState = {
   customQuestion: [],
   diagnoses: [],
   diagnoseInfo: "",
+  diagnoseMedicaments: "",
   traumaticEvents: [],
   clientStates: [],
   selectedPsychologistsNames: [],
@@ -25,6 +26,7 @@ const initialState = {
   bid: 0,
   rid: 0,
   categoryType: '',
+  question_to_psychologist: '',
   // Используется только при автомотчинге без карточек
   filtered_by_automatch_psy_names: [],
 };
@@ -46,6 +48,9 @@ export const formSlice = createSlice({
   name: "form",
   initialState,
   reducers: {
+    setQuestionToPsychologist: (state, question) => {
+      state.question_to_psychologist = question.payload
+    },
     setRid: (state, rid) => {
       state.rid = rid.payload;
     },
@@ -83,6 +88,9 @@ export const formSlice = createSlice({
       }
     },
 
+    setDiagnoses: (state, diagnose) => {
+      state.diagnoses = [diagnose.payload]
+    },
     toogleClientStates: (state, clientState) => {
       if (state.clientStates.includes(clientState.payload)) {
         state.clientStates.splice(
@@ -219,6 +227,9 @@ export const formSlice = createSlice({
     generateTicketId: (state) => {
       state.ticket_id = makeid(7);
     },
+    setDiagnoseMedicaments: (state, medicaments) => {
+      state.diagnoseMedicaments = medicaments.payload
+    }
   },
 });
 
@@ -248,6 +259,9 @@ export const {
   removeEmptySlots,
   setFilteredPsychologists,
   setUserTimeZone,
-  setCategoryType
+  setCategoryType,
+  setDiagnoseMedicaments,
+  setDiagnoses,
+  setQuestionToPsychologist
 } = formSlice.actions;
 export default formSlice.reducer;
