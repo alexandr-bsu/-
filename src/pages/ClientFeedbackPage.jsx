@@ -10,12 +10,15 @@ import {
   setNeeds,
   setStatus,
   setWantOtherPschologist,
-  setSecondSessionTime
+  setSecondSessionTime,
+  setClientName,
+  setPsychologistName
 } from "@/redux/slices/clientFeedback";
 import Radio from "@/components/Radio";
 import Button from "@/components/Button";
 import PopupClientFeedback from "@/components/PopupClientFeedback";
 import TextArea from "@/components/TextArea";
+import Input from "@/components/Input";
 const PsycologistPage = () => {
   const dispatch = useDispatch();
   const anketa = useSelector((state) => state.clientFeedback);
@@ -31,7 +34,8 @@ const PsycologistPage = () => {
   const questions = anketa.questions;
   const needs = anketa.needs;
   const status = anketa.status
-  
+  const clientName = anketa.clientName
+  const psychologistName = anketa.psychologistName
 
   function isEmpty(value) {
     return Array.isArray(value) ? value.length === 0 : value === "";
@@ -114,8 +118,46 @@ const PsycologistPage = () => {
           <div data-name="survey" className="flex flex-col gap-14 px-5">
           <div data-name="question" className="flex flex-col gap-4">
               <div data-name="header" className="flex gap-4 items-start">
-                <div className="w-10 h-10 bg-cream text-black font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full ">
+                <div className="w-10 h-10 bg-cream text-black font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full">
                   1
+                </div>
+                <div className="flex flex-col gap-1">
+                  <h2 className="text-corp-white font-bold text-2xl font-sans">
+                  Как вас зовут?
+                  </h2>
+                </div>
+              </div>
+              <Input
+                intent="cream"
+                className={`${showErrorBorder && isEmpty(clientName) ? "border-red" : ""}`}
+                value={clientName}
+                onChangeFn={(e) => dispatch(setClientName(e))}
+              ></Input>
+            </div>
+
+            <div data-name="question" className="flex flex-col gap-4">
+              <div data-name="header" className="flex gap-4 items-start">
+                <div className="w-10 h-10 bg-cream text-black font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full">
+                  2
+                </div>
+                <div className="flex flex-col gap-1">
+                  <h2 className="text-corp-white font-bold text-2xl font-sans">
+                  Как зовут вашего психолога?
+                  </h2>
+                </div>
+              </div>
+              <Input
+                intent="cream"
+                className={`${showErrorBorder && isEmpty(psychologistName) ? "border-red" : ""}`}
+                value={psychologistName}
+                onChangeFn={(e) => dispatch(setPsychologistName(e))}
+              ></Input>
+            </div>
+
+          <div data-name="question" className="flex flex-col gap-4">
+              <div data-name="header" className="flex gap-4 items-start">
+                <div className="w-10 h-10 bg-cream text-black font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full ">
+                  3
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -147,11 +189,12 @@ const PsycologistPage = () => {
                   </li>
                 ))}
               </ul>
-            </div>
+            
+          </div>
             <div data-name="question" className="flex flex-col gap-4">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 bg-cream text-black font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full">
-                  2
+                  4
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -169,7 +212,7 @@ const PsycologistPage = () => {
             <div data-name="question" className="flex flex-col gap-4">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 bg-cream text-black font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full">
-                  3
+                  5
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -187,7 +230,7 @@ const PsycologistPage = () => {
             <div data-name="question" className="flex flex-col gap-4">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 bg-cream text-black font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full">
-                  4
+                  6
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -205,7 +248,7 @@ const PsycologistPage = () => {
             <div data-name="question" className="flex flex-col gap-4">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 bg-cream text-black font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full ">
-                  5
+                  7
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -239,7 +282,7 @@ const PsycologistPage = () => {
             <div data-name="question" className="flex flex-col gap-4">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 bg-cream text-black font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full ">
-                  6
+                  8
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -269,12 +312,11 @@ const PsycologistPage = () => {
                 ))}
               </ul>
             </div>}
-
             {checkedClientStatus== "Да, готов(а)" &&
             <div data-name="question" className="flex flex-col gap-4">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 bg-cream text-black font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full ">
-                  6
+                  8
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
