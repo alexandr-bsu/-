@@ -42,6 +42,13 @@ const Slots = () => {
 
   const isNext = next == 1;
 
+  const utm_psy = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.utm_psy;
+
+  const [psychologistAccept, setPsychologistAccept] = useState(false)
+
+
   const age = formPsyClientInfo.age;
   const ageMainForm = useSelector((state) => state.form.age);
 
@@ -166,6 +173,33 @@ const Slots = () => {
     let endDate = splited_dates[1];
     setSlotStatus("loading");
 
+    function filterSlotsByPsychologist(filtered_groups, psyName){
+      
+      let psychologist_accept = false
+      let copy_filtered_groups = JSON.parse(JSON.stringify(filtered_groups))
+          for (let group of filtered_groups) {
+            for (let gs in group.slots) {
+              let temp_slots = []
+              for (let s of group.slots[gs]) {
+                if (s?.psychologist == psyName){
+                  psychologist_accept = true
+                  temp_slots.push(s)
+                }
+              group.slots[gs] = temp_slots
+            }
+          }
+        }
+
+        
+        if (psychologist_accept){
+          
+          return [psychologist_accept, filtered_groups]
+        } else{
+    
+          return [psychologist_accept, copy_filtered_groups]
+        }
+    }
+
     axios({
       method: "POST",
       data: {
@@ -176,12 +210,41 @@ const Slots = () => {
         form,
         ticket_id,
         userTimeOffsetMsk: getTimeDifference(),
+        utm_psy
       },
 
       url: `https://n8n-v2.hrani.live/webhook/get-agregated-schedule-v2`,
     })
       .then((resp) => {
-        let filtered_groups = remove_first_n_empty_groups(resp.data[0].items);
+        let slots=resp.data[0].items
+        let filtered_groups = remove_first_n_empty_groups(slots);
+        let [psychologist_accept, filtered_groups_by_psychologist] = filterSlotsByPsychologist(JSON.parse(JSON.stringify(filtered_groups)), utm_psy)
+        
+        if (psychologist_accept){
+          filtered_groups = filtered_groups_by_psychologist
+          
+          //Удаляем первые пустые группы слотов если задан конкретный психолог 
+          let found = false
+          let f_index = 0
+          for(let g of filtered_groups){
+          let gs = g.slots
+            for(let time in gs){
+              if (gs[time].length !=0){
+                found = true
+                break
+              }
+            }
+            if(found){
+              break
+            } else {
+              f_index++
+            }
+          }
+
+          filtered_groups = filtered_groups.slice(f_index)
+        }
+
+        setPsychologistAccept(psychologist_accept)
         setGroupsOfSlots(filtered_groups);
 
         if (checkNoSlots(filtered_groups)) {
@@ -200,6 +263,7 @@ const Slots = () => {
               }
             }
           }
+
           dispatch(setFilteredPsychologists(filtered_names));
           dispatch(removeEmptySlots());
         }
@@ -546,6 +610,15 @@ const Slots = () => {
       {/* Контейнер для групп с датами недель */}
       {slotStatus == "active" && (
         <>
+          {
+            !psychologistAccept && utm_psy && utm_psy !== 'undefined' && (
+              <div>
+              <p className="text-base mb-10 p-2 border border-green text-dark-green rounded-[15px] m-4">
+              К сожалению, <b>{utm_psy}</b> не работает с запросами, которые вы обозначили. Но мы автоматически подобрали пихологов, кооторые работают именно с вашими запросами и смогут вам помочь. Выберите подходящие вам дни и время сессии. Можете выбрать несколько вариантов.
+              </p>
+            </div>
+            )
+          }
           <div
             id="data-groups"
             data-name="data-groups"

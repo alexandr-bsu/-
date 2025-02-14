@@ -23,6 +23,7 @@ const Age = () => {
 
       <div className="px-5 flex flex-col">
         <Input
+          type="number"
           placeholder="Введите ваш возраст"
           value={age}
           onChangeFn={(e) => dispatch(setAge(e))}
