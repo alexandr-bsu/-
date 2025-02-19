@@ -44,21 +44,25 @@ const PopupPsyAnketa = ({ isVisible = true, closeFn }) => {
   const client_username = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
   })?.client_username;
-
   const telegram_id_psychologist = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
   })?.telegram_id_psychologist;
-  
   const session_date = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
   })?.session_date;
+  const client_age = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.client_age;
+  const psychologist_contact = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.psychologist_contact;
   function sendData() {
     setStatus("loading");
     
     axios({
       method: "post",
       url: "https://n8n-v2.hrani.live/webhook/client-os",
-      data: { anketa, telegram_id, psychologist_name, utm_client, client_name,client_username, telegram_id_psychologist, session_date },
+      data: { anketa, telegram_id, psychologist_name, utm_client, client_name,client_username, telegram_id_psychologist, session_date, client_age, psychologist_contact },
     })
       .then((resp) => {
         setStatus("ok");

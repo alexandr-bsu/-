@@ -195,7 +195,6 @@ const Slots = () => {
           
           return [psychologist_accept, filtered_groups]
         } else{
-    
           return [psychologist_accept, copy_filtered_groups]
         }
     }
@@ -611,7 +610,7 @@ const Slots = () => {
       {slotStatus == "active" && (
         <>
           {
-            !psychologistAccept && utm_psy && utm_psy !== 'undefined' && (
+            !psychologistAccept && utm_psy && utm_psy !== 'undefined' && utm_psy !== 'null' && (
               <div>
               <p className="text-base mb-10 p-2 border border-green text-dark-green rounded-[15px] m-4">
               К сожалению, <b>{utm_psy}</b> не работает с запросами, которые вы обозначили. Но мы автоматически подобрали пихологов, кооторые работают именно с вашими запросами и смогут вам помочь. Выберите подходящие вам дни и время сессии. Можете выбрать несколько вариантов.

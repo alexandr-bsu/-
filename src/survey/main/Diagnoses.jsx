@@ -3,6 +3,7 @@ import Radio from "../../components/Radio";
 import TextArea from "@/components/TextArea";
 import { useSelector, useDispatch } from "react-redux";
 import { setDiagnoses, setDiagnoseMedicaments } from "../../redux/slices/formSlice";
+
 import axios from "axios";
 import { useEffect } from "react";
 

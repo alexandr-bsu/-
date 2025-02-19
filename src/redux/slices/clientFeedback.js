@@ -7,9 +7,7 @@ const initialState = {
   needs: '',
   status: '',
   wantOtherPschologist: '',
-  secondSessionTime: '',
-  clientName: '',
-  psychologistName: ''
+  secondSessionTime: ''
 };
 
 export const clientFeedbackSlice = createSlice({
@@ -18,14 +16,6 @@ export const clientFeedbackSlice = createSlice({
   reducers: {
     setMark: (state, mark) => {
       state.mark = mark.payload;
-    },
-
-    setClientName: (state, name) => {
-      state.clientName = name.payload
-    },
-
-    setPsychologistName: (state, name) => {
-      state.psychologistName = name.payload
     },
 
     setFeelings: (state, feelings) => {
@@ -61,8 +51,6 @@ export const {
   setNeeds,
   setStatus,
   setWantOtherPschologist,
-  setSecondSessionTime,
-  setClientName,
-  setPsychologistName
+  setSecondSessionTime
 } = clientFeedbackSlice.actions;
 export default clientFeedbackSlice.reducer;

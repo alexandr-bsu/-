@@ -57,6 +57,7 @@ const Form = ({ maxTabsCount }) => {
   const questionToPsychologist = form.question_to_psychologist
   const diagnoseMedicaments = form.diagnoseMedicaments
   const diagnose = form.diagnoses
+
   const [showError, setShowError] = useState(false);
 
   // Массив заголовков табов формы.

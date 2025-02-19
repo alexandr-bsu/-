@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+
 const initialState = {
   anxieties: [],
   questions: [],
@@ -51,6 +52,7 @@ export const formSlice = createSlice({
     setQuestionToPsychologist: (state, question) => {
       state.question_to_psychologist = question.payload
     },
+
     setRid: (state, rid) => {
       state.rid = rid.payload;
     },
@@ -91,6 +93,7 @@ export const formSlice = createSlice({
     setDiagnoses: (state, diagnose) => {
       state.diagnoses = [diagnose.payload]
     },
+
     toogleClientStates: (state, clientState) => {
       if (state.clientStates.includes(clientState.payload)) {
         state.clientStates.splice(
@@ -227,6 +230,7 @@ export const formSlice = createSlice({
     generateTicketId: (state) => {
       state.ticket_id = makeid(7);
     },
+
     setDiagnoseMedicaments: (state, medicaments) => {
       state.diagnoseMedicaments = medicaments.payload
     }
