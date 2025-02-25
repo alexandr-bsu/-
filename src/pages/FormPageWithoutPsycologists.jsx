@@ -149,9 +149,13 @@ const FormPage = () => {
               bid,
               contactType: form.contactType,
               contact: form.contact,
+              form,
+              formPsyClientInfo
             },
             url: "https://n8n-v2.hrani.live/webhook/update-contacts-stb",
           });
+        }else{
+          console('no bid rid', bid, rid)
         }
         axios({
           method: "PUT",
