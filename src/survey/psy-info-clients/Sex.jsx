@@ -27,9 +27,9 @@ const Sex = () => {
         className="bg-white px-5 border-gray border-b z-10 sticky top-0 w-full py-3 mb-4"
       >
         <div className="flex flex-col">
-          <h3 className="font-medium text-base text-dark-green">Ваш пол</h3>
+          <h3 className="font-medium text-base text-dark-green">Какой у вас пол?</h3>
           <p className="text-gray-disabled text-sm">
-            Выберите один вариант ответа
+            Мы учитываем ваш пол при подборе психолога
           </p>
         </div>
       </div>
