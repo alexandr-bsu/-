@@ -1,11 +1,21 @@
 import React from "react";
-
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setSex } from "../../redux/slices/formPsyClientInfoSlice";
 import Radio from "../../components/Radio";
+import axios from "axios";
 
 const Sex = () => {
   const sex = useSelector((state) => state.formPsyClientInfo.sex);
+  const ticket_id = useSelector((state) => state.form.ticket_id);
+
+  useEffect(() => {
+    axios({
+      method: "PUT",
+      url: "https://n8n-v2.hrani.live/webhook/update-tracking-step",
+      data: { step: "Пол клиента", ticket_id },
+    });
+  }, [])
   const dispatch = useDispatch();
 
   const sexList = ["Мужчина", "Женщина"];

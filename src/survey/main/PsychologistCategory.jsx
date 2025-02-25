@@ -2,11 +2,23 @@ import React from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 import { setCategoryType } from "../../redux/slices/formSlice";
+import { useEffect } from "react";
 import Radio from "../../components/Radio";
-
+import axios from "axios";
 const MeetType = () => {
   const categoryType = useSelector((state) => state.form.categoryType);
   const dispatch = useDispatch();
+
+  const ticket_id = useSelector((state) => state.form.ticket_id);
+    
+      useEffect(() => {
+        axios({
+          method: "PUT",
+          url: "https://n8n-v2.hrani.live/webhook/update-tracking-step",
+          data: { step: "Категория психолога", ticket_id },
+        });
+      }, [])
+  
 
   const categoryList = ["1000 - 2000 рублей (опыт до 1 года, аналитический метод)", "2000 - 4000 рублей (опыт до 3х лет, аналитический метод)", "4000 рублей и больше (опыт от 3х лет, работа в нескольких методах)"];
 

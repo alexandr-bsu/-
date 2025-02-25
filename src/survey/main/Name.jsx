@@ -15,7 +15,7 @@ const Name = () => {
     axios({
       method: "PUT",
       url: "https://n8n-v2.hrani.live/webhook/update-tracking-step",
-      data: { step: "Имя клиента", ticket_id },
+      data: { step: "Начало", ticket_id },
     });
   }, []);
   return (
@@ -36,7 +36,7 @@ const Name = () => {
 
       <div className="px-5 flex flex-col">
         <Input
-          placeholder="Введите ваше имя"
+          placeholder="Укажите имя или псевдоним"
           value={name}
           onChangeFn={(e) => dispatch(setName(e))}
         />

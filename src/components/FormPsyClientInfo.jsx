@@ -10,7 +10,7 @@ import Age from "../survey/psy-info-clients/Age";
 import City from "../survey/psy-info-clients/City";
 import Sex from "../survey/psy-info-clients/Sex";
 import PsycoEducated from "../survey/psy-info-clients/PsycoEducated";
-import Anxieties from "../survey/psy-info-clients/Anxieties";
+// import Anxieties from "../survey/psy-info-clients/Anxieties";
 import HasPsychoExperience from "../survey/psy-info-clients/HasPsychoExperience";
 import MeetTypeComponent from "../survey/psy-info-clients/MeetType";
 import SelectionСriteria from "../survey/psy-info-clients/SelectionСriteria";
@@ -49,12 +49,12 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
   const reasonCancel = form.reasonCancel;
   const pricePsycho = form.pricePsycho;
   const reasonNonApplication = form.reasonNonApplication;
-  const contactType = form.contactType;
-  const contact = form.contact;
-  const name = form.name;
-  const checkedAnxieties = form.anxieties;
-  const customAnexiety = form.customAnexiety;
-  const is_last_page = form.is_last_page;
+  // const contactType = form.contactType;
+  // const contact = form.contact;
+  // const name = form.name;
+  // const checkedAnxieties = form.anxieties;
+  // const customAnexiety = form.customAnexiety;
+  // const is_last_page = form.is_last_page;
   const occupation = form.occupation;
   const [showError, setShowError] = useState(false);
 
@@ -62,121 +62,148 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
   const headers = ["Анкета для исследования опыта работы с психологами"];
   const [activeTabIndex, setActiveTabIndex] = useState(0);
 
+  // function showNextTab(tabIndex) {
+  //   // Валидация перед переходом на следущую вкладку
+  //   if (tabIndex == 0 && age == "") {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } else if (tabIndex == 1 && city == "") {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } else if (tabIndex == 2 && sex == "") {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } else if (tabIndex == 3 && psychoEducated == "") {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } else if (tabIndex == 4 && hasPsychoExperience == "") {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } else if (tabIndex == 5 && meetType == "") {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } else if (
+  //     (tabIndex == 6 && selectionСriteria == "") ||
+  //     (tabIndex == 6 &&
+  //       custmCreteria == "" &&
+  //       selectionСriteria == "Свой вариант")
+  //   ) {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } else if (
+  //     (tabIndex == 7 &&
+  //       JSON.stringify(importancePsycho) == JSON.stringify([])) ||
+  //     (tabIndex == 7 &&
+  //       importancePsycho.includes("Свой вариант") &&
+  //       customImportance == "")
+  //   ) {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } else if (tabIndex == 8 && pricePsycho == "" && !isHasPsychoExperience) {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } else if (tabIndex == 8 && agePsycho == "" && isHasPsychoExperience) {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } else if (
+  //     tabIndex == 9 &&
+  //     reasonNonApplication == "" &&
+  //     !isHasPsychoExperience
+  //   ) {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } else if (tabIndex == 10 && occupation == "" && !isHasPsychoExperience) {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } else if (tabIndex == 9 && sexPsyco == "" && isHasPsychoExperience) {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } else if (
+  //     tabIndex == 10 &&
+  //     priceLastSession == "" &&
+  //     isHasPsychoExperience
+  //   ) {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } else if (
+  //     tabIndex == 11 &&
+  //     durationSession == "" &&
+  //     isHasPsychoExperience
+  //   ) {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } else if (tabIndex == 12 && reasonCancel == "" && isHasPsychoExperience) {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } else if (tabIndex == 13 && occupation == "" && isHasPsychoExperience) {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } else {
+  //     setActiveTabIndex(tabIndex + 1);
+  //     setShowError(false);
+  //   }
+  // }
+
   function showNextTab(tabIndex) {
     // Валидация перед переходом на следущую вкладку
-    if (tabIndex == 0 && age == "") {
+    if (tabIndex == 0 && hasPsychoExperience == "") {
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
       }, 3000);
-    } else if (tabIndex == 1 && city == "") {
+    
+    } else if ((tabIndex == 1 && importancePsycho.length == 0) || (importancePsycho.includes('Свой вариант') && customImportance == '') ) {
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
       }, 3000);
-    } else if (tabIndex == 2 && sex == "") {
+    } else if (tabIndex == 2 && occupation == "") {
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
       }, 3000);
-    } else if (tabIndex == 3 && psychoEducated == "") {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } else if (tabIndex == 4 && hasPsychoExperience == "") {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } else if (tabIndex == 5 && meetType == "") {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } else if (
-      (tabIndex == 6 && selectionСriteria == "") ||
-      (tabIndex == 6 &&
-        custmCreteria == "" &&
-        selectionСriteria == "Свой вариант")
-    ) {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } else if (
-      (tabIndex == 7 &&
-        JSON.stringify(importancePsycho) == JSON.stringify([])) ||
-      (tabIndex == 7 &&
-        importancePsycho.includes("Свой вариант") &&
-        customImportance == "")
-    ) {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } else if (tabIndex == 8 && pricePsycho == "" && !isHasPsychoExperience) {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } else if (tabIndex == 8 && agePsycho == "" && isHasPsychoExperience) {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } else if (
-      tabIndex == 9 &&
-      reasonNonApplication == "" &&
-      !isHasPsychoExperience
-    ) {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } else if (tabIndex == 10 && occupation == "" && !isHasPsychoExperience) {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } else if (tabIndex == 9 && sexPsyco == "" && isHasPsychoExperience) {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } else if (
-      tabIndex == 10 &&
-      priceLastSession == "" &&
-      isHasPsychoExperience
-    ) {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } else if (
-      tabIndex == 11 &&
-      durationSession == "" &&
-      isHasPsychoExperience
-    ) {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } else if (tabIndex == 12 && reasonCancel == "" && isHasPsychoExperience) {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } else if (tabIndex == 13 && occupation == "" && isHasPsychoExperience) {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } else {
+    } 
+    else {
+      // alert(activeTabIndex)
       setActiveTabIndex(tabIndex + 1);
       setShowError(false);
     }
   }
+
   function getRowId() {
     axios
       .get("https://n8n-v2.hrani.live/webhook/get-sheets-row-number")
@@ -238,9 +265,9 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
 
     data["anxieties"] = formMainanxieties;
 
-    if (!is_adult) {
-      dispatch(setStatus("sending"));
-    }
+    // if (!is_adult) {
+      // dispatch(setStatus("sending"));
+    // }
 
     axios({
       method: "POST",
@@ -259,16 +286,7 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
   }
 
   function sendData() {
-    if (activeTabIndex == 13 && occupation == "" && isHasPsychoExperience) {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } else if (
-      activeTabIndex == 10 &&
-      occupation == "" &&
-      !isHasPsychoExperience
-    ) {
+    if (activeTabIndex == 2 && occupation == "" && isHasPsychoExperience) {
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
@@ -281,7 +299,7 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
   return (
     <>
       {/* Не задаём ограничений  т.к ширину будет ограничивать контейнер в Tilda */}
-
+  
       <div className="bg-white  rounded-[30px] h-full flex flex-col relative w-full">
         <div
           data-name="header-block relative"
@@ -301,7 +319,7 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
 
         <div className="relative h-full overflow-y-scroll flex flex-col ">
           {/* Здесь размещаются вкладки */}
-          {activeTabIndex == 0 && <Age />}
+          {/* {activeTabIndex == 0 && <Age />}
           {activeTabIndex == 1 && <City />}
           {activeTabIndex == 2 && <Sex />}
           {activeTabIndex == 3 && <PsycoEducated />}
@@ -331,7 +349,16 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
               sendFn={() => _sendData()}
               showOkFn={() => dispatch(setStatus("ok"))}
             />
-          )}
+          )} */}
+          {activeTabIndex == 0 && <HasPsychoExperience />}
+          {activeTabIndex == 1 && <Importance/>}
+          {activeTabIndex == 2 && <Occupation />}
+          {activeTabIndex == 3 && (
+            <AskContacts
+              sendFn={() => _sendData()}
+              showOkFn={() => dispatch(setStatus("ok"))}
+            />
+          )} 
         </div>
 
         {/* Control buttons  */}
@@ -370,23 +397,7 @@ const FormPsyClientInfo = ({ maxTabsCount }) => {
             ""
           )}
 
-          {activeTabIndex == maxTabsCount - 1 &&
-          ((!isHasPsychoExperience && activeTabIndex != 11) ||
-            (isHasPsychoExperience && activeTabIndex != 14)) ? (
-            <Button
-              size="small"
-              intent="cream"
-              hower="primary"
-              className="sm:max-w-64 max-sm:min-w-40 ml-auto"
-              onClick={() => {
-                sendData();
-              }}
-            >
-              Отправить форму
-            </Button>
-          ) : (
-            ""
-          )}
+          
         </div>
       </div>
     </>

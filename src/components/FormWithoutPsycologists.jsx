@@ -12,12 +12,15 @@ import { useState } from "react";
 import QueryString from "qs";
 import { useSelector, useDispatch } from "react-redux";
 import { setStatus } from "../redux/slices/formStatusSlice";
+import { setPromocode } from "@/redux/slices/formSlice";
 import Diagnoses from "../survey/main/Diagnoses";
 import ClientSatate from "../survey/main/ClientsStates";
 import TraumaticEvents from "../survey/main/TraumaticEvents";
 import Questions from "../survey/main/Questions";
 import PsychologistCategory from '../survey/main/PsychologistCategory'
 import QuestionToPsychologist from "@/survey/main/QuestionToPsycologist";
+import Sex from "@/survey/psy-info-clients/Sex";
+import SexPsycho from "@/survey/psy-info-clients/SexPsycho";
 
 const Form = ({ maxTabsCount }) => {
   const dispatch = useDispatch();
@@ -37,7 +40,7 @@ const Form = ({ maxTabsCount }) => {
   const rid = form.rid;
   const ticket_id = useSelector((state) => state.form.ticket_id);
   const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
-
+  
   const lastExperience = useSelector((state) => state.form.lastExperience);
   const amountExpectations = useSelector(
     (state) => state.form.amountExpectations
@@ -57,6 +60,9 @@ const Form = ({ maxTabsCount }) => {
   const questionToPsychologist = form.question_to_psychologist
   const diagnoseMedicaments = form.diagnoseMedicaments
   const diagnose = form.diagnoses
+
+  const client_sex = formPsyClientInfo.sex
+  const psychologist_sex = formPsyClientInfo.sexPsycho
 
   const [showError, setShowError] = useState(false);
 
@@ -90,57 +96,129 @@ const Form = ({ maxTabsCount }) => {
     }
   }
 
+  // function showNextTab(tabIndex) {
+  //   // Валидация перед переходом на следущую вкладку
+  //   if(tabIndex == 0 && (diagnose.length == 0 || (diagnose[0] != "Нет" && diagnoseMedicaments == ''))){
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   }
+  //   else if (tabIndex == 3 && questionToPsychologist == "") {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } else if (
+  //     (tabIndex == 4 || (problemFromQuery !== undefined && tabIndex == 4)) &&
+  //     lastExperience == "" &&
+  //     !isNext
+  //   ) {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } 
+  //   // else if (
+  //   //   (tabIndex == 5 ||
+  //   //     (problemFromQuery !== undefined && tabIndex == 5) ||
+  //   //     (isNext && tabIndex == 4)) &&
+  //   //   amountExpectations == ""
+  //   // ) {
+  //   //   setShowError(true);
+  //   //   setTimeout(() => {
+  //   //     setShowError(false);
+  //   //   }, 3000);
+  //   // }
+  //    else if (
+  //     (tabIndex == 6 || (problemFromQuery !== undefined && tabIndex == 6)) &&
+  //     !isNext &&
+  //     age == ""
+  //   ) {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+
+  //   }
+  //   else if (
+  //     (tabIndex == 7 ||
+  //       (problemFromQuery !== undefined && tabIndex == 7) ||
+  //       (isNext && tabIndex == 4)) &&
+  //       categoryType == ''
+  //   ) {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   }
+
+  //   else if (
+  //     (tabIndex == 8 ||
+  //       (problemFromQuery !== undefined && tabIndex == 8) ||
+  //       (isNext && tabIndex == 5)) &&
+  //     slots.length == 0
+  //   ) {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } else if (
+  //     (tabIndex == 9 ||
+  //       (problemFromQuery !== undefined && tabIndex == 9) ||
+  //       (isNext && tabIndex == 6)) &&
+  //     (contactType == "" || contact.length <= 1 || !checkUsername(contact))
+  //   ) {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000);
+  //   } else {
+  //     setGoalReached(tabIndex);
+  //     setActiveTabIndex(tabIndex + 1);
+  //     console.log('test')
+  //     setShowError(false);
+  //   }
+  // }
+
   function showNextTab(tabIndex) {
     // Валидация перед переходом на следущую вкладку
-    if(tabIndex == 0 && (diagnose.length == 0 || (diagnose[0] != "Нет" && diagnoseMedicaments == ''))){
+    if(tabIndex == 1 && age == ''){
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
       }, 3000);
     }
-    else if (tabIndex == 3 && questionToPsychologist == "") {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } else if (
-      (tabIndex == 4 || (problemFromQuery !== undefined && tabIndex == 4)) &&
-      lastExperience == "" &&
-      !isNext
-    ) {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } 
-    // else if (
-    //   (tabIndex == 5 ||
-    //     (problemFromQuery !== undefined && tabIndex == 5) ||
-    //     (isNext && tabIndex == 4)) &&
-    //   amountExpectations == ""
-    // ) {
-    //   setShowError(true);
-    //   setTimeout(() => {
-    //     setShowError(false);
-    //   }, 3000);
-    // }
-     else if (
-      (tabIndex == 6 || (problemFromQuery !== undefined && tabIndex == 6)) &&
-      !isNext &&
-      age == ""
-    ) {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
 
+    else if(tabIndex == 2 && client_sex == ''){
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
     }
-    else if (
-      (tabIndex == 7 ||
-        (problemFromQuery !== undefined && tabIndex == 7) ||
-        (isNext && tabIndex == 4)) &&
-        categoryType == ''
-    ) {
+
+    else if(tabIndex == 3 && psychologist_sex == ''){
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
+    }
+
+    else if(tabIndex == 6 && (diagnose.length == 0  || (diagnose[0] != 'Нет' && diagnoseMedicaments == ''))){
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
+    }
+
+    else if(tabIndex == 7 && categoryType == ''){
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
+    }
+
+    else if(tabIndex == 9 && slots.length == 0){
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
@@ -148,26 +226,16 @@ const Form = ({ maxTabsCount }) => {
     }
 
     else if (
-      (tabIndex == 8 ||
-        (problemFromQuery !== undefined && tabIndex == 8) ||
-        (isNext && tabIndex == 5)) &&
-      slots.length == 0
-    ) {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } else if (
-      (tabIndex == 9 ||
-        (problemFromQuery !== undefined && tabIndex == 9) ||
-        (isNext && tabIndex == 6)) &&
+      activeTabIndex == 10  &&
       (contactType == "" || contact.length <= 1 || !checkUsername(contact))
-    ) {
+    ){
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
       }, 3000);
-    } else {
+    }
+  
+     else {
       setGoalReached(tabIndex);
       setActiveTabIndex(tabIndex + 1);
       console.log('test')
@@ -218,10 +286,12 @@ const Form = ({ maxTabsCount }) => {
       ignoreQueryPrefix: true,
     })?.utm_psy;
 
+    const next = QueryString.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })?.next;
+
     if (
-      (activeTabIndex == 9 ||
-        (problemFromQuery !== undefined && activeTabIndex == 9) ||
-        (isNext && activeTabIndex == 6)) &&
+      activeTabIndex == 10  &&
       (contactType == "" || contact.length <= 1 || !checkUsername(contact))
     ) {
       setShowError(true);
@@ -229,6 +299,11 @@ const Form = ({ maxTabsCount }) => {
         setShowError(false);
       }, 3000);
     } else {
+
+      if(next == 1){
+        setPromocode('Клиент перешёл из исследовательской анкеты')
+      }  
+
       let data = {
         ...form,
         utm_client,
@@ -283,6 +358,8 @@ const Form = ({ maxTabsCount }) => {
                 contactType: form.contactType,
                 contact: form.contact,
                 name: form.name,
+                form,
+                formPsyClientInfo
               },
               url: "https://n8n-v2.hrani.live/webhook/update-contacts-stb",
             });
@@ -336,13 +413,14 @@ const Form = ({ maxTabsCount }) => {
             showError ? "h-20" : "h-0"
           }`}
         >
-          {activeTabIndex == 8 ||
-          (problemFromQuery !== undefined && activeTabIndex == 8) ||
-          (isNext && activeTabIndex == 5)
-            ? "Вы не выбрали время"
-            : activeTabIndex == 9 ||
-              (problemFromQuery !== undefined && activeTabIndex == 9) ||
-              (isNext && activeTabIndex == 6) ? "Введите корректный @username или номер телефона для связи в Telegram" : "Вы не заполнили обязательное поле"}
+          {/* {activeTabIndex == 8 || */}
+          {/* (problemFromQuery !== undefined && activeTabIndex == 8) || */}
+          {/* (isNext && activeTabIndex == 5) */}
+            {/* ? "Вы не выбрали время" */}
+            {/* : activeTabIndex == 9 || */}
+              {/* (problemFromQuery !== undefined && activeTabIndex == 9) || */}
+              {/* (isNext && activeTabIndex == 6) ? "Введите корректный @username или номер телефона для связи в Telegram" : "Вы не заполнили обязательное поле"} */}
+        {activeTabIndex == 9 ? "Вы не выбрали время" : activeTabIndex == 10 ? "Введите корректный @username или номер телефона для связи в Telegram" : "Вы не заполнили обязательное поле"}
         </div>
         {/* <FormPager></FormPager> */}
 
@@ -350,60 +428,56 @@ const Form = ({ maxTabsCount }) => {
           {/* Здесь размещаются вкладки */}
           {problemFromQuery === undefined && !isNext && (
             <>
-              {activeTabIndex == 0 && <Diagnoses></Diagnoses>}
-              {activeTabIndex == 1 && <ClientSatate></ClientSatate>}
-              {activeTabIndex == 2 && <TraumaticEvents></TraumaticEvents>}
-              {activeTabIndex == 3 && <QuestionToPsychologist />}
-              {activeTabIndex == 4 && <LastExperience></LastExperience>}
-              {/* {activeTabIndex == 5 && <AmountExpectations></AmountExpectations>} */}
-              {activeTabIndex == 5 && <Promocode></Promocode>}
-              {activeTabIndex == 6 && <Age></Age>}
-              {activeTabIndex == 7 && (
-                <PsychologistCategory></PsychologistCategory>
-              )}
-              {activeTabIndex == 8 && (
+              {activeTabIndex == 0 && <Name></Name>}
+              {activeTabIndex == 1 && <Age></Age>}
+              {activeTabIndex == 2 && <Sex></Sex>}
+              {activeTabIndex == 3 && <SexPsycho></SexPsycho>}
+              {activeTabIndex == 4 && <ClientSatate></ClientSatate>}
+              {activeTabIndex == 5 && <TraumaticEvents></TraumaticEvents>}
+              {activeTabIndex == 6 && <Diagnoses></Diagnoses>}
+              {activeTabIndex == 7 && <PsychologistCategory></PsychologistCategory>}
+              {activeTabIndex == 8 && <Promocode></Promocode>}              
+              {activeTabIndex == 9 && (
                 <SlotsWithoutPsycologists></SlotsWithoutPsycologists>
               )}
-              {activeTabIndex == 9 && <AskContacts></AskContacts>}
-              {activeTabIndex == 10 && <Name></Name>}
-            </>
-          )}
-          {problemFromQuery !== undefined && !isNext && (
-            <>
-              {activeTabIndex == 0 && <Diagnoses></Diagnoses>}
-              {activeTabIndex == 1 && <ClientSatate></ClientSatate>}
-              {activeTabIndex == 2 && <TraumaticEvents></TraumaticEvents>}
-              {activeTabIndex == 3 && <QuestionToPsychologist />}
-              {activeTabIndex == 4 && <LastExperience></LastExperience>}
-              {/* {activeTabIndex == 5 && <AmountExpectations></AmountExpectations>} */}
-              {activeTabIndex == 5 && <Promocode></Promocode>}
-              {activeTabIndex == 6 && <Age></Age>}
-              {activeTabIndex == 7 && (
-                <PsychologistCategory></PsychologistCategory>
-              )}
-              {activeTabIndex == 8 && (
-                <SlotsWithoutPsycologists></SlotsWithoutPsycologists>
-              )}
-              {activeTabIndex == 9 && <AskContacts></AskContacts>}
-              {activeTabIndex == 10 && <Name></Name>}
+              {activeTabIndex == 10 && <AskContacts></AskContacts>}
             </>
           )}
 
-          {isNext && problemFromQuery == undefined && (
+          {isNext && (
             <>
-              {activeTabIndex == 0 && <Diagnoses></Diagnoses>}
-              {activeTabIndex == 1 && <ClientSatate></ClientSatate>}
-              {activeTabIndex == 2 && <TraumaticEvents></TraumaticEvents>}
-              {activeTabIndex == 3 && <QuestionToPsychologist />}
-              {/* {activeTabIndex == 4 && <AmountExpectations></AmountExpectations>} */}
-              {activeTabIndex == 4 && (
-                <PsychologistCategory></PsychologistCategory>
-              )}
-              {activeTabIndex == 5 && (
+              {activeTabIndex == 0 && <Name></Name>}
+              {activeTabIndex == 1 && <Age></Age>}
+              {activeTabIndex == 2 && <Sex></Sex>}
+              {activeTabIndex == 3 && <SexPsycho></SexPsycho>}
+              {activeTabIndex == 4 && <ClientSatate></ClientSatate>}
+              {activeTabIndex == 5 && <TraumaticEvents></TraumaticEvents>}
+              {activeTabIndex == 6 && <Diagnoses></Diagnoses>}
+              {activeTabIndex == 7 && <PsychologistCategory></PsychologistCategory>}
+              {activeTabIndex == 8 && <Promocode></Promocode>}              
+              {activeTabIndex == 9 && (
                 <SlotsWithoutPsycologists></SlotsWithoutPsycologists>
               )}
-              {activeTabIndex == 6 && <AskContacts></AskContacts>}
-              {activeTabIndex == 7 && <Name></Name>}
+              {activeTabIndex == 10 && <AskContacts></AskContacts>}
+
+            </>
+          )}
+
+          {isNext && problemFromQuery != undefined && (
+            <>
+              {/* {activeTabIndex == 0 && <Diagnoses></Diagnoses>} */}
+              {/* {activeTabIndex == 1 && <ClientSatate></ClientSatate>} */}
+              {/* {activeTabIndex == 2 && <TraumaticEvents></TraumaticEvents>} */}
+              {/* {activeTabIndex == 3 && <QuestionToPsychologist />} */}
+              {/* {activeTabIndex == 4 && <AmountExpectations></AmountExpectations>} */}
+              {/* {activeTabIndex == 4 && ( */}
+                 {/* <PsychologistCategory></PsychologistCategory> */}
+              {/* )} */}
+              {/* {activeTabIndex == 5 && ( */}
+                {/* <SlotsWithoutPsycologists></SlotsWithoutPsycologists> */}
+              {/* )} */}
+              {/* {activeTabIndex == 6 && <AskContacts></AskContacts>} */}
+              {/* {activeTabIndex == 7 && <Name></Name>} */}
             </>
           )}
         </div>

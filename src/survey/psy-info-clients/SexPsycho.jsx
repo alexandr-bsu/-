@@ -2,10 +2,22 @@ import React from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 import { setSexPsycho } from "../../redux/slices/formPsyClientInfoSlice";
+import { useEffect } from "react";
 import Radio from "../../components/Radio";
+import axios from "axios";
 
 const SexPsycho = () => {
   const sexPsycho = useSelector((state) => state.formPsyClientInfo.sexPsycho);
+  const ticket_id = useSelector((state) => state.form.ticket_id);
+  
+    useEffect(() => {
+      axios({
+        method: "PUT",
+        url: "https://n8n-v2.hrani.live/webhook/update-tracking-step",
+        data: { step: "Пол психолога", ticket_id },
+      });
+    }, [])
+
   const dispatch = useDispatch();
 
   const sexPsychoList = ["Мужчина", "Женщина", "Не имеет значения"];
@@ -18,7 +30,7 @@ const SexPsycho = () => {
       >
         <div className="flex flex-col">
           <h3 className="font-medium text-base text-dark-green">
-            Какие предпочтения у вас были относительно пола психолога?
+          С психологом какого пола вы готовы работать?
           </h3>
           <p className="text-gray-disabled text-sm">
             Выберите один вариант ответа
