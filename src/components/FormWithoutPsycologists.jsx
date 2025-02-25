@@ -112,18 +112,20 @@ const Form = ({ maxTabsCount }) => {
       setTimeout(() => {
         setShowError(false);
       }, 3000);
-    } else if (
-      (tabIndex == 5 ||
-        (problemFromQuery !== undefined && tabIndex == 5) ||
-        (isNext && tabIndex == 4)) &&
-      amountExpectations == ""
-    ) {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } else if (
-      (tabIndex == 7 || (problemFromQuery !== undefined && tabIndex == 7)) &&
+    } 
+    // else if (
+    //   (tabIndex == 5 ||
+    //     (problemFromQuery !== undefined && tabIndex == 5) ||
+    //     (isNext && tabIndex == 4)) &&
+    //   amountExpectations == ""
+    // ) {
+    //   setShowError(true);
+    //   setTimeout(() => {
+    //     setShowError(false);
+    //   }, 3000);
+    // }
+     else if (
+      (tabIndex == 6 || (problemFromQuery !== undefined && tabIndex == 6)) &&
       !isNext &&
       age == ""
     ) {
@@ -134,9 +136,9 @@ const Form = ({ maxTabsCount }) => {
 
     }
     else if (
-      (tabIndex == 8 ||
-        (problemFromQuery !== undefined && tabIndex == 8) ||
-        (isNext && tabIndex == 5)) &&
+      (tabIndex == 7 ||
+        (problemFromQuery !== undefined && tabIndex == 7) ||
+        (isNext && tabIndex == 4)) &&
         categoryType == ''
     ) {
       setShowError(true);
@@ -146,9 +148,9 @@ const Form = ({ maxTabsCount }) => {
     }
 
     else if (
-      (tabIndex == 9 ||
-        (problemFromQuery !== undefined && tabIndex == 9) ||
-        (isNext && tabIndex == 6)) &&
+      (tabIndex == 8 ||
+        (problemFromQuery !== undefined && tabIndex == 8) ||
+        (isNext && tabIndex == 5)) &&
       slots.length == 0
     ) {
       setShowError(true);
@@ -156,9 +158,9 @@ const Form = ({ maxTabsCount }) => {
         setShowError(false);
       }, 3000);
     } else if (
-      (tabIndex == 10 ||
-        (problemFromQuery !== undefined && tabIndex == 10) ||
-        (isNext && tabIndex == 7)) &&
+      (tabIndex == 9 ||
+        (problemFromQuery !== undefined && tabIndex == 9) ||
+        (isNext && tabIndex == 6)) &&
       (contactType == "" || contact.length <= 1 || !checkUsername(contact))
     ) {
       setShowError(true);
@@ -217,9 +219,9 @@ const Form = ({ maxTabsCount }) => {
     })?.utm_psy;
 
     if (
-      (activeTabIndex == 10 ||
-        (problemFromQuery !== undefined && activeTabIndex == 10) ||
-        (isNext && activeTabIndex == 7)) &&
+      (activeTabIndex == 9 ||
+        (problemFromQuery !== undefined && activeTabIndex == 9) ||
+        (isNext && activeTabIndex == 6)) &&
       (contactType == "" || contact.length <= 1 || !checkUsername(contact))
     ) {
       setShowError(true);
@@ -334,13 +336,13 @@ const Form = ({ maxTabsCount }) => {
             showError ? "h-20" : "h-0"
           }`}
         >
-          {activeTabIndex == 9 ||
-          (problemFromQuery !== undefined && activeTabIndex == 9) ||
-          (isNext && activeTabIndex == 6)
+          {activeTabIndex == 8 ||
+          (problemFromQuery !== undefined && activeTabIndex == 8) ||
+          (isNext && activeTabIndex == 5)
             ? "Вы не выбрали время"
-            : activeTabIndex == 10 ||
-              (problemFromQuery !== undefined && activeTabIndex == 10) ||
-              (isNext && activeTabIndex == 7) ? "Введите корректный @username или номер телефона для связи в Telegram" : "Вы не заполнили обязательное поле"}
+            : activeTabIndex == 9 ||
+              (problemFromQuery !== undefined && activeTabIndex == 9) ||
+              (isNext && activeTabIndex == 6) ? "Введите корректный @username или номер телефона для связи в Telegram" : "Вы не заполнили обязательное поле"}
         </div>
         {/* <FormPager></FormPager> */}
 
@@ -353,17 +355,17 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 2 && <TraumaticEvents></TraumaticEvents>}
               {activeTabIndex == 3 && <QuestionToPsychologist />}
               {activeTabIndex == 4 && <LastExperience></LastExperience>}
-              {activeTabIndex == 5 && <AmountExpectations></AmountExpectations>}
-              {activeTabIndex == 6 && <Promocode></Promocode>}
-              {activeTabIndex == 7 && <Age></Age>}
-              {activeTabIndex == 8 && (
+              {/* {activeTabIndex == 5 && <AmountExpectations></AmountExpectations>} */}
+              {activeTabIndex == 5 && <Promocode></Promocode>}
+              {activeTabIndex == 6 && <Age></Age>}
+              {activeTabIndex == 7 && (
                 <PsychologistCategory></PsychologistCategory>
               )}
-              {activeTabIndex == 9 && (
+              {activeTabIndex == 8 && (
                 <SlotsWithoutPsycologists></SlotsWithoutPsycologists>
               )}
-              {activeTabIndex == 10 && <AskContacts></AskContacts>}
-              {activeTabIndex == 11 && <Name></Name>}
+              {activeTabIndex == 9 && <AskContacts></AskContacts>}
+              {activeTabIndex == 10 && <Name></Name>}
             </>
           )}
           {problemFromQuery !== undefined && !isNext && (
@@ -373,17 +375,17 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 2 && <TraumaticEvents></TraumaticEvents>}
               {activeTabIndex == 3 && <QuestionToPsychologist />}
               {activeTabIndex == 4 && <LastExperience></LastExperience>}
-              {activeTabIndex == 5 && <AmountExpectations></AmountExpectations>}
-              {activeTabIndex == 6 && <Promocode></Promocode>}
-              {activeTabIndex == 7 && <Age></Age>}
-              {activeTabIndex == 8 && (
+              {/* {activeTabIndex == 5 && <AmountExpectations></AmountExpectations>} */}
+              {activeTabIndex == 5 && <Promocode></Promocode>}
+              {activeTabIndex == 6 && <Age></Age>}
+              {activeTabIndex == 7 && (
                 <PsychologistCategory></PsychologistCategory>
               )}
-              {activeTabIndex == 9 && (
+              {activeTabIndex == 8 && (
                 <SlotsWithoutPsycologists></SlotsWithoutPsycologists>
               )}
-              {activeTabIndex == 10 && <AskContacts></AskContacts>}
-              {activeTabIndex == 11 && <Name></Name>}
+              {activeTabIndex == 9 && <AskContacts></AskContacts>}
+              {activeTabIndex == 10 && <Name></Name>}
             </>
           )}
 
@@ -393,15 +395,15 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 1 && <ClientSatate></ClientSatate>}
               {activeTabIndex == 2 && <TraumaticEvents></TraumaticEvents>}
               {activeTabIndex == 3 && <QuestionToPsychologist />}
-              {activeTabIndex == 4 && <AmountExpectations></AmountExpectations>}
-              {activeTabIndex == 5 && (
+              {/* {activeTabIndex == 4 && <AmountExpectations></AmountExpectations>} */}
+              {activeTabIndex == 4 && (
                 <PsychologistCategory></PsychologistCategory>
               )}
-              {activeTabIndex == 6 && (
+              {activeTabIndex == 5 && (
                 <SlotsWithoutPsycologists></SlotsWithoutPsycologists>
               )}
-              {activeTabIndex == 7 && <AskContacts></AskContacts>}
-              {activeTabIndex == 8 && <Name></Name>}
+              {activeTabIndex == 6 && <AskContacts></AskContacts>}
+              {activeTabIndex == 7 && <Name></Name>}
             </>
           )}
         </div>
