@@ -13,7 +13,7 @@ const AskContacts = () => {
   const ticket_id = useSelector((state) => state.form.ticket_id);
 
   function checkKey(event){
-    var regex = new RegExp("^[a-zA-Z0-9_@+-]+$");
+    var regex = new RegExp("^[0-9_@+-]+$");
       var key = event.key;
       if (!regex.test(key)) {
          event.preventDefault();
@@ -22,7 +22,7 @@ const AskContacts = () => {
       }
 
       function checkUsername(username){
-        var regex = new RegExp("^[a-zA-Z0-9_@+-]+$");
+        var regex = new RegExp("^[0-9_@+-]+$");
           if (!regex.test(username)){
             return false
           }
@@ -50,7 +50,7 @@ const AskContacts = () => {
           Оставьте ваш Телеграм аккаунт для связи
           </h3>
           <p className="text-gray-disabled text-sm">
-          Телеграм аккаунт повысит вашу конфиденциальность. Рекламу не присылаем. Психологи не видят ваши контакты. Только вы решаете кому их показать после сессии
+          Телеграм аккаунт повысит вашу конфиденциальность. Рекламу не присылаем.
           </p>
         </div>
       </div>
@@ -58,14 +58,14 @@ const AskContacts = () => {
       <div className="px-5 flex flex-col gap-10">
         <div className="flex flex-col gap-2">
         <Input
-          placeholder="Например, @moi_akkaunt или @71234567890"
+          placeholder="Например, +79991234567"
           value={contact}
           onChangeFn={(e) => dispatch(setContact(e))}
           onKeyPress={(e) => checkKey(e)}
           intent={!checkUsername(contact) && contact.length >= 1 ? 'error' : 'primary'}
         />
 
-        {!checkUsername(contact) && contact.length >= 1 && <p className="font-medium text-sm text-red">Введите корректный @username или номер телефона для связи в Telegram</p>}
+        {!checkUsername(contact) && contact.length >= 1 && <p className="font-medium text-sm text-red">Введите корректный номер телефона для связи</p>}
         </div>
       </div>
     </div>

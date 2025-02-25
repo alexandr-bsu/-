@@ -227,7 +227,7 @@ const Form = ({ maxTabsCount }) => {
 
     else if (
       activeTabIndex == 10  &&
-      (contactType == "" || contact.length <= 1 || !checkUsername(contact))
+      (contactType == "" || contact.length <= 2 || !checkUsername(contact))
     ){
       setShowError(true);
       setTimeout(() => {
@@ -292,7 +292,7 @@ const Form = ({ maxTabsCount }) => {
 
     if (
       activeTabIndex == 10  &&
-      (contactType == "" || contact.length <= 1 || !checkUsername(contact))
+      (contactType == "" || contact.length <= 2 || !checkUsername(contact))
     ) {
       setShowError(true);
       setTimeout(() => {
@@ -420,7 +420,7 @@ const Form = ({ maxTabsCount }) => {
             {/* : activeTabIndex == 9 || */}
               {/* (problemFromQuery !== undefined && activeTabIndex == 9) || */}
               {/* (isNext && activeTabIndex == 6) ? "Введите корректный @username или номер телефона для связи в Telegram" : "Вы не заполнили обязательное поле"} */}
-        {activeTabIndex == 9 ? "Вы не выбрали время" : activeTabIndex == 10 ? "Введите корректный @username или номер телефона для связи в Telegram" : "Вы не заполнили обязательное поле"}
+        {activeTabIndex == 9 ? "Вы не выбрали время" : activeTabIndex == 10 ? "Введите корректный номер телефона для связи" : "Вы не заполнили обязательное поле"}
         </div>
         {/* <FormPager></FormPager> */}
 

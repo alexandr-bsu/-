@@ -159,7 +159,7 @@ export const formSlice = createSlice({
       if (diff > 0) {
         state.userTimeZone = `МСК+${diff}`;
       } else if (diff < 0) {
-        state.userTimeZone = `МСК-${diff}`;
+        state.userTimeZone = `МСК${diff}`;
       } else {
         state.userTimeZone = "МСК";
       }
@@ -212,8 +212,8 @@ export const formSlice = createSlice({
     },
 
     setContact: (state, contact) => {
-      if (!contact.payload.startsWith("@")) {
-        contact.payload = "@" + contact.payload;
+      if (!contact.payload.startsWith("+7")) {
+        contact.payload = "+7" + contact.payload;
       }
 
       state.contact = contact.payload;
