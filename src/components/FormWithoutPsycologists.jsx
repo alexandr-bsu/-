@@ -363,8 +363,6 @@ const Form = ({ maxTabsCount }) => {
               },
               url: "https://n8n-v2.hrani.live/webhook/update-contacts-stb",
             });
-          } else{
-            console('no bid rid', bid, rid)
           }
           axios({
             method: "PUT",
