@@ -47,10 +47,10 @@ const AskContacts = () => {
       >
         <div className="flex flex-col">
           <h3 className="font-medium text-base text-dark-green">
-          Оставьте ваш Телеграм аккаунт для связи
+          Оставьте ваш контакт для связи
           </h3>
           <p className="text-gray-disabled text-sm">
-          Телеграм аккаунт повысит вашу конфиденциальность. Рекламу не присылаем.
+          Рекламу не присылаем. Психологи не видят ваши контакты. Только вы решаете кому их показать после сессииё
           </p>
         </div>
       </div>
