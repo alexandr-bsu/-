@@ -508,7 +508,7 @@ const Slots = () => {
             <div className="flex flex-col items-start justify-start gap-2">
               <div>
                 <p className="text-base mb-10 p-2 border border-green text-dark-green rounded-[15px]">
-                К сожалению автоматически мы не смогли подобрать психолога по вашему запросу. Но вы можете написать нашему <a href="https://t.me/hranitel_admin" target="_new" className="font-bold underline">администратору</a> в Телеграм, чтобы мы могли вам помочь вручную или обратиться в одно из учреждений ниже
+                К сожалению автоматически мы не смогли подобрать психолога по вашему запросу. Но вы можете написать нашему <a href="https://t.me/hranitel_admin" target="_new" className="font-bold underline">администратору</a> в Телеграм, чтобы мы могли вам помочь вручную или обратитесь в одно из учреждений ниже
                 </p>
               </div>
 
