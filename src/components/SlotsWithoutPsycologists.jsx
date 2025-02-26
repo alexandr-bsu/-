@@ -120,6 +120,7 @@ const Slots = () => {
     return undefined;
   }
 
+
   function checkNoSlots(groups) {
     let noSlots = true;
     for (let group of groups) {
@@ -246,12 +247,16 @@ const Slots = () => {
         setPsychologistAccept(psychologist_accept)
         setGroupsOfSlots(filtered_groups);
 
-        if (checkNoSlots(filtered_groups)) {
+        if(Number(getAgeFilter()) < 18){
+          setSlotStatus("empty");
+          dispatch(setEmptySlots());
+        }
+
+        else if (checkNoSlots(filtered_groups)) {
           setSlotStatus("empty");
           dispatch(setEmptySlots());
         } else {
           setSlotStatus("active");
-
           let filtered_names = [];
           for (let group of filtered_groups) {
             for (let s in group.slots) {
