@@ -426,7 +426,7 @@ const Form = ({ maxTabsCount }) => {
 
         <div className="relative h-full overflow-y-scroll flex flex-col ">
           {/* Здесь размещаются вкладки */}
-          {problemFromQuery === undefined && !isNext && (
+          {!isNext && (
             <>
               {activeTabIndex == 0 && <Name></Name>}
               {activeTabIndex == 1 && <Age></Age>}
