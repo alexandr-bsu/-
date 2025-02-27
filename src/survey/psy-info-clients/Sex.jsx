@@ -18,7 +18,7 @@ const Sex = () => {
   }, [])
   const dispatch = useDispatch();
 
-  const sexList = ["Мужчина", "Женщина"];
+  const sexList = ["Мужской", "Женский"];
 
   return (
     <div className="flex flex-col grow pb-6">
