@@ -501,11 +501,9 @@ const Slots = () => {
         >
           <div className="flex-col gap-4 w-full">
             <div className="flex flex-col items-start justify-start gap-2">
-              <div>
-                <p className="text-base mb-10 p-2 border border-green text-dark-green rounded-[15px]">
-                  К сожалению, наши психологи не специализируются на вашей
-                  ситуации. Но вы можете обратиться в другие организации, в
-                  которых вам непременно помогут.
+              <div className="w-full">
+                <p className="text-base mb-10 p-2 border border-green text-dark-green rounded-[15px] w-full">
+                К стажлению, у выбранного психолога нет слотов. Пожалуйста, свяжитесь с <a href="https://t.me/hranitel_admin" target="_new" className="font-bold underline">администратором</a> в Телеграм чтобы подобрать другого писхолога
                 </p>
               </div>
 
