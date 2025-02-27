@@ -23,7 +23,11 @@ const FormHelpfulHands = ({ maxTabsCount }) => {
   const [showError, setShowError] = useState(false);
 
   // Массив заголовков табов формы.
-  const headers = ['Заявка на cессию "Рука помощи" от Хранителей'];
+  const utm_psy_header = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.utm_psy;
+
+  const headers = ['Запись к психологу из Хранителей - '+utm_psy_header];
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const areSlotsEmpty = useSelector((state) => state.form.emptySlots);
 
