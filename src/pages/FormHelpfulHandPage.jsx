@@ -96,7 +96,7 @@ const FormHelpfulHandPage= () => {
 
       {status == "active" && (
         <>
-          <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden p-5 rounded-[30px]">
+          <div className="bg-dark-green h-screen w-screen max-w-[1024px]  max-h-[600px] flex flex-col items-center justify-center overflow-y-hidden p-5 rounded-[30px]">
             <FormHelpfulHands
               maxTabsCount={4}
             ></FormHelpfulHands>
