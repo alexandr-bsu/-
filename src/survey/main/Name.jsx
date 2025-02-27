@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setName } from "../../redux/slices/formSlice";
 import axios from "axios";
 
-const Name = () => {
+const Name = ({hide_description}) => {
   const name = useSelector((state) => state.form.name);
   const ticket_id = useSelector((state) => state.form.ticket_id);
   const dispatch = useDispatch();
@@ -28,9 +28,9 @@ const Name = () => {
           <h3 className="font-medium text-base text-dark-green">
             Как вас зовут?
           </h3>
-          <p className="text-gray-disabled text-sm">
+          {!hide_description && <p className="text-gray-disabled text-sm">
             Вы можете не указывать имя, если пока не готовы
-          </p>
+          </p>}
         </div>
       </div>
 

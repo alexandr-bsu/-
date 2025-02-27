@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setAge } from "../../redux/slices/formSlice";
 import axios from "axios";
 
-const Age = () => {
+const Age = ({hide_description}) => {
   const age = useSelector((state) => state.form.age);
   const ticket_id = useSelector((state) => state.form.ticket_id);
   const dispatch = useDispatch();
@@ -27,9 +27,9 @@ const Age = () => {
       >
         <div className="flex flex-col">
           <h3 className="font-medium text-base text-dark-green">Сколько вам лет?</h3>
-          <p className="text-gray-disabled text-sm">
+          {!hide_description && <p className="text-gray-disabled text-sm">
             Мы учитываем ваш возраст при подборе психолога
-          </p>
+          </p>}
         </div>
       </div>
 
