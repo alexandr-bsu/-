@@ -196,6 +196,7 @@ const Slots = () => {
     return timeDifference;
   };
 
+  const [currentPsychologist, setCurrentPsychologist] = useState("")
   // Получаем группы слотов и обновляем переменную groups_of_slots
   function selectFn(date) {
     let splited_dates = date.split(":");
@@ -275,7 +276,26 @@ const Slots = () => {
 
         setPsychologistAccept(psychologist_accept)
         setGroupsOfSlots(filtered_groups);
-        setSlotsByPsycho(filtered_groups)
+
+        let filtered_groups_copy = JSON.parse(JSON.stringify(filtered_groups))
+        let filtered_names_copy = [];
+          for (let group of filtered_groups_copy) {
+            for (let s in group.slots) {
+              for (let p of group.slots[s]) {
+                console.log("psy psy psy", p?.psychologist);
+                if (!filtered_names_copy.includes(p?.psychologist))
+                  filtered_names_copy.push(p?.psychologist);
+              }
+            }
+          }
+        
+        setCurrentPsychologist(filtered_names_copy[0])
+        filtered_groups_copy = filterSlotsByPsychologist(filtered_groups_copy, filtered_names_copy[0])
+        console.log("filtered_groups_copy", filtered_groups_copy[1], filtered_names_copy)
+        setSlotsByPsycho(filtered_groups_copy[1])
+        // setSlotsByPsycho(filtered_groups)
+        
+        
 
         if(Number(getAgeFilter()) < 18){
           setSlotStatus("empty");
@@ -395,6 +415,7 @@ const Slots = () => {
   // Запрашиваем группы слотов при загрузке страницы
   useEffect(() => {
     selectFn(selectedDate);
+    
     axios({
       method: "put",
       data: { ticket_id, form, formPsyClientInfo },
@@ -420,7 +441,7 @@ const Slots = () => {
                     ? <div>
                     <ul className="flex gap-4 flex-wrap">                
                       {filtered_by_automatch_psy_names.map(name => {
-                        return <li className="underline cursor-pointer hover:no-underline" onClick={() => filterSlotsByPsychologistChoose(name)}>{name}</li>
+                        return <li className={`${name == currentPsychologist ? 'underline hover:no-underline' : 'hover:underline no-underline'} cursor-pointer `} onClick={() => {filterSlotsByPsychologistChoose(name); setCurrentPsychologist(name)}}>{name}</li>
                       })}
                     </ul>
                   </div>
