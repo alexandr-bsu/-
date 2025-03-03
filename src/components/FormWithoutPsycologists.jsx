@@ -67,7 +67,7 @@ const Form = ({ maxTabsCount }) => {
   const [showError, setShowError] = useState(false);
 
   // Массив заголовков табов формы.
-  const headers = ["Заявка на подбор психолога из сообщества Хранители"];
+  const headers = ["Заявка на подбор психолога из сообщества Хранители", "Эти психологи вам подходят. Выберите специалиста и время"];
 
   const [activeTabIndex, setActiveTabIndex] = useState(0);
 
@@ -211,14 +211,14 @@ const Form = ({ maxTabsCount }) => {
       }, 3000);
     }
 
-    else if(tabIndex == 7 && categoryType == ''){
+    else if(((tabIndex == 8 && next != 1) || (tabIndex == 7 && next == 1)) && categoryType == ''){
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
       }, 3000);
     }
 
-    else if(tabIndex == 9 && slots.length == 0){
+    else if(((activeTabIndex == 9 && next != 1) || (next==1 && activeTabIndex==8)) && slots.length == 0){
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
@@ -226,7 +226,7 @@ const Form = ({ maxTabsCount }) => {
     }
 
     else if (
-      activeTabIndex == 10  &&
+      ((activeTabIndex == 10 && next != 1) || (next==1 && activeTabIndex==9))  &&
       (contactType == "" || contact.length <= 2 || !checkUsername(contact))
     ){
       setShowError(true);
@@ -291,7 +291,7 @@ const Form = ({ maxTabsCount }) => {
     })?.next;
 
     if (
-      activeTabIndex == 10  &&
+      (activeTabIndex == 10 || (next==1 && activeTabIndex == 9))  &&
       (contactType == "" || contact.length <= 2 || !checkUsername(contact))
     ) {
       setShowError(true);
@@ -379,9 +379,7 @@ const Form = ({ maxTabsCount }) => {
 
   function showForwardBtn() {
     if (
-      (activeTabIndex == 9 ||
-        (problemFromQuery !== undefined && activeTabIndex == 9) ||
-        (isNext && activeTabIndex == 6)) &&
+      ((activeTabIndex == 9 && next != 1) || (next == 1 && activeTabIndex == 8)) &&
       areSlotsEmpty
     ) {
       return false;
@@ -403,7 +401,7 @@ const Form = ({ maxTabsCount }) => {
           className="px-5 py-3 bg-[#2c3531] sticky top-0 z-20 rounded-t-[30px]"
         >
           <h2 className="text-[#d1e8e2] font-medium text-base ">
-            {headers[0]}
+            {activeTabIndex != 9 ? headers[0] : headers[1]}
           </h2>
         </div>
 
@@ -413,14 +411,8 @@ const Form = ({ maxTabsCount }) => {
             showError ? "h-20" : "h-0"
           }`}
         >
-          {/* {activeTabIndex == 8 || */}
-          {/* (problemFromQuery !== undefined && activeTabIndex == 8) || */}
-          {/* (isNext && activeTabIndex == 5) */}
-            {/* ? "Вы не выбрали время" */}
-            {/* : activeTabIndex == 9 || */}
-              {/* (problemFromQuery !== undefined && activeTabIndex == 9) || */}
-              {/* (isNext && activeTabIndex == 6) ? "Введите корректный @username или номер телефона для связи в Telegram" : "Вы не заполнили обязательное поле"} */}
-        {activeTabIndex == 9 ? "Вы не выбрали время" : activeTabIndex == 10 ? "Введите корректный номер телефона для связи" : "Вы не заполнили обязательное поле"}
+          
+        {((activeTabIndex == 9 && next != 1) || (activeTabIndex == 8 && next == 1)) ? "Вы не выбрали время" : (activeTabIndex == 10 && next !=1 ) || (activeTabIndex == 9 && next==1) ? "Введите корректный номер телефона для связи" : "Вы не заполнили обязательное поле"}
         </div>
         {/* <FormPager></FormPager> */}
 
@@ -435,8 +427,9 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 4 && <ClientSatate></ClientSatate>}
               {activeTabIndex == 5 && <TraumaticEvents></TraumaticEvents>}
               {activeTabIndex == 6 && <Diagnoses></Diagnoses>}
-              {activeTabIndex == 7 && <PsychologistCategory></PsychologistCategory>}
-              {activeTabIndex == 8 && <Promocode></Promocode>}              
+              {activeTabIndex == 7 && <Promocode></Promocode>}        
+              {activeTabIndex == 8 && <PsychologistCategory></PsychologistCategory>}
+                    
               {activeTabIndex == 9 && (
                 <SlotsWithoutPsycologists></SlotsWithoutPsycologists>
               )}
@@ -454,32 +447,14 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 5 && <TraumaticEvents></TraumaticEvents>}
               {activeTabIndex == 6 && <Diagnoses></Diagnoses>}
               {activeTabIndex == 7 && <PsychologistCategory></PsychologistCategory>}
-              {activeTabIndex == 8 && <Promocode></Promocode>}              
-              {activeTabIndex == 9 && (
+              {activeTabIndex == 8 && (
                 <SlotsWithoutPsycologists></SlotsWithoutPsycologists>
               )}
-              {activeTabIndex == 10 && <AskContacts></AskContacts>}
+              {activeTabIndex == 9 && <AskContacts></AskContacts>}
 
             </>
           )}
 
-          {isNext && problemFromQuery != undefined && (
-            <>
-              {/* {activeTabIndex == 0 && <Diagnoses></Diagnoses>} */}
-              {/* {activeTabIndex == 1 && <ClientSatate></ClientSatate>} */}
-              {/* {activeTabIndex == 2 && <TraumaticEvents></TraumaticEvents>} */}
-              {/* {activeTabIndex == 3 && <QuestionToPsychologist />} */}
-              {/* {activeTabIndex == 4 && <AmountExpectations></AmountExpectations>} */}
-              {/* {activeTabIndex == 4 && ( */}
-                 {/* <PsychologistCategory></PsychologistCategory> */}
-              {/* )} */}
-              {/* {activeTabIndex == 5 && ( */}
-                {/* <SlotsWithoutPsycologists></SlotsWithoutPsycologists> */}
-              {/* )} */}
-              {/* {activeTabIndex == 6 && <AskContacts></AskContacts>} */}
-              {/* {activeTabIndex == 7 && <Name></Name>} */}
-            </>
-          )}
         </div>
 
         {/* Control buttons  */}
@@ -529,7 +504,7 @@ const Form = ({ maxTabsCount }) => {
                 sendData();
               }}
             >
-              Отправить форму
+              Отправить заявку
             </Button>
           ) : (
             ""

@@ -62,10 +62,10 @@ const AskContacts = () => {
           value={contact}
           onChangeFn={(e) => dispatch(setContact(e))}
           onKeyPress={(e) => checkKey(e)}
-          intent={!checkUsername(contact) && contact.length >= 1 ? 'error' : 'primary'}
+          intent={!checkUsername(contact) && contact.length > 0 && contact.length != 11 ? 'error' : 'primary'}
         />
 
-        {!checkUsername(contact) && contact.length >= 1 && <p className="font-medium text-sm text-red">Введите корректный номер телефона для связи</p>}
+        {!checkUsername(contact) && contact.length > 0 && contact.length != 11 && <p className="font-medium text-sm text-red">Введите корректный номер телефона для связи</p>}
         </div>
       </div>
     </div>

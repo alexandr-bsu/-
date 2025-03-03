@@ -32,9 +32,14 @@ const Slots = () => {
     });
   });
 
-  const selectedPsychologistsNames = useSelector(
-    (state) => state.form.selectedPsychologistsNames
+  // const selectedPsychologistsNames = useSelector(
+  //   (state) => state.form.selectedPsychologistsNames
+  // );
+
+  const filtered_by_automatch_psy_names = useSelector(
+    (state) => state.form.filtered_by_automatch_psy_names
   );
+
   // Клиент перешёл из исследовательской анкеты в заявку
   const next = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
@@ -102,6 +107,30 @@ const Slots = () => {
 
   // Флаг показывает загружается ли расписание или нет
   const [slotStatus, setSlotStatus] = useState("loading");
+
+  // Фильтрованные по психологу слоты
+  const [slots_by_psycho, setSlotsByPsycho] = useState([])
+
+  function filterSlotsByPsychologistChoose(psycho_name){
+    let gs = JSON.parse(JSON.stringify(groups_of_slots))
+    for (let group of gs){
+      let slots = group.slots
+      for (let st in slots){
+        let psychos = slots[st]
+        for (let psy of psychos){
+          if (psy.psychologist != psycho_name){
+            slots[st] = slots[st].filter(p => p.psychologist == psycho_name)
+           
+          }
+        }
+      }
+    }
+    gs = remove_first_n_empty_groups(gs)
+    setSlotsByPsycho(gs)
+    console.log('slots', gs)
+  }
+
+  
 
   function getAgeFilter() {
     if (isNext && !isNaN(age) && age > 0 && age < 100) {
@@ -246,6 +275,7 @@ const Slots = () => {
 
         setPsychologistAccept(psychologist_accept)
         setGroupsOfSlots(filtered_groups);
+        setSlotsByPsycho(filtered_groups)
 
         if(Number(getAgeFilter()) < 18){
           setSlotStatus("empty");
@@ -377,6 +407,7 @@ const Slots = () => {
       <div className="sticky top-0">
         <>
           {slotStatus != "empty" && (
+            <>
             <div
               data-name="question-block"
               className={`bg-white px-5 ${
@@ -386,16 +417,24 @@ const Slots = () => {
               <div className="flex flex-col">
                 <h3 className="font-medium text-base text-dark-green">
                   {slotStatus != "empty"
-                    ? "Выберите подходящее время сессии."
+                    ? <div>
+                    <ul className="flex gap-4 flex-wrap">                
+                      {filtered_by_automatch_psy_names.map(name => {
+                        return <li className="underline cursor-pointer hover:no-underline" onClick={() => filterSlotsByPsychologistChoose(name)}>{name}</li>
+                      })}
+                    </ul>
+                  </div>
                     : "Нет слотов"}
                 </h3>
                 <p className="text-gray-disabled text-base">
                   {slotStatus != "empty"
-                    ? "Выберите один или несколько вариантов"
+                    ? <p>Посмотреть информацию о психологах можно <a className="underline" href="https://hrani.live/community-members" target="_new">здесь</a></p>
                     : ""}
                 </p>
               </div>
             </div>
+            
+            </>
           )}
         </>
         {/* {isNext && !isNaN(age) && ( */}
@@ -626,8 +665,8 @@ const Slots = () => {
             data-name="data-groups"
             className="slot-grid-container px-5 pt-5 pb-10 min-h-screen gap-10 overflow-y-scroll"
           > 
-            {/* <pre>{JSON.stringify(groups_of_slots)}</pre> */}
-            {groups_of_slots?.map((group) => (
+            {/* <pre>{JSON.stringify(slots_by_psycho)}</pre> */}
+            {slots_by_psycho?.map((group) => (
               <DateGroup group={group}></DateGroup>
             ))}
           </div>

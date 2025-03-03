@@ -217,7 +217,7 @@ const FormHelpfulHands = ({ maxTabsCount }) => {
                 sendData();
               }}
             >
-              Отправить форму
+              Отправить заявку
             </Button>
           ) : (
             ""
