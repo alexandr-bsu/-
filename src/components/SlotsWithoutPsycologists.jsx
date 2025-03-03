@@ -441,7 +441,7 @@ const Slots = () => {
                     ? <div>
                     <ul className="flex gap-4 flex-wrap">                
                       {filtered_by_automatch_psy_names.map(name => {
-                        return <li className={`${name == currentPsychologist ? 'underline hover:no-underline' : 'hover:underline no-underline'} cursor-pointer `} onClick={() => {filterSlotsByPsychologistChoose(name); setCurrentPsychologist(name)}}>{name}</li>
+                        return <li className={`${name == currentPsychologist ? 'underline underline-offset-3 decoration-4 decoration-cream' : 'hover:underline hover:underline-offset-3 hover:decoration-4 hover:decoration-cream'} cursor-pointer `} onClick={() => {filterSlotsByPsychologistChoose(name); setCurrentPsychologist(name)}}>{name}</li>
                       })}
                     </ul>
                   </div>
