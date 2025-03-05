@@ -211,14 +211,14 @@ const Form = ({ maxTabsCount }) => {
       }, 3000);
     }
 
-    else if(((tabIndex == 8 && next != 1) || (tabIndex == 7 && next == 1)) && categoryType == ''){
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    }
+    // else if(((tabIndex == 8 && next != 1) || (tabIndex == 7 && next == 1)) && categoryType == ''){
+    //   setShowError(true);
+    //   setTimeout(() => {
+    //     setShowError(false);
+    //   }, 3000);
+    // }
 
-    else if(((activeTabIndex == 9 && next != 1) || (next==1 && activeTabIndex==8)) && slots.length == 0){
+    else if(((activeTabIndex == 8 && next != 1) || (next==1 && activeTabIndex==7)) && slots.length == 0){
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
@@ -226,7 +226,7 @@ const Form = ({ maxTabsCount }) => {
     }
 
     else if (
-      ((activeTabIndex == 10 && next != 1) || (next==1 && activeTabIndex==9))  &&
+      ((activeTabIndex == 9 && next != 1) || (next==1 && activeTabIndex==8))  &&
       (contactType == "" || contact.length <= 2 || !checkUsername(contact))
     ){
       setShowError(true);
@@ -291,7 +291,7 @@ const Form = ({ maxTabsCount }) => {
     })?.next;
 
     if (
-      (activeTabIndex == 10 || (next==1 && activeTabIndex == 9))  &&
+      (activeTabIndex == 9 || (next==1 && activeTabIndex == 8))  &&
       (contactType == "" || contact.length <= 2 || !checkUsername(contact))
     ) {
       setShowError(true);
@@ -379,7 +379,7 @@ const Form = ({ maxTabsCount }) => {
 
   function showForwardBtn() {
     if (
-      ((activeTabIndex == 9 && next != 1) || (next == 1 && activeTabIndex == 8)) &&
+      ((activeTabIndex == 8 && next != 1) || (next == 1 && activeTabIndex == 7)) &&
       areSlotsEmpty
     ) {
       return false;
@@ -428,12 +428,12 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 5 && <TraumaticEvents></TraumaticEvents>}
               {activeTabIndex == 6 && <Diagnoses></Diagnoses>}
               {activeTabIndex == 7 && <Promocode></Promocode>}        
-              {activeTabIndex == 8 && <PsychologistCategory></PsychologistCategory>}
+              {/* {activeTabIndex == 8 && <PsychologistCategory></PsychologistCategory>} */}
                     
-              {activeTabIndex == 9 && (
+              {activeTabIndex == 8 && (
                 <SlotsWithoutPsycologists></SlotsWithoutPsycologists>
               )}
-              {activeTabIndex == 10 && <AskContacts></AskContacts>}
+              {activeTabIndex == 9 && <AskContacts></AskContacts>}
             </>
           )}
 
@@ -446,11 +446,11 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 4 && <ClientSatate></ClientSatate>}
               {activeTabIndex == 5 && <TraumaticEvents></TraumaticEvents>}
               {activeTabIndex == 6 && <Diagnoses></Diagnoses>}
-              {activeTabIndex == 7 && <PsychologistCategory></PsychologistCategory>}
-              {activeTabIndex == 8 && (
+              {/* {activeTabIndex == 7 && <PsychologistCategory></PsychologistCategory>} */}
+              {activeTabIndex == 7 && (
                 <SlotsWithoutPsycologists></SlotsWithoutPsycologists>
               )}
-              {activeTabIndex == 9 && <AskContacts></AskContacts>}
+              {activeTabIndex == 8 && <AskContacts></AskContacts>}
 
             </>
           )}

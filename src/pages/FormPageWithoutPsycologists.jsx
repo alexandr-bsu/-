@@ -173,7 +173,7 @@ const FormPage = () => {
         <>
           <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden p-5 rounded-[30px]">
             <FormWithoutPsycologists
-              maxTabsCount={next == 1 ? 10 : 11}
+              maxTabsCount={next == 1 ? 9 : 10}
             ></FormWithoutPsycologists>
           </div>
         </>
