@@ -30,6 +30,7 @@ const initialState = {
   question_to_psychologist: '',
   // Используется только при автомотчинге без карточек
   filtered_by_automatch_psy_names: [],
+  _queries: ''
 };
 
 function makeid(length) {
@@ -49,6 +50,10 @@ export const formSlice = createSlice({
   name: "form",
   initialState,
   reducers: {
+    setInternalQueries: (state, queries) => {
+      state._queries = queries.payload
+    },
+
     setQuestionToPsychologist: (state, question) => {
       state.question_to_psychologist = question.payload
     },
@@ -266,6 +271,7 @@ export const {
   setCategoryType,
   setDiagnoseMedicaments,
   setDiagnoses,
-  setQuestionToPsychologist
+  setQuestionToPsychologist,
+  setInternalQueries
 } = formSlice.actions;
 export default formSlice.reducer;
