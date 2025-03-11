@@ -10,6 +10,7 @@ import ClientFeedbackPage from "@/pages/ClientFeedbackPage";
 import PsyFeedbackPage from "@/pages/PsyFeedbackPage";
 import FormHelpfulHandPage from '@/pages/FormHelpfulHandPage'
 import ReassigmentPage from "@/pages/ReassigmentPage";
+import FormRegisterHelpHandTicketPage from '@/pages/FormRegisterHelpHandTicketPage';
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -36,4 +37,5 @@ export const router = createBrowserRouter([
   { path: "/helpful-hand", element: <FormHelpfulHandPage /> },
   { path: "/client-feedback-anketa", element: <ClientFeedbackPage /> },
   { path: "/psychologist-feedback-anketa", element: <PsyFeedbackPage /> },
+  { path: "/registration-help-hand-anketa", element: <FormRegisterHelpHandTicketPage />}
 ]);

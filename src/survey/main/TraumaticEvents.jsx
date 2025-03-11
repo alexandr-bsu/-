@@ -1,7 +1,8 @@
 import React from "react";
 import Checkbox from "../../components/Checkbox";
+import Input from "../../components/Input";
 import { useSelector, useDispatch } from "react-redux";
-import { toogleTraumaticEvents } from "../../redux/slices/formSlice";
+import { toogleTraumaticEvents, setCustomTraumaticEvents } from "../../redux/slices/formSlice";
 import axios from "axios";
 import { useEffect } from "react";
 
@@ -15,6 +16,7 @@ const TraumaticEvents = () => {
   ];
 
   const checkedEvents = useSelector((state) => state.form.traumaticEvents);
+  const customEvent = useSelector((state) => state.form.customTraumaticEvent);
   const ticket_id = useSelector((state) => state.form.ticket_id);
   const dispatch = useDispatch();
 
@@ -58,6 +60,23 @@ const TraumaticEvents = () => {
                 </Checkbox>
               </li>
             ))}
+            <li className="mt-2 flex gap-4 h-9">
+              <Checkbox
+                id={`custom_anxiety_custom`}
+                onChange={() =>
+                  dispatch(toogleTraumaticEvents("Свой вариант"))
+                }
+                checked={checkedEvents.indexOf("Свой вариант") > -1}
+              >
+                Свой вариант
+              </Checkbox>
+              {checkedEvents.indexOf("Свой вариант") > -1 && (
+                <Input
+                  value={customEvent}
+                  onChangeFn={(e) => dispatch(setCustomTraumaticEvents(e))}
+                ></Input>
+              )}
+            </li>
           </ul>
         </div>
       </div>

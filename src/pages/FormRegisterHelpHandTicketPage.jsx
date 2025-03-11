@@ -1,16 +1,16 @@
 import React, { useEffect } from "react";
-import FormWithoutPsycologists from "../components/FormWithoutPsycologists";
+import FormRegisterHelpHandTicket from "../components/FormRegisterHelpHandTicket";
 import Lottie from "react-lottie";
 import okLottie from "../assets/lotties/ok";
 import errorLottie from "../assets/lotties/error";
 import Button from "../components/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { setStatus } from "../redux/slices/formStatusSlice";
-import { generateTicketId, setUserTimeZone } from "../redux/slices/formSlice";
+import { generateHelpHandTicketId, setUserTimeZone } from "../redux/slices/formSlice";
 import axios from "axios";
 import QueryString from "qs";
 
-const FormPage = () => {
+const FormRegisterHelpHandTicketPage = () => {
   const status = useSelector((state) => state.formStatus.status);
   const form = useSelector((state) => state.form);
   const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
@@ -21,8 +21,7 @@ const FormPage = () => {
     const problemFromQuery = QueryString.parse(window.location.search, {
       ignoreQueryPrefix: true,
     })?.problem;
-    let formType = problemFromQuery ? "Короткая форма " : "Стандартная форма ";
-    formType += "без визиток";
+    let formType = 'Заявочная анкета Рука помощи'
 
     return formType;
   }
@@ -35,7 +34,7 @@ const FormPage = () => {
   }
 
   useEffect(() => {
-    dispatch(generateTicketId());
+    dispatch(generateHelpHandTicketId());
     dispatch(setUserTimeZone());
   }, []);
 
@@ -137,7 +136,7 @@ const FormPage = () => {
     axios({
       method: "POST",
       data: data,
-      url: "https://n8n-v2.hrani.live/webhook/tilda-zayavka",
+      url: "https://n8n-v2.hrani.live/webhook/register-ticket-for-help-hand",
     })
       .then(() => {
         dispatch(setStatus("ok"));
@@ -172,9 +171,9 @@ const FormPage = () => {
       {status == "active" && (
         <>
           <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden p-5 rounded-[30px]">
-            <FormWithoutPsycologists
-              maxTabsCount={next == 1 ? 11 : 12}
-            ></FormWithoutPsycologists>
+            <FormRegisterHelpHandTicket
+              maxTabsCount={11}
+            ></FormRegisterHelpHandTicket>
           </div>
         </>
       )}
@@ -316,4 +315,4 @@ const FormPage = () => {
   );
 };
 
-export default FormPage;
+export default FormRegisterHelpHandTicketPage;

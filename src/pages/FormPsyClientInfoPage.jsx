@@ -115,22 +115,14 @@ const FormPsyClientInfoPage = () => {
 
   // Рассчёт последней страницы формы
   function getLastPage() {
-    return 4
-    // if (
-    //   form.hasPsychoExperience ==
-    //   "Да, я работал(а) с психологом/психотерапевтом"
-    // ) {
-    //   if (form.is_adult) {
-    //     return 15;
-    //   } else {
-    //     return 13;
-    //   }
-    // } else {
-    //   if (form.is_adult) {
-    //     return 12;
-    //   }
-    //   return 11;
-    // }
+    if (
+      form.hasPsychoExperience ==
+      "Да, я работал(а) с психологом/психотерапевтом"
+    ) {
+      return 10; 
+    } else {
+      return 9
+    }
   }
 
   return (

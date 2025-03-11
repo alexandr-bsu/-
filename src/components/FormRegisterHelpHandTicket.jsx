@@ -17,11 +17,12 @@ import Diagnoses from "../survey/main/Diagnoses";
 import ClientSatate from "../survey/main/ClientsStates";
 import TraumaticEvents from "../survey/main/TraumaticEvents";
 import Questions from "../survey/main/Questions";
-import PsychologistCategory from '../survey/main/PsychologistCategory'
+import PsychologistCategory from '../survey/helpful-hand/PsychologistCategory'
 import QuestionToPsychologist from "@/survey/main/QuestionToPsycologist";
 import Sex from "@/survey/psy-info-clients/Sex";
 import SexPsycho from "@/survey/psy-info-clients/SexPsycho";
-import Importance from "@/survey/psy-info-clients/Importance";
+import Importance from "@/survey/helpful-hand/Importance";
+import HasPsychoExperience from "@/survey/helpful-hand/HasPsychoExperience"
 
 const Form = ({ maxTabsCount }) => {
   const dispatch = useDispatch();
@@ -37,6 +38,7 @@ const Form = ({ maxTabsCount }) => {
   const isNext = next == 1;
 
   const form = useSelector((state) => state.form);
+  const name = useSelector((state) => state.form.name);
   const bid = form.bid;
   const rid = form.rid;
   const ticket_id = useSelector((state) => state.form.ticket_id);
@@ -184,7 +186,13 @@ const Form = ({ maxTabsCount }) => {
 
   function showNextTab(tabIndex) {
     // Валидация перед переходом на следущую вкладку
-    if(tabIndex == 1 && age == ''){
+    if(tabIndex == 0 && name == ''){
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
+    }
+    else if(tabIndex == 1 && age == ''){
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
@@ -198,29 +206,43 @@ const Form = ({ maxTabsCount }) => {
       }, 3000);
     }
 
-    else if(tabIndex == 4 && psychologist_sex == ''){
+    else if(tabIndex == 3 && formPsyClientInfo.hasPsychoExperience == ''){
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
       }, 3000);
     }
 
-    else if(tabIndex == 8 && (diagnose.length == 0  || (diagnose[0] != 'Нет' && diagnoseMedicaments == ''))){
+    else if(tabIndex == 4 && formPsyClientInfo.customImportance == ''){
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
       }, 3000);
     }
 
-    else if(((activeTabIndex == 10 && next != 1) || (next==1 && activeTabIndex==9)) && slots.length == 0){
+    else if(tabIndex == 5 && (diagnose.length == 0  || (diagnose[0] != 'Нет' && diagnoseMedicaments == ''))){
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
       }, 3000);
     }
 
-    else if (
-      ((activeTabIndex == 11 && next != 1) || (next==1 && activeTabIndex==10))  &&
+    else if(tabIndex == 8 && questionToPsychologist == ''){
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
+    }
+
+    else if(tabIndex == 9 && ((form.categoryType == 'Другое' && form.customCategory == '') || (form.categoryType == ''))){
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000);
+    }
+
+
+    else if (activeTabIndex == 10 &&
       (contactType == "" || contact.length <= 2 || !checkUsername(contact))
     ){
       setShowError(true);
@@ -285,7 +307,7 @@ const Form = ({ maxTabsCount }) => {
     })?.next;
 
     if (
-      (activeTabIndex == 11 || (next==1 && activeTabIndex == 10))  &&
+      ( activeTabIndex == 10)  &&
       (contactType == "" || contact.length <= 2 || !checkUsername(contact))
     ) {
       setShowError(true);
@@ -334,7 +356,7 @@ const Form = ({ maxTabsCount }) => {
       axios({
         method: "POST",
         data: data,
-        url: "https://n8n-v2.hrani.live/webhook/tilda-zayavka",
+        url: "https://n8n-v2.hrani.live/webhook/register-ticket-for-help-hand",
       })
         .then(() => {
           if (problemFromQuery) {
@@ -373,12 +395,7 @@ const Form = ({ maxTabsCount }) => {
   }
 
   function showForwardBtn() {
-    if (
-      ((activeTabIndex == 10 && next != 1) || (next == 1 && activeTabIndex == 9)) &&
-      areSlotsEmpty
-    ) {
-      return false;
-    } else if (activeTabIndex != maxTabsCount - 1) {
+    if (activeTabIndex != maxTabsCount - 1) {
       return true;
     } else if (activeTabIndex == maxTabsCount - 1) {
       return false;
@@ -396,7 +413,7 @@ const Form = ({ maxTabsCount }) => {
           className="px-5 py-3 bg-[#2c3531] sticky top-0 z-20 rounded-t-[30px]"
         >
           <h2 className="text-[#d1e8e2] font-medium text-base ">
-            {!((activeTabIndex == 10 && next != 1) || (activeTabIndex == 9 && next == 1)) ? headers[0] : headers[1]}
+            {headers[0]}
           </h2>
         </div>
 
@@ -407,50 +424,29 @@ const Form = ({ maxTabsCount }) => {
           }`}
         >
           
-        {((activeTabIndex == 10 && next != 1) || (activeTabIndex == 9 && next == 1)) ? "Вы не выбрали время" : (activeTabIndex == 11 && next !=1 ) || (activeTabIndex == 10 && next==1) ? "Введите корректный номер телефона для связи" : "Вы не заполнили обязательное поле"}
+        {activeTabIndex == 10? "Введите корректный номер телефона для связи" : "Вы не заполнили обязательное поле"}
         </div>
         {/* <FormPager></FormPager> */}
 
         <div className="relative h-full overflow-y-scroll flex flex-col ">
           {/* Здесь размещаются вкладки */}
-          {!isNext && (
+        
             <>
-              {activeTabIndex == 0 && <Name></Name>}
-              {activeTabIndex == 1 && <Age></Age>}
-              {activeTabIndex == 2 && <Sex></Sex>}
-              {activeTabIndex == 3 && <Importance/>}
-              {activeTabIndex == 4 && <SexPsycho></SexPsycho>}
-              {activeTabIndex == 5 && <QuestionToPsychologist/>}
+              {activeTabIndex == 0 && <Name hide_description={true}></Name>}
+              {activeTabIndex == 1 && <Age custom_title={'Ваш возраст'}></Age>}
+              {activeTabIndex == 2 && <Sex custom_title={'Ваш пол'}></Sex>}
+              {activeTabIndex == 3 && <HasPsychoExperience></HasPsychoExperience>}
+              {activeTabIndex == 4 && <Importance/>} 
+              {activeTabIndex == 5 && <Diagnoses></Diagnoses>}
               {activeTabIndex == 6 && <ClientSatate></ClientSatate>}
               {activeTabIndex == 7 && <TraumaticEvents></TraumaticEvents>}
-              {activeTabIndex == 8 && <Diagnoses></Diagnoses>}
-              {activeTabIndex == 9 && <Promocode></Promocode>}        
-                    
-              {activeTabIndex == 10 && (
-                <SlotsWithoutPsycologists></SlotsWithoutPsycologists>
-              )}
-              {activeTabIndex == 11 && <AskContacts></AskContacts>}
-            </>
-          )}
-
-          {isNext && (
-            <>
-              {activeTabIndex == 0 && <Name></Name>}
-              {activeTabIndex == 1 && <Age></Age>}
-              {activeTabIndex == 2 && <Sex></Sex>}
-              {activeTabIndex == 3 && <Importance/>}
-              {activeTabIndex == 4 && <SexPsycho></SexPsycho>}
-              {activeTabIndex == 5 && <QuestionToPsychologist/>}
-              {activeTabIndex == 6 && <ClientSatate></ClientSatate>}
-              {activeTabIndex == 7 && <TraumaticEvents></TraumaticEvents>}
-              {activeTabIndex == 8 && <Diagnoses></Diagnoses>}
-              {activeTabIndex == 9 && (
-                <SlotsWithoutPsycologists></SlotsWithoutPsycologists>
-              )}
+              {activeTabIndex == 8 && <QuestionToPsychologist/>}
+              {activeTabIndex == 9 && <PsychologistCategory/>} 
               {activeTabIndex == 10 && <AskContacts></AskContacts>}
-
             </>
-          )}
+         
+
+        
 
         </div>
 

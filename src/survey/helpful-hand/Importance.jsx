@@ -2,23 +2,22 @@ import React from "react";
 import TextArea from "../../components/TextArea";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setQuestionToPsychologist } from "../../redux/slices/formSlice";
+import { setCustomImportance } from "../../redux/slices/formPsyClientInfoSlice";
 import axios from "axios";
 
-const QuestionToPsychologist = () => {
-  const questionToPsychologist = useSelector(
-    (state) => state.form.question_to_psychologist
+const Importance = () => {
+  const customImportance  = useSelector(
+    (state) => state.formPsyClientInfo.customImportance
   );
 
   const ticket_id = useSelector((state) => state.form.ticket_id);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
     axios({
       method: "PUT",
       url: "https://n8n-v2.hrani.live/webhook/update-tracking-step",
-      data: { step: "Вопрос психологу", ticket_id },
+      data: { step: "Важно в психологе", ticket_id },
     });
   }, []);
 
@@ -30,21 +29,21 @@ const QuestionToPsychologist = () => {
       >
         <div className="flex flex-col">
           <h3 className="font-medium text-base text-dark-green">
-          Опишите свой запрос к психологу: что беспокоит, чего ожидаете, к чему хотите прийти?
+          Что для вас важно в психологе, какие есть предпочтения?
           </h3>
-          <p className="text-gray-disabled text-sm">Не знаете ответов — это нормально, напишите, как чувствуете. Можете пропустить если не готовы</p>
+          {/* <p className="text-gray-disabled text-sm">Не знаете ответов — это нормально, напишите, как чувствуете. Можете пропустить если не готовы</p> */}
         </div>
       </div>
 
       <div className="px-5 flex flex-col grow">
         <TextArea
           rows={4}
-          value={questionToPsychologist}
-          onChangeFn={(e) => dispatch(setQuestionToPsychologist(e))}
+          value={customImportance}
+          onChangeFn={(e) => dispatch(setCustomImportance(e))}
         />
       </div>
     </div>
   );
 };
 
-export default QuestionToPsychologist;
+export default Importance;

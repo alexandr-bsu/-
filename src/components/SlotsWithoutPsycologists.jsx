@@ -688,7 +688,7 @@ const Slots = () => {
           > 
             {/* <pre>{JSON.stringify(slots_by_psycho)}</pre> */}
             {slots_by_psycho?.map((group) => (
-              <DateGroup group={group}></DateGroup>
+              !checkDayIsBusy(group) ? <DateGroup group={group}></DateGroup> : <></>
             ))}
           </div>
           <div

@@ -142,7 +142,7 @@ const DateGroup = ({ group }) => {
             <div
               key={group.pretty_date}
               data-name="date-group"
-              className="flex flex-col gap-4"
+              className="flex flex-col gap-4 h-fit"
             >
               <h2 className="text-xl font-medium text-green pb-2 border-b border-gray w-full mb-5">
                 {group.pretty_date} {capitalize(group.day_name)}

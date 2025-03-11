@@ -5,7 +5,7 @@ import { setSex } from "../../redux/slices/formPsyClientInfoSlice";
 import Radio from "../../components/Radio";
 import axios from "axios";
 
-const Sex = () => {
+const Sex = ({custom_title}) => {
   const sex = useSelector((state) => state.formPsyClientInfo.sex);
   const ticket_id = useSelector((state) => state.form.ticket_id);
 
@@ -27,7 +27,7 @@ const Sex = () => {
         className="bg-white px-5 border-gray border-b z-10 sticky top-0 w-full py-3 mb-4"
       >
         <div className="flex flex-col">
-          <h3 className="font-medium text-base text-dark-green">Какой у вас пол?</h3>
+          <h3 className="font-medium text-base text-dark-green">{custom_title ? custom_title : 'Какой у вас пол?'}</h3>
           <p className="text-gray-disabled text-sm">
             Мы учитываем ваш пол при подборе психолога
           </p>

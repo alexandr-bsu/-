@@ -27,10 +27,13 @@ const initialState = {
   bid: 0,
   rid: 0,
   categoryType: '',
+  customCategory: '',
   question_to_psychologist: '',
   // Используется только при автомотчинге без карточек
   filtered_by_automatch_psy_names: [],
-  _queries: ''
+  _queries: '',
+  customTraumaticEvent: '',
+  customState: ''
 };
 
 function makeid(length) {
@@ -50,6 +53,19 @@ export const formSlice = createSlice({
   name: "form",
   initialState,
   reducers: {
+
+    setCustomCategory: (state, cat) => {
+      state.customCategory = cat.payload
+    },
+
+    setCustomTraumaticEvents: (state, event) => {
+      state.customTraumaticEvent = event.payload
+    },
+
+    setCustomState: (state, custom_state) => {
+      state.customState = custom_state.payload
+    },
+
     setInternalQueries: (state, queries) => {
       state._queries = queries.payload
     },
@@ -236,6 +252,10 @@ export const formSlice = createSlice({
       state.ticket_id = makeid(7);
     },
 
+    generateHelpHandTicketId:(state) => {
+      state.ticket_id = "hh_"+makeid(7);
+    },
+
     setDiagnoseMedicaments: (state, medicaments) => {
       state.diagnoseMedicaments = medicaments.payload
     }
@@ -253,6 +273,7 @@ export const {
   setName,
   setPromocode,
   generateTicketId,
+  generateHelpHandTicketId,
   setRid,
   setBid,
   tooglePsychologists,
@@ -272,6 +293,9 @@ export const {
   setDiagnoseMedicaments,
   setDiagnoses,
   setQuestionToPsychologist,
-  setInternalQueries
+  setInternalQueries,
+  setCustomTraumaticEvents,
+  setCustomState,
+  setCustomCategory
 } = formSlice.actions;
 export default formSlice.reducer;

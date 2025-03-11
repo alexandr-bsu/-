@@ -1,7 +1,8 @@
 import React from "react";
 import Checkbox from "../../components/Checkbox";
+import Input from "../../components/Input";
 import { useSelector, useDispatch } from "react-redux";
-import { toogleClientStates } from "../../redux/slices/formSlice";
+import { toogleClientStates, setCustomState } from "../../redux/slices/formSlice";
 
 import axios from "axios";
 import { useEffect } from "react";
@@ -22,6 +23,7 @@ const ClientState = () => {
   ];
 
   const checkedStates = useSelector((state) => state.form.clientStates);
+  const customState = useSelector((state) => state.form.customState);
   const ticket_id = useSelector((state) => state.form.ticket_id);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -63,6 +65,23 @@ const ClientState = () => {
                 </Checkbox>
               </li>
             ))}
+            <li className="mt-2 flex gap-4 h-9">
+              <Checkbox
+                id={`custom_anxiety_custom`}
+                onChange={() =>
+                  dispatch(toogleClientStates("Свой вариант"))
+                }
+                checked={checkedStates.indexOf("Свой вариант") > -1}
+              >
+                Свой вариант
+              </Checkbox>
+              {checkedStates.indexOf("Свой вариант") > -1 && (
+                <Input
+                  value={customState}
+                  onChangeFn={(e) => dispatch(setCustomState(e))}
+                ></Input>
+              )}
+            </li>
           </ul>
         </div>
       </div>
