@@ -35,6 +35,13 @@ const PopupPsyAnketa = ({ isVisible = true, closeFn }) => {
 
   function sendData() {
     setStatus("loading");
+    axios({
+      method: "post",
+      url: "https://n8n-v2.hrani.live/webhook/send-psy-anketa-info-to-admin",
+      data: { anketa, psychologist_id },
+    })
+
+
     if (
       psychologist_id == undefined ||
       psychologist_id == "null" ||
@@ -44,6 +51,7 @@ const PopupPsyAnketa = ({ isVisible = true, closeFn }) => {
       return;
     }
 
+    
     axios({
       method: "post",
       url: "https://n8n-v2.hrani.live/webhook/update-psychologists",
