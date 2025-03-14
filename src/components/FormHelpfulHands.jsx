@@ -13,7 +13,11 @@ const FormHelpfulHands = ({ maxTabsCount }) => {
   const dispatch = useDispatch();
 
   const form = useSelector((state) => state.form);
-  const ticket_id = useSelector((state) => state.form.ticket_id);
+  // const ticket_id = useSelector((state) => state.form.ticket_id);
+  const ticket_id = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.ticket_id;
+
   const age = useSelector((state) => state.form.age);
   const name = useSelector((state) => state.form.name)
   const slots = useSelector((state) => state.form.slots);
@@ -33,29 +37,13 @@ const FormHelpfulHands = ({ maxTabsCount }) => {
 
   function showNextTab(tabIndex) {
     // Валидация перед переходом на следущую вкладку
-    if(tabIndex == 0 && age == ''){
+    
+   if(tabIndex == 0 && slots.length == 0){
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
       }, 3000);
     } 
-    else if(tabIndex == 1 && name == ''){
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } 
-    else if(tabIndex == 2 && slots.length == 0){
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    } else if(tabIndex == 3 && (contactType == "" || contact.length <= 1 || !checkUsername(contact))){
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    }
     else {
 
       setActiveTabIndex(tabIndex + 1);
@@ -78,7 +66,7 @@ const FormHelpfulHands = ({ maxTabsCount }) => {
       ignoreQueryPrefix: true,
     })?.utm_psy;
 
-    if (activeTabIndex == 3 && (contactType == "" || contact.length <= 1 || !checkUsername(contact))) {
+    if (activeTabIndex==0 && slots.length == 0) {
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
@@ -96,7 +84,7 @@ const FormHelpfulHands = ({ maxTabsCount }) => {
       axios({
         method: "POST",
         data: data,
-        url: "https://n8n-v2.hrani.live/webhook/helpful-hand-zayavka",
+        url: "https://n8n-v2.hrani.live/webhook/helpful-hand-zayavka-new",
       })
         .then(() => {
           
@@ -119,7 +107,7 @@ const FormHelpfulHands = ({ maxTabsCount }) => {
 
   function showForwardBtn() {
     if (
-      (activeTabIndex == 2) &&
+      (activeTabIndex == 0) &&
       areSlotsEmpty
     ) {
       return false;
@@ -151,9 +139,7 @@ const FormHelpfulHands = ({ maxTabsCount }) => {
             showError ? "h-20" : "h-0"
           }`}
         >
-          { activeTabIndex == 2
-            ? "Вы не выбрали время"
-            : activeTabIndex == 3  ? "Введите корректный номер телефона для связи" : "Вы не заполнили обязательное поле"}
+          { activeTabIndex == 0 && "Вы не выбрали время"}
         </div>
         {/* <FormPager></FormPager> */}
 
@@ -161,10 +147,7 @@ const FormHelpfulHands = ({ maxTabsCount }) => {
           {/* Здесь размещаются вкладки */}
          
             <>
-              {activeTabIndex == 0 && <Age hide_description={true}></Age>}
-              {activeTabIndex == 1 && <Name hide_description={true}></Name>}
-              {activeTabIndex == 2 && <SlotsHelpfulHand></SlotsHelpfulHand>}
-              {activeTabIndex == 3 && <AskContacts></AskContacts>}
+              {activeTabIndex == 0 && <SlotsHelpfulHand></SlotsHelpfulHand>}
             </>
 
         
@@ -217,7 +200,7 @@ const FormHelpfulHands = ({ maxTabsCount }) => {
                 sendData();
               }}
             >
-              Отправить заявку
+              Забронировать
             </Button>
           ) : (
             ""

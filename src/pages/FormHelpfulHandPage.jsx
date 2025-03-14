@@ -13,7 +13,11 @@ import QueryString from "qs";
 const FormHelpfulHandPage= () => {
   const status = useSelector((state) => state.formStatus.status);
   const form = useSelector((state) => state.form);
-  const ticket_id = useSelector((state) => state.form.ticket_id);
+  // const ticket_id = useSelector((state) => state.form.ticket_id);
+  const ticket_id = QueryString.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })?.ticket_id;
+  
   const dispatch = useDispatch();
 
   function getFormType() {
@@ -24,12 +28,12 @@ const FormHelpfulHandPage= () => {
     axios({
       method: "POST",
       url: "https://n8n-v2.hrani.live/webhook/init-form-tracking",
-      data: { ticket_id, form_type: getFormType(), step: "Возраст" },
+      data: { ticket_id, form_type: getFormType(), step: "Слоты" },
     });
   }
 
   useEffect(() => {
-    dispatch(generateTicketId());
+    // dispatch(generateTicketId());
     dispatch(setUserTimeZone());
   }, []);
 
@@ -75,7 +79,7 @@ const FormHelpfulHandPage= () => {
     axios({
       method: "POST",
       data: data,
-      url: "https://n8n-v2.hrani.live/webhook/helpful-hand-zayavka",
+      url: "https://n8n-v2.hrani.live/webhook/helpful-hand-zayavka-new",
     })
       .then(() => {
         dispatch(setStatus("ok"));
@@ -98,7 +102,7 @@ const FormHelpfulHandPage= () => {
         <>
           <div className="bg-dark-green h-screen w-screen max-w-[1024px]  max-h-[600px] flex flex-col items-center justify-center overflow-y-hidden p-5 rounded-[30px]">
             <FormHelpfulHands
-              maxTabsCount={4}
+              maxTabsCount={1}
             ></FormHelpfulHands>
           </div>
         </>
@@ -195,11 +199,11 @@ const FormHelpfulHandPage= () => {
                     Cпасибо!
                   </h2>
                   <p className="text-black text-base font-medium text-center p-5">
-                  Мы получили ваш запрос и чтобы забронировать время запустите телеграм-бот. В боте вы также получите подтверждение записи и ссылку на первую сессию с психологом
+                  Ваш выбор сохранен и вы может вернуться в чат-бот 🙂
                   </p>
 
                   <a
-                    href={`https://t.me/HraniLiveBot/?start=${ticket_id}`}
+                    href={`https://t.me/HraniLiveBot/`}
                     target="_top"
                   >
                     <Button intent="cream" hover="primary">

@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setQuestionToPsychologist } from "../../redux/slices/formSlice";
 import axios from "axios";
 
-const QuestionToPsychologist = () => {
+const QuestionToPsychologist = ({ hide_description }) => {
   const questionToPsychologist = useSelector(
     (state) => state.form.question_to_psychologist
   );
@@ -30,9 +30,10 @@ const QuestionToPsychologist = () => {
       >
         <div className="flex flex-col">
           <h3 className="font-medium text-base text-dark-green">
-          Опишите свой запрос к психологу: что беспокоит, чего ожидаете, к чему хотите прийти?
+            Опишите свой запрос к психологу: что беспокоит, чего ожидаете, к чему хотите прийти?
           </h3>
-          <p className="text-gray-disabled text-sm">Не знаете ответов — это нормально, напишите, как чувствуете. Можете пропустить если не готовы</p>
+
+          {!hide_description && <p className="text-gray-disabled text-sm">Не знаете ответов — это нормально, напишите, как чувствуете. Можете пропустить если не готовы</p>}
         </div>
       </div>
 

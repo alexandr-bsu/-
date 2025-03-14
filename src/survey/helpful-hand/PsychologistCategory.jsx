@@ -55,7 +55,7 @@ const MeetType = () => {
             </li>
           ))}
 
-          <li className="mt-2 flex gap-4 h-9">
+          {/* <li className="mt-2 flex gap-4 h-9">
                 <Radio
                   id={`price_other`}
                   onChange={() => dispatch(setCategoryType("Другое"))}
@@ -72,7 +72,7 @@ const MeetType = () => {
                   onChangeFn={(e) => dispatch(setCustomCategory(e))}
                 ></Input>
               )}
-              </li>
+              </li> */}
         </ul>
 
         

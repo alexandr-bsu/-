@@ -1,48 +1,17 @@
-import React, { useEffect } from "react";
-import FormRegisterHelpHandTicket from "../components/FormRegisterHelpHandTicket";
+import React, { useEffect, useState } from "react";
 import Lottie from "react-lottie";
 import okLottie from "../assets/lotties/ok";
 import errorLottie from "../assets/lotties/error";
 import Button from "../components/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { setStatus } from "../redux/slices/formStatusSlice";
-import { generateHelpHandTicketId, setUserTimeZone } from "../redux/slices/formSlice";
 import axios from "axios";
 import QueryString from "qs";
 
-const FormRegisterHelpHandTicketPage = () => {
+const FormHelpfulHandPage= () => {
   const status = useSelector((state) => state.formStatus.status);
-  const form = useSelector((state) => state.form);
-  const formPsyClientInfo = useSelector((state) => state.formPsyClientInfo);
-  const ticket_id = useSelector((state) => state.form.ticket_id);
   const dispatch = useDispatch();
-
-  function getFormType() {
-    const problemFromQuery = QueryString.parse(window.location.search, {
-      ignoreQueryPrefix: true,
-    })?.problem;
-    let formType = 'Заявочная анкета Рука помощи'
-
-    return formType;
-  }
-  function initFormTracking() {
-    axios({
-      method: "POST",
-      url: "https://n8n-v2.hrani.live/webhook/init-form-tracking",
-      data: { ticket_id, form_type: getFormType(), step: "Начало" },
-    });
-  }
-
-  useEffect(() => {
-    dispatch(generateHelpHandTicketId());
-    dispatch(setUserTimeZone());
-  }, []);
-
-  useEffect(() => {
-    if (ticket_id) {
-      initFormTracking();
-    }
-  }, [ticket_id]);
+  const [errorText, setErrorText] = useState("")
 
   const okLottieOptions = {
     loop: false,
@@ -61,104 +30,38 @@ const FormRegisterHelpHandTicketPage = () => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
-  const problemFromQuery = QueryString.parse(window.location.search, {
+
+  const telegram_id = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
-  })?.problem;
+  })?.telegram_id;
 
-  // Перешёл клиент из исследовательской анкеты
-  const next = QueryString.parse(window.location.search, {
+  const link_id = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
-  })?.next;
+  })?.link_id;
 
-  const rid = form.rid;
-  const bid = form.bid;
 
-  const isNext = next == 1;
 
-  // Повторная отправка формы
+ 
+  // бронируем клиента
   function sendData() {
-    // Парсим utm метки
-    const utm_client = QueryString.parse(window.location.search, {
-      ignoreQueryPrefix: true,
-    })?.utm_client;
-
-    const utm_tarif = QueryString.parse(window.location.search, {
-      ignoreQueryPrefix: true,
-    })?.utm_tarif;
-
-    const utm_campaign = QueryString.parse(window.location.search, {
-      ignoreQueryPrefix: true,
-    })?.utm_campaign;
-
-    const utm_content = QueryString.parse(window.location.search, {
-      ignoreQueryPrefix: true,
-    })?.utm_content;
-
-    const utm_medium = QueryString.parse(window.location.search, {
-      ignoreQueryPrefix: true,
-    })?.utm_medium;
-
-    const utm_source = QueryString.parse(window.location.search, {
-      ignoreQueryPrefix: true,
-    })?.utm_source;
-
-    const utm_term = QueryString.parse(window.location.search, {
-      ignoreQueryPrefix: true,
-    })?.utm_term;
-
-    const utm_psy = QueryString.parse(window.location.search, {
-      ignoreQueryPrefix: true,
-    })?.utm_psy;
-
+    setErrorText("")
     dispatch(setStatus("sending"));
-
-    let data = {
-      ...form,
-      utm_client,
-      utm_tarif,
-      utm_campaign,
-      utm_content,
-      utm_medium,
-      utm_source,
-      utm_term,
-      utm_psy,
-      ticket_id,
-    };
-    delete data["psychos"];
-    if (problemFromQuery) {
-      data["anxieties"] = [problemFromQuery];
-    }
-
-    if (isNext) {
-      data = { ...data, formPsyClientInfo };
-    }
-
+    console.log(window.location.search, telegram_id, link_id)
+    
     axios({
       method: "POST",
-      data: data,
-      url: "https://n8n-v2.hrani.live/webhook/register-ticket-for-help-hand",
+      data: {telegram_id, link_id},
+      url: "https://n8n-v2.hrani.live/webhook/confirm-help-hand-by-psychologist",
     })
-      .then(() => {
-        dispatch(setStatus("ok"));
-        if (rid && bid && rid != 0 && bid != 0) {
-          axios({
-            method: "PUT",
-            data: {
-              rid,
-              bid,
-              contactType: form.contactType,
-              contact: form.contact,
-              form,
-              formPsyClientInfo
-            },
-            url: "https://n8n-v2.hrani.live/webhook/update-contacts-stb",
-          });
+      .then((response) => {
+        console.log(response.data)
+        if('error' in response.data){
+          dispatch(setStatus("error"));
+          setErrorText(response.data['error'])
+        } else {
+          dispatch(setStatus("ok"));
         }
-        axios({
-          method: "PUT",
-          url: "https://n8n-v2.hrani.live/webhook/update-tracking-step",
-          data: { step: "Заявка отправлена", ticket_id },
-        });
+      
       })
       .catch((e) => {
         dispatch(setStatus("error"));
@@ -166,14 +69,27 @@ const FormRegisterHelpHandTicketPage = () => {
       });
   }
 
+  useEffect(() => {
+    sendData()
+  }, [])
+
   return (
     <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden">
       {status == "active" && (
         <>
-          <div className="bg-dark-green h-screen w-screen flex flex-col items-center justify-center overflow-y-hidden p-5 rounded-[30px]">
-            <FormRegisterHelpHandTicket
-              maxTabsCount={11}
-            ></FormRegisterHelpHandTicket>
+          <div className="bg-dark-green h-screen w-screen max-w-[1024px]  max-h-[600px] flex flex-col items-center justify-center overflow-y-hidden p-5 rounded-[30px]">
+            {/* TODO: Вставить форму отправки */}
+            <div className=" bg-white w-full h-full rounded-[30px] flex flex-col items-center justify-center ">
+            <div className="flex flex-col justify-center items-center">
+                  <Lottie options={okLottieOptions} height={200} width={200} />
+                  <h2 className="font-medium text-center text-green text-3xl">
+                    Готово!
+                  </h2>
+                  <p className="text-black text-base font-medium text-center p-5">
+                    Отлично 🙂 Клиент забронирован за вами и сейчас он получит ссылку на ваши слоты чтобы записаться на сессию
+                  </p>
+                </div>
+            </div>
           </div>
         </>
       )}
@@ -185,6 +101,8 @@ const FormRegisterHelpHandTicketPage = () => {
               className="flex flex-col items-center justify-center w-full h-full"
             >
               {status == "sending" && (
+                <>
+
                 <svg
                   className="justify-self-center self-center"
                   xmlns="http://www.w3.org/2000/svg"
@@ -257,30 +175,22 @@ const FormRegisterHelpHandTicketPage = () => {
                     r="70"
                   ></circle>
                 </svg>
+                </>
               )}
 
               {status == "ok" && (
                 <div className="flex flex-col justify-center items-center">
                   <Lottie options={okLottieOptions} height={200} width={200} />
                   <h2 className="font-medium text-center text-green text-3xl">
-                    Cпасибо!
+                    Готово!
                   </h2>
                   <p className="text-black text-base font-medium text-center p-5">
-                  Мы получили вашу заявку. Чтобы подтвердить актуальность заявки пожалуйста запустите телеграм-бот. В боте вы также получите уведомление когда мы найдем психолога и ссылку на первую сессию 🙏
+                    Отлично 🙂 Клиент забронирован за вами и сейчас он получит ссылку на ваши слоты чтобы записаться на сессию
                   </p>
-
-                  <a
-                    href={`https://t.me/HraniLiveBot?start=${ticket_id}`}
-                    target="_top"
-                  >
-                    <Button intent="cream" hover="primary">
-                      Перейти в телеграм-бот
-                    </Button>
-                  </a>
                 </div>
               )}
 
-              {/* Дописать что "Расписание психологов подобранных на основании вашего запроса" */}
+              
 
               {status == "error" && (
                 <div className="flex flex-col justify-center items-center">
@@ -293,10 +203,10 @@ const FormRegisterHelpHandTicketPage = () => {
                     Упс! Что-то пошло не так
                   </h2>
                   <p className="text-black font-medium text-center p-5">
-                    Мы уже в курсе проблемы и работаем над её устранением.
-                    Пожалуйста повторите отправку формы
+                    {errorText == "" && "Мы уже в курсе проблемы и работаем над её устранением. Пожалуйста повторите отправку формы"}
+                    {errorText != "" && errorText}
                   </p>
-                  <div className="p-5">
+                  {errorText == "" && <div className="p-5">
                     <Button
                       intent="cream"
                       hover="primary"
@@ -304,7 +214,7 @@ const FormRegisterHelpHandTicketPage = () => {
                     >
                       Повторить отправку
                     </Button>
-                  </div>
+                  </div>}
                 </div>
               )}
             </div>
@@ -315,4 +225,4 @@ const FormRegisterHelpHandTicketPage = () => {
   );
 };
 
-export default FormRegisterHelpHandTicketPage;
+export default FormHelpfulHandPage;

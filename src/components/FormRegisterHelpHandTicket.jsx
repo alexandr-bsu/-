@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SlotsWithoutPsycologists from "./SlotsWithoutPsycologists";
 import Button from "./Button";
 import AmountExpectations from "../survey/main/AmountExpectations";
@@ -12,7 +12,7 @@ import { useState } from "react";
 import QueryString from "qs";
 import { useSelector, useDispatch } from "react-redux";
 import { setStatus } from "../redux/slices/formStatusSlice";
-import { setPromocode } from "@/redux/slices/formSlice";
+import { setPromocode, setUserTimeZone } from "@/redux/slices/formSlice";
 import Diagnoses from "../survey/main/Diagnoses";
 import ClientSatate from "../survey/main/ClientsStates";
 import TraumaticEvents from "../survey/main/TraumaticEvents";
@@ -21,7 +21,7 @@ import PsychologistCategory from '../survey/helpful-hand/PsychologistCategory'
 import QuestionToPsychologist from "@/survey/main/QuestionToPsycologist";
 import Sex from "@/survey/psy-info-clients/Sex";
 import SexPsycho from "@/survey/psy-info-clients/SexPsycho";
-import Importance from "@/survey/helpful-hand/Importance";
+import Importance from "@/survey/psy-info-clients/Importance";
 import HasPsychoExperience from "@/survey/helpful-hand/HasPsychoExperience"
 
 const Form = ({ maxTabsCount }) => {
@@ -213,7 +213,7 @@ const Form = ({ maxTabsCount }) => {
       }, 3000);
     }
 
-    else if(tabIndex == 4 && formPsyClientInfo.customImportance == ''){
+    else if(tabIndex == 4 && ((formPsyClientInfo.importancePsycho.includes('Свой вариант') && formPsyClientInfo.customImportance == '') || formPsyClientInfo.importancePsycho.length == 0)){
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
@@ -403,6 +403,10 @@ const Form = ({ maxTabsCount }) => {
 
     return true;
   }
+
+  useEffect(()=>{
+    dispatch(setUserTimeZone());
+  },[])
   return (
     <>
       {/* Не задаём ограничений  т.к ширину будет ограничивать контейнер в Tilda */}
@@ -440,7 +444,7 @@ const Form = ({ maxTabsCount }) => {
               {activeTabIndex == 5 && <Diagnoses></Diagnoses>}
               {activeTabIndex == 6 && <ClientSatate></ClientSatate>}
               {activeTabIndex == 7 && <TraumaticEvents></TraumaticEvents>}
-              {activeTabIndex == 8 && <QuestionToPsychologist/>}
+              {activeTabIndex == 8 && <QuestionToPsychologist hide_description={true}/>}
               {activeTabIndex == 9 && <PsychologistCategory/>} 
               {activeTabIndex == 10 && <AskContacts></AskContacts>}
             </>
