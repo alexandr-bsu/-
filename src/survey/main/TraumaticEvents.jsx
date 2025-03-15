@@ -12,7 +12,8 @@ const TraumaticEvents = () => {
     "Болезни близкого",
     "Диагностированное смертельное заболевание",
     "Сексуальное насилие во взрослом возрасте",
-    "Сексуальное насилие в детстве"
+    "Сексуальное насилие в детстве",
+    "Ничего из вышеперечисленного"
   ];
 
   const checkedEvents = useSelector((state) => state.form.traumaticEvents);
@@ -60,7 +61,7 @@ const TraumaticEvents = () => {
                 </Checkbox>
               </li>
             ))}
-            <li className="mt-2 flex gap-4 h-9">
+            <li className="mt-2 flex gap-4">
               <Checkbox
                 id={`custom_anxiety_custom`}
                 onChange={() =>
@@ -72,6 +73,7 @@ const TraumaticEvents = () => {
               </Checkbox>
               {checkedEvents.indexOf("Свой вариант") > -1 && (
                 <Input
+                  className={'h-6'}
                   value={customEvent}
                   onChangeFn={(e) => dispatch(setCustomTraumaticEvents(e))}
                 ></Input>

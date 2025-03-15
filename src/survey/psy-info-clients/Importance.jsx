@@ -9,14 +9,14 @@ import {
 } from "../../redux/slices/formPsyClientInfoSlice";
 import Input from "../../components/Input";
 
-const Importance = () => {
+const Importance = ({custom_description}) => {
   const importanceList = [
     "Чуткость, мягкость, умение выслушивать",
     "Прямолинейность, строгость, серьезность",
     "Опыт работы в эзотерике, магическое мышление",
     "Научность, доказательная база подхода, без эзотерики",
     "Опыт семейной жизни, собственные дети",
-    "Знание более 1 метода терапии (модальноси)"
+    "Знание более 1 метода терапии (модальности)"
   ];
 
   const checkedImportances = useSelector(
@@ -39,7 +39,7 @@ const Importance = () => {
               Что вам важно в психологе? 
             </h3>
             <p className="text-gray-disabled text-sm">
-              Опыт, образование и личная терапия - по умолчанию. Если предпочтений нет - можете пропустить
+            {custom_description ? custom_description : "Опыт, образование и личная терапия - по умолчанию. Если предпочтений нет - можете пропустить"}
             </p>
           </div>
         </div>
@@ -57,7 +57,7 @@ const Importance = () => {
                 </Checkbox>
               </li>
             ))}
-            <li className="mt-2 flex gap-4 h-9">
+            <li className="mt-2 flex gap-4">
               <Checkbox
                 id={`custom_anxiety_custom`}
                 onChange={() =>
@@ -69,6 +69,7 @@ const Importance = () => {
               </Checkbox>
               {checkedImportances.indexOf("Свой вариант") > -1 && (
                 <Input
+                  className={'h-6'}
                   value={customImportance}
                   onChangeFn={(e) => dispatch(setCustomImportance(e))}
                 ></Input>

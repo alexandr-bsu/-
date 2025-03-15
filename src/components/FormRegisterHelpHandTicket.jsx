@@ -70,7 +70,7 @@ const Form = ({ maxTabsCount }) => {
   const [showError, setShowError] = useState(false);
 
   // Массив заголовков табов формы.
-  const headers = ["Заявка на подбор психолога из сообщества Хранители", "Эти психологи вам подходят. Выберите специалиста и время"];
+  const headers = ["Заявка на подбор психолога в проекте «Рука помощи от Хранителей»"];
 
   const [activeTabIndex, setActiveTabIndex] = useState(0);
 
@@ -186,13 +186,14 @@ const Form = ({ maxTabsCount }) => {
 
   function showNextTab(tabIndex) {
     // Валидация перед переходом на следущую вкладку
-    if(tabIndex == 0 && name == ''){
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000);
-    }
-    else if(tabIndex == 1 && age == ''){
+    // if(tabIndex == 0 && name == ''){
+    //   setShowError(true);
+    //   setTimeout(() => {
+    //     setShowError(false);
+    //   }, 3000);
+    // }
+    // else 
+    if(tabIndex == 1 && age == ''){
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
@@ -436,17 +437,17 @@ const Form = ({ maxTabsCount }) => {
           {/* Здесь размещаются вкладки */}
         
             <>
-              {activeTabIndex == 0 && <Name hide_description={true}></Name>}
-              {activeTabIndex == 1 && <Age custom_title={'Ваш возраст'}></Age>}
-              {activeTabIndex == 2 && <Sex custom_title={'Ваш пол'}></Sex>}
+              {activeTabIndex == 0 && <Name></Name>}
+              {activeTabIndex == 1 && <Age custom_description={'Это важно для психолога, который знакомится с вашей заявкой'}></Age>}
+              {activeTabIndex == 2 && <Sex custom_description={'Это также важно для психолога'}></Sex>}
               {activeTabIndex == 3 && <HasPsychoExperience></HasPsychoExperience>}
-              {activeTabIndex == 4 && <Importance/>} 
+              {activeTabIndex == 4 && <Importance custom_description={'Опыт, образование и личная терапия - по умолчанию.'}/>} 
               {activeTabIndex == 5 && <Diagnoses></Diagnoses>}
               {activeTabIndex == 6 && <ClientSatate></ClientSatate>}
               {activeTabIndex == 7 && <TraumaticEvents></TraumaticEvents>}
-              {activeTabIndex == 8 && <QuestionToPsychologist hide_description={true}/>}
+              {activeTabIndex == 8 && <QuestionToPsychologist custom_description={"Не знаете ответов — это нормально, напишите, как чувствуете. Этот блок нельзя пропустить поскольку он позволяет психологу лучше понять ваш запрос"}/>}
               {activeTabIndex == 9 && <PsychologistCategory/>} 
-              {activeTabIndex == 10 && <AskContacts></AskContacts>}
+              {activeTabIndex == 10 && <AskContacts custom_description={"Рекламу не присылаем. Ваш контакт видит только психолог, который выбрал вашу заявку"}></AskContacts>}
             </>
          
 

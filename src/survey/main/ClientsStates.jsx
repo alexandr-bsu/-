@@ -19,7 +19,8 @@ const ClientState = () => {
     "Намерения или попытки суицида",
     "Повышенная эмоциональность, эмоциональные всплески, приступы агрессии, поступки под действием эмоций, частые смены настроения",
     "Сложности в сексуальной сфере",
-    "Проблемы с раскрытием женственности и сексуальности"
+    "Проблемы с раскрытием женственности и сексуальности",
+    "Ничего из вышеперечисленного"
   ];
 
   const checkedStates = useSelector((state) => state.form.clientStates);
@@ -65,7 +66,7 @@ const ClientState = () => {
                 </Checkbox>
               </li>
             ))}
-            <li className="mt-2 flex gap-4 h-9">
+            <li className="mt-2 flex gap-4">
               <Checkbox
                 id={`custom_anxiety_custom`}
                 onChange={() =>
@@ -77,6 +78,7 @@ const ClientState = () => {
               </Checkbox>
               {checkedStates.indexOf("Свой вариант") > -1 && (
                 <Input
+                  className={'h-6'}
                   value={customState}
                   onChangeFn={(e) => dispatch(setCustomState(e))}
                 ></Input>

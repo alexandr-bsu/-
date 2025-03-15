@@ -6,7 +6,7 @@ import Radio from "../../components/Radio";
 import Input from "../../components/Input";
 import axios from "axios";
 
-const AskContacts = () => {
+const AskContacts = ({custom_description}) => {
   const dispatch = useDispatch();
   const contactType = useSelector((state) => state.form.contactType);
   const contact = useSelector((state) => state.form.contact);
@@ -50,7 +50,7 @@ const AskContacts = () => {
           Оставьте ваш контакт для связи
           </h3>
           <p className="text-gray-disabled text-sm">
-          Рекламу не присылаем. Психологи не видят ваши контакты. Только вы решаете кому их показать после сессии
+          {custom_description ? custom_description : "Рекламу не присылаем. Психологи не видят ваши контакты. Только вы решаете кому их показать после сессии"}
           </p>
         </div>
       </div>
