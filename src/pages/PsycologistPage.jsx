@@ -12,6 +12,11 @@ import {
   setPsychologistExperience,
   toogleSkills,
   toogleQueries,
+  setMainModal,
+  toogleAdditionalModals,
+  setTelegram,
+  setSite,
+  setVk
 } from "@/redux/slices/psy";
 import Input from "@/components/Input";
 import Radio from "@/components/Radio";
@@ -25,12 +30,14 @@ const PsycologistPage = () => {
   const name = anketa.name;
   const age = anketa.age;
   const checkedSexClient = anketa.sexClient;
+  const checkedMainModal = anketa.mainModal
   const ageClientList = ["Не имеет значения", "Указать возраст (от и до)"];
   const [checkedClientAge, setCheckedClientAge] = useState("");
   const maxClientAge = anketa.maxClientAge;
   const minClientAge = anketa.minClientAge;
   const psyExperience = anketa.psychologistExperience;
   const checkedSkills = anketa.skills;
+  const checkedAdditionalModals = anketa.additionalModals;
   const skillsList = [
     "Есть диагностированное психическое заболевание",
     "Есть диагностированное психиатрическое заболевание",
@@ -70,6 +77,23 @@ const PsycologistPage = () => {
     "Работа с собой, самооценка, любовь, уважение и ценность себя",
   ];
 
+  const main_modal_list = [
+    'Юнгианский анализ',
+    'Психоанализ',
+    'КПТ',
+    'Гештальт',
+    'Полимодальный метод'
+  ]
+
+  const additional_modal_list = [
+    'Юнгианский анализ',
+    'Психоанализ',
+    'КПТ',
+    'Гештальт',
+    'Полимодальный метод',
+    'Нет дополнительной модальности'
+  ]
+
   function isEmpty(value) {
     return Array.isArray(value) ? value.length === 0 : value === "";
   }
@@ -88,8 +112,12 @@ const PsycologistPage = () => {
   }
 
   function validateFields(form) {
+    
     let emptyKeys = getEmptyKeys(form);
     emptyKeys = removeElementAtValue(emptyKeys, "skills");
+    emptyKeys = removeElementAtValue(emptyKeys, "telegram_link");
+    emptyKeys = removeElementAtValue(emptyKeys, "site_link");
+    emptyKeys = removeElementAtValue(emptyKeys, "vk_link");
 
     if (checkedClientAge == "Не имеет значения") {
       dispatch(setMinClientAge("18"));
@@ -110,6 +138,7 @@ const PsycologistPage = () => {
             </div>
           </div>
         );
+        
         return false;
       }
 
@@ -139,6 +168,7 @@ const PsycologistPage = () => {
       </div>
     );
 
+    console.log(emptyKeys)
     return false;
   }
 
@@ -225,6 +255,7 @@ const PsycologistPage = () => {
                 onChangeFn={(e) => dispatch(setAge(e))}
               ></Input>
             </div>
+
             <div data-name="question" className="flex flex-col gap-4">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 bg-cream text-black font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full ">
@@ -261,11 +292,10 @@ const PsycologistPage = () => {
                 </div>
               </div>
               <ul
-                className={`flex flex-col gap-2 p-2 ${
-                  showErrorBorder && isEmpty(checkedSexClient)
+                className={`flex flex-col gap-2 p-2 ${showErrorBorder && isEmpty(checkedSexClient)
                     ? "border-red border rounded-[15px]"
                     : ""
-                }`}
+                  }`}
               >
                 {sexClientList.map((sex, index) => (
                   <li>
@@ -300,11 +330,10 @@ const PsycologistPage = () => {
               </div>
               <div>
                 <ul
-                  className={`flex flex-col gap-2 p-2 ${
-                    showErrorBorder && isEmpty(checkedClientAge)
+                  className={`flex flex-col gap-2 p-2 ${showErrorBorder && isEmpty(checkedClientAge)
                       ? "border-red border rounded-[15px]"
                       : ""
-                  }`}
+                    }`}
                 >
                   {ageClientList.map((age, index) => (
                     <li>
@@ -327,11 +356,10 @@ const PsycologistPage = () => {
                       type="number"
                       placeholder="От"
                       min={0}
-                      className={`grow ${
-                        showErrorBorder && isEmpty(minClientAge)
+                      className={`grow ${showErrorBorder && isEmpty(minClientAge)
                           ? "border-red"
                           : ""
-                      }`}
+                        }`}
                       onChangeFn={(e) => dispatch(setMinClientAge(e))}
                       value={minClientAge}
                     ></Input>
@@ -340,11 +368,10 @@ const PsycologistPage = () => {
                       type="number"
                       min={0}
                       placeholder="До"
-                      className={`grow ${
-                        showErrorBorder && isEmpty(maxClientAge)
+                      className={`grow ${showErrorBorder && isEmpty(maxClientAge)
                           ? "border-red"
                           : ""
-                      }`}
+                        }`}
                       onChangeFn={(e) => dispatch(setMaxClientAge(e))}
                       value={maxClientAge}
                     ></Input>
@@ -352,10 +379,80 @@ const PsycologistPage = () => {
                 )}
               </div>
             </div>
+
+            <div data-name="question" className="flex flex-col gap-4">
+              <div data-name="header" className="flex gap-4 items-start">
+                <div className="w-10 h-10 bg-cream text-black font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full ">
+                  6
+                </div>
+                <div className="flex flex-col gap-1">
+                  <h2 className="text-corp-white font-bold text-2xl font-sans">
+                   Какая модальность у вас основная? 
+                  </h2>
+                  <p className="text-corp-white text-sm">
+                   Этот подход на сайте будет указан как основной и клиент может найти вас по этой модальности
+                  </p>
+                </div>
+              </div>
+              <ul
+                className={`flex flex-col gap-2 p-2 ${showErrorBorder && isEmpty(checkedMainModal)
+                    ? "border-red border rounded-[15px]"
+                    : ""
+                  }`}
+              >
+                {main_modal_list.map((modal, index) => (
+                  <li>
+                    <Radio
+                      name="main_modal"
+                      intent="cream"
+                      id={`main_modal_${index}`}
+                      onChange={() => dispatch(setMainModal(modal))}
+                      checked={checkedMainModal == modal ? true : false}
+                    >
+                      {modal}
+                    </Radio>
+                  </li>
+                ))}
+              </ul>
+            </div>
             <div data-name="question" className="flex flex-col gap-6">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 bg-cream text-black font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full -ml-[56px]">
-                  6
+                  7
+                </div>
+                <div className="flex flex-col gap-1">
+                  <h2 className="text-corp-white font-bold text-2xl font-sans">
+                    Есть ли у вас дополнительные модальности? 
+                  </h2>
+                  <p className="text-corp-white text-sm">
+                    Это важно для клиентов, которые ищут психолога с мультимодальным подходом
+                  </p>
+                </div>
+              </div>
+              <ul className={`flex flex-col gap-2 p-2 ${showErrorBorder && isEmpty(checkedAdditionalModals)
+                    ? "border-red border rounded-[15px]"
+                    : ""
+                  }`}>
+                {}
+                {additional_modal_list.map((ad_modal, index) => (
+                  <li>
+                    <Checkbox
+                      name="ad_modal"
+                      intent="cream"
+                      id={`ad_modal_${index}`}
+                      onChange={() => dispatch(toogleAdditionalModals(ad_modal))}
+                      checked={checkedAdditionalModals.indexOf(ad_modal) > -1 ? true : false}
+                    >
+                      {ad_modal}
+                    </Checkbox>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div data-name="question" className="flex flex-col gap-6">
+              <div data-name="header" className="flex gap-4 items-start">
+                <div className="w-10 h-10 bg-cream text-black font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full -ml-[56px]">
+                  8
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -388,7 +485,7 @@ const PsycologistPage = () => {
             <div data-name="question" className="flex flex-col gap-6">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 bg-cream text-black font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full">
-                  7
+                  9
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -402,11 +499,10 @@ const PsycologistPage = () => {
                 </div>
               </div>
               <ul
-                className={`flex flex-col gap-2 p-2 ${
-                  showErrorBorder && isEmpty(checkedQueries)
+                className={`flex flex-col gap-2 p-2 ${showErrorBorder && isEmpty(checkedQueries)
                     ? "border-red border rounded-[15px]"
                     : ""
-                }`}
+                  }`}
               >
                 {queriesList.map((query, index) => (
                   <li>
@@ -425,6 +521,45 @@ const PsycologistPage = () => {
                 ))}
               </ul>
             </div>
+
+            <div data-name="question" className="flex flex-col gap-6">
+              <div data-name="header" className="flex gap-4 items-start">
+                <div className="w-10 h-10 bg-cream text-black font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full">
+                  10
+                </div>
+                <div className="flex flex-col gap-1">
+                  <h2 className="text-corp-white font-bold text-2xl font-sans">
+                    Ваш сайт и социальные сети
+                  </h2>
+                  <p className="text-corp-white text-sm">
+                    Пожалуйста укажите ссылки на свои соцсети и сайт, которые может посмотреть клиент перед сессией чтобы познакомиться с вами  
+                  </p>
+                </div>
+              </div>
+              <div
+                className={`flex flex-col gap-2 p-2`}
+              >
+                <Input
+                placeholder="ссылка на персональный сайт, например https://primer.ru"
+                intent="cream"
+                value={anketa.site_link}
+                onChangeFn={(e) => dispatch(setSite(e))}
+              ></Input>
+              <Input
+                placeholder="ссылка на страницу Вконтакте, например https://vk.com/moya_straniza"
+                intent="cream"
+                value={anketa.vk_link}
+                onChangeFn={(e) => dispatch(setVk(e))}
+              ></Input>
+              <Input
+                placeholder="ссылка на канал в Телеграм, например https://t.me/moy_kanal"
+                intent="cream"
+                value={anketa.telegram_link}
+                onChangeFn={(e) => dispatch(setTelegram(e))}
+              ></Input>
+              </div>
+            </div>
+
           </div>
           <div className="my-20 px-5">
             <Button

@@ -34,6 +34,12 @@ const PopupPsyAnketa = ({ isVisible = true, closeFn }) => {
   })?.psychologist_id;
 
   function sendData() {
+    axios({
+      method: "post",
+      url: "https://n8n-v2.hrani.live/webhook/send-psy-anketa-info-to-admin",
+      data: { anketa, psychologist_id },
+    })
+
     setStatus("loading");
     if (
       psychologist_id == undefined ||
