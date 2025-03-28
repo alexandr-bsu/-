@@ -39,42 +39,19 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
           setStatus("empty");
         } else {
 
-          resp.data['troubles'] = resp.data['troubles'] == null ? '' : resp.data['troubles']
-          resp.data['mentall_illnes'] = resp.data['mentall_illnes'] == null ? '' : resp.data['mentall_illnes']
-          resp.data['troublclient_statees'] = resp.data['client_state'] == null ? '' : resp.data['client_state'] 
+
           resp.data['traumatic_events'] = resp.data['traumatic_events'] == null ? '' : resp.data['traumatic_events']
-          resp.data['queries_to_psychologist'] = resp.data['queries_to_psychologist'] == null ? '' : resp.data['queries_to_psychologist']
-
-          if ("troubles" in resp.data) {
-            resp.data["troubles"] = resp.data["troubles"].split(";");
-            if (
-              resp.data["troubles"][0] == "" &&
-              resp.data["troubles"].length == 1
-            ) {
-              resp.data["troubles"] = [];
-            }
-          }
-
-          if (
-            "mentall_illnes" in resp.data &&
-            resp.data["mentall_illnes"]
-          ) {
-            resp.data["mentall_illnes"] =
-              resp.data["mentall_illnes"].split(";");
-            if (
-              resp.data["mentall_illnes"][0] == "" &&
-              resp.data["mentall_illnes"].length == 1
-            ) {
-              resp.data["mentall_illnes"] = [];
-            }
-          }
-
+          
           if (
             "client_state" in resp.data &&
             resp.data["client_state"]
-          ) {
-            resp.data["client_state"] =
-              resp.data["client_state"].split(";");
+          ) 
+          { 
+            resp.data["client_state"] = JSON.parse(resp.data["client_state"])
+            if(!Array.isArray(resp.data["client_state"])){
+              resp.data["client_state"] = resp.data["client_state"].split(";");
+            }
+            
             if (
               resp.data["client_state"][0] == "" &&
               resp.data["client_state"].length == 1
@@ -87,8 +64,11 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
             "traumatic_events" in resp.data &&
             resp.data["traumatic_events"]
           ) {
-            resp.data["traumatic_events"] =
-              resp.data["traumatic_events"].split(";");
+            resp.data["traumatic_events"] = JSON.parse(resp.data["traumatic_events"])
+            if(!Array.isArray(resp.data["traumatic_events"])){
+              resp.data["traumatic_events"] = resp.data["traumatic_events"].split(";");
+            }
+
             if (
               resp.data["traumatic_events"][0] == "" &&
               resp.data["traumatic_events"].length == 1
@@ -98,19 +78,23 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
           }
 
           if (
-            "queries_to_psychologist" in resp.data &&
-            resp.data["queries_to_psychologist"]
+            "important_in_psychologist" in resp.data &&
+            resp.data["important_in_psychologist"]
           ) {
-            resp.data["queries_to_psychologist"] =
-              resp.data["queries_to_psychologist"].split(";");
+            resp.data["important_in_psychologist"] = JSON.parse(resp.data["important_in_psychologist"])
+            if(!Array.isArray(resp.data["important_in_psychologist"])){
+              resp.data["important_in_psychologist"] = resp.data["important_in_psychologist"].split(";");
+            }
+
             if (
-              resp.data["queries_to_psychologist"][0] == "" &&
-              resp.data["queries_to_psychologist"].length == 1
+              resp.data["important_in_psychologist"][0] == "" &&
+              resp.data["important_in_psychologist"].length == 1
             ) {
-              resp.data["queries_to_psychologist"] = [];
+              resp.data["important_in_psychologist"] = [];
             }
           }
 
+         
           console.log("data", resp.data);
 
           setData(resp.data);
@@ -130,10 +114,12 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
     <div className="fixed top-0 left-0 h-screen w-full flex justify-center items-center p-5 z-20">
       <div className="bg-[#eed5bf] rounded-lg h-full w-full overflow-y-scroll">
         <div className="bg-[#eed5bf] sticky top-0 p-5 border-b border-b-dark-green mb-10 w-full flex justify-between items-center">
+          <div>
           <h2 className="text-dark-green font-medium text-3xl ">
             Слот на {slotDate}
           </h2>
-
+          <p className="text-dark-green text-xl">{data['is_helpful_hand'] ? "Заявка из Руки помощи " : ''}</p>
+          </div>
           <img
             src="static/close.png"
             className="cursor-pointer w-5 h-5"
@@ -202,6 +188,7 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
 
         {status == "ok" && (
           <div data-name="slot-data" className="p-5 flex flex-col gap-8">
+            <div className="flex flex-col gap-1">
             <p className="text-dark-green flex gap-2">
               <b>Имя: </b> {data["client_name"]}
             </p>
@@ -210,40 +197,44 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
               <b>Возраст: </b> {data["client_age"]}
             </p>
 
-            {data["troubles"]?.length != 0 && (
+            <p className="text-dark-green flex gap-2">
+              <b>Часовой пояс клиента: </b> {data["client_timezone"]}
+            </p>
+
+            <p className="text-dark-green flex gap-2">
+              <b>Опыт клиента: </b> {data["is_helpful_hand"] ? data["past_session_experience"] : data["experience"]}
+            </p>
+
+            {data["is_helpful_hand"] && <p className="text-dark-green flex gap-2">
+              <b>Оплата: </b> {data["is_helpful_hand"] ? data["psychologist_price"] : ''}
+            </p>}
+
+            </div>
+
+            {data["important_in_psychologist"]?.length != 0 && (
               <p className="text-dark-green">
-                <b>Что беспокоит клиента: </b>{" "}
-                {data["troubles"]?.map((a) => {
+                <b>В психологе важно: </b>{" "}
+                {data["important_in_psychologist"]?.map((a) => {
                   return <li>{a}</li>;
                 })}
               </p>
             )}
 
-            {data["queries_to_psychologist"]?.length != 0 && (
+            {data["questions_to_psychologist"]?.length != 0 && (
               <p className="text-dark-green">
-                <b>Запросы психологу: </b>{" "}
-                {data["queries_to_psychologist"]?.map((a) => {
-                  return <li>{a}</li>;
-                })}
+                <b>Клиент хочет обсудить: </b>
+                <p className="text-dark-green">{data["questions_to_psychologist"]}</p>
               </p>
             )}
 
-            {data["mentall_illnes"]?.length != 0 && (
+            {data["has_mental_illness"]?.length != 0 && (
               <p className="text-dark-green">
                 <b>Псих. заболевание: </b>{" "}
-                {data["mentall_illnes"]?.map((a) => {
-                  return <li>{a}</li>;
-                })}
+                {data["has_mental_illness"]}. {data["diagnose_medicaments"] ? 'Принимает медикаменты? '+ data['diagnose_medicaments'] : ''}
               </p>
             )}
 
-            {data["illness_details"] && (
-              <p className="text-dark-green">
-                <b>Подробности о заболевании: </b>
-                <br />
-                {data["illness_details"]}
-              </p>
-            )}
+            
 
             {data["client_state"]?.length != 0 && (
               
@@ -270,18 +261,7 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
               <br />
               {data["Вопрос писхологу"]}
             </p> */}
-
-            <p className="text-dark-green">
-              <b>Клиент обращался к психологу ранее?:</b>
-              <br />
-              {data["experience"]}
-            </p>
-
-            {/* <p className="text-dark-green">
-              <b>За сколько сессий клиент собирается решить проблему?:</b>
-              <br />
-              {data["Ожидания"]?.value}
-            </p> */}
+      
           </div>
         )}
 

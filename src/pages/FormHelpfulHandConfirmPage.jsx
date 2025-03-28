@@ -31,9 +31,9 @@ const FormHelpfulHandPage= () => {
     },
   };
 
-  const telegram_id = QueryString.parse(window.location.search, {
+  const psychologist_name = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
-  })?.telegram_id;
+  })?.psychologist_name;
 
   const link_id = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
@@ -46,11 +46,11 @@ const FormHelpfulHandPage= () => {
   function sendData() {
     setErrorText("")
     dispatch(setStatus("sending"));
-    console.log(window.location.search, telegram_id, link_id)
+    console.log(window.location.search, psychologist_name, link_id)
     
     axios({
       method: "POST",
-      data: {telegram_id, link_id},
+      data: {psychologist_name, link_id},
       url: "https://n8n-v2.hrani.live/webhook/confirm-help-hand-by-psychologist",
     })
       .then((response) => {

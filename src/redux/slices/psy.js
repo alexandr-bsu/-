@@ -2,24 +2,119 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   name: "",
+  about: "",
   age: "",
   sexClient: "",
   minClientAge: "",
   maxClientAge: "",
-  psychologistExperience: "",
+  psychologistPersonalTherapyType: "",
+  psychologistPersonalTherapyDuration: "",
   mainModal: '',
   additionalModals: [],
   skills: [],
   queries: [],
   telegram_link: '',
   site_link: '',
-  vk_link: ''
+  vk_link: '',
+  minPrice: '',
+  maxPrice: '',
+  isMarried:false,
+  hasChildren: false,
+  allWithPriceMode: false,
+  firstFreeMode: false, 
+  helpHandMode: false,
+  education: [{
+    'educationItemProgramTitle': '',
+    'educationItemTitle': '',
+    'educationItemType': '',
+    'educationItemYear': '',
+  }]
 };
 
 export const psySlice = createSlice({
   name: "form",
   initialState,
   reducers: {
+    setPsychologistPersonalTherapyType: (state, type) => {
+      state.psychologistPersonalTherapyType = type.payload
+    },
+
+    setAllWithPriceMode: (state, mode) => {
+      state.allWithPriceMode = mode.payload
+    },
+    setFirstFreeMode: (state, mode) => {
+      state.firstFreeMode = mode.payload
+    },
+    setHelpHandMode: (state, mode) => {
+      state.helpHandMode = mode.payload
+    },
+    
+    setMinPrice: (state, price) => {
+      state.minPrice = price.payload
+    },
+
+    setMaxPrice: (state, price) => {
+      state.maxPrice = price.payload
+    },
+
+    setIsMarried: (state, isMarried) => {
+      state.isMarried = isMarried.payload
+    },
+    setHasChildren: (state, hasChildren) => {
+      state.hasChildren = hasChildren.payload
+    },
+
+    setAbout: (state, about) => {
+      state.about = about.payload
+    },
+
+    setAnketaData: (state, data) => {
+      let d = data.payload
+      state.name = d.name
+      state.age = d.age
+      state.sexClient = d.sexClient
+      state.minClientAge = d.minClientAge
+      state.maxClientAge = d.maxClientAge
+      state.psychologistPersonalTherapyType = d.psychologistPersonalTherapyType
+      state.psychologistPersonalTherapyDuration = d.psychologistPersonalTherapyDuration
+      state.mainModal = d.mainModal
+      state.additionalModals = d.additionalModals
+      state.skills = d.skills
+      state.queries = d.queries
+      state.telegram_link = d.telegram_link
+      state.site_link = d.site_link
+      state.vk_link = d.vk_link
+      state.minPrice= d.minPrice,
+      state.maxPrice= d.maxPrice,
+      state.isMarried=d.isMarried,
+      state.hasChildren= d.hasChildren,
+      state.allWithPriceMode= d.allWithPriceMode,
+      state.firstFreeMode= d.firstFreeMode, 
+      state.helpHandMode= d.helpHandMode,
+      state.about = d.about
+    },
+
+    setEducationList: (state, list) => {
+      state.education = list.payload
+      console.log(state.education)
+    },
+
+    addEducationItem: (state) => {
+      state.education.push({
+        'educationItemProgramTitle': '',
+        'educationItemTitle': '',
+        'educationItemType': '',
+        'educationItemYear': '',
+      })
+    },
+
+    removeEducationItemByIndex: (state, index) => {
+      state.education.splice(index.payload, 1)
+    },
+
+    setDataEduList: (state, data) => {
+      state.education[data.payload.index][data.payload.key] = data.payload.data
+    },
 
     setVk: (state, vk_page) => {
       state.vk_link = vk_page.payload
@@ -45,8 +140,8 @@ export const psySlice = createSlice({
     setMaxClientAge: (state, maxClientAge) => {
       state.maxClientAge = maxClientAge.payload;
     },
-    setPsychologistExperience: (state, psychologistExperience) => {
-      state.psychologistExperience = psychologistExperience.payload;
+    setPsychologistPersonalTherapyDuration: (state, psychologistPersonalTherapyDuration) => {
+      state.psychologistPersonalTherapyDuration = psychologistPersonalTherapyDuration.payload;
     },
     setMainModal: (state, modal) => {
       state.mainModal = modal.payload
@@ -83,13 +178,27 @@ export const {
   setSexClient,
   setMaxClientAge,
   setMinClientAge,
-  setPsychologistExperience,
+  setPsychologistPersonalTherapyDuration,
   toogleSkills,
   toogleQueries,
   setMainModal,
   toogleAdditionalModals,
   setSite,
   setVk,
-  setTelegram
+  setTelegram,
+  addEducationItem,
+  removeEducationItemByIndex,
+  setDataEduList,
+  setEducationList,
+  setAnketaData,
+  setAbout,
+  setIsMarried,
+  setHasChildren,
+  setMinPrice,
+  setMaxPrice,
+  setHelpHandMode,
+  setAllWithPriceMode,
+  setFirstFreeMode,
+  setPsychologistPersonalTherapyType
 } = psySlice.actions;
 export default psySlice.reducer;

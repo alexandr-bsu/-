@@ -10,9 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@radix-ui/react-select": "^2.1.6",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-toast": "^1.2.2",
     "@reduxjs/toolkit": "^2.2.7",
+    "@rpldy/upload-button": "^1.9.1",
+    "@rpldy/uploady": "^1.9.1",
     "@vidstack/player-react": "^1.6.0",
     "@vidstack/react": "^1.12.12",
     "axios": "^1.7.4",

@@ -56,7 +56,16 @@ const PopupPsyAnketa = ({ isVisible = true, closeFn }) => {
       data: { anketa, psychologist_id },
     })
       .then((resp) => {
-        setStatus("ok");
+        axios({
+          method: "post",
+          url: "https://n8n-v2.hrani.live/webhook/set-education",
+          data: { education: anketa.education, psychologist_id},
+        }).then(resp => {
+          setStatus("ok");
+        }).catch((error) => {
+          setStatus("error");
+        })
+        
       })
       .catch((error) => {
         setStatus("error");
@@ -154,7 +163,7 @@ const PopupPsyAnketa = ({ isVisible = true, closeFn }) => {
                 </div>
 
                 <p className="text-black text-sm font-medium text-center max-w-[1200px]">
-                  Ваши рамки по клиентам успешно загружены
+                Спасибо! Ваша информация успешно загружена в систему и будет обновлена после подтверждения администратором
                 </p>
                 <div />
                 <Button
