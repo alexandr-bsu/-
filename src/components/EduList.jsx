@@ -56,7 +56,7 @@ const EduList = ({ showError }) => {
                                         placeholder="Введите название учреждения"
                                         intent="cream"
                                         className={
-                                            `grow ${showError && isEmpty(edu.educationItemTitle) ? "border-red" : ""}`
+                                            `grow md:min-w-[300px] ${showError && isEmpty(edu.educationItemTitle) ? "border-red" : ""}`
                                         }
                                         value={edu.educationItemTitle}
                                         onChangeFn={(e) => dispatch(setDataEduList({ index: index, key: 'educationItemTitle', data: e }))}
