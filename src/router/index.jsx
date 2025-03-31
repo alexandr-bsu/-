@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import FormPage from "../pages/FormPage";
 import FormPageWithoutPsychologists from "@/pages/FormPageWithoutPsycologists";
 import FormPsyClientInfoPage from "../pages/FormPsyClientInfoPage";
+import FormPageWithoutPsycologistsDiagnostic from "../pages/FormPageWithoutPsycologistsDiagnostic";
 import PsycoSlotsPage from "../pages/PsycoSlotsPage";
 import SaveSlotsPage from "../pages/SaveSlotsPage";
 import PsycologistPage from "@/pages/PsycologistPage";
@@ -39,5 +40,6 @@ export const router = createBrowserRouter([
   { path: "/client-feedback-anketa", element: <ClientFeedbackPage /> },
   { path: "/psychologist-feedback-anketa", element: <PsyFeedbackPage /> },
   { path: "/registration-help-hand-anketa", element: <FormRegisterHelpHandTicketPage />},
-  { path: "/confirm-help-hand-by-psychologist", element: <FormHelpfulHandConfirmPage/>}
+  { path: "/confirm-help-hand-by-psychologist", element: <FormHelpfulHandConfirmPage/>},
+  { path: "/diagnostic", element: <FormPageWithoutPsycologistsDiagnostic/>}
 ]);
