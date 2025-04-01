@@ -121,6 +121,14 @@ const PsycoSlots = () => {
     }
   }, []);
 
+  function send_on_board_message (){
+    axios({
+      method: "POST",
+      params: {secret},
+      url: "https://n8n-v2.hrani.live/webhook/send-onboarding-message-after-slot-setup"
+    })
+  }
+
   return (
     <>
       <div className="sticky top-0">
@@ -280,7 +288,7 @@ const PsycoSlots = () => {
 
       {slotStatus != "error" && slotStatus != "loading" && (
         <div className="p-10 fixed bottom-0 bg-[#2c3531] w-full">
-          <Link to="/slots-saved">
+          <Link to="/slots-saved" onClick={()=>{send_on_board_message()}}>
             <Button intent="cream">Готово</Button>
           </Link>
         </div>
