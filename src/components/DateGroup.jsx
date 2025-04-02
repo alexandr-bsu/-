@@ -3,10 +3,11 @@ import Button from "./Button";
 import Check from "../assets/check.svg?react";
 import { startOfWeek, endOfWeek } from "date-fns";
 import { useSelector, useDispatch } from "react-redux";
-import { toogleSlots } from "../redux/slices/formSlice";
+import { toogleSlots, toogleSlotsObject } from "../redux/slices/formSlice";
 import { subHours } from "date-fns";
 const DateGroup = ({ group }) => {
   const slotsRedux = useSelector((state) => state.form.slots);
+  const slotsObjectsRedux = useSelector((state) => state.form.slots_objects);
   const dispatch = useDispatch();
 
   function capitalize(string) {
@@ -187,7 +188,8 @@ const DateGroup = ({ group }) => {
                                       convertMskSlotTimeToLocal(
                                         group.date,
                                         slotTime
-                                      )
+                                      ),
+                                      group.slots[slotTime]
                                     );
                                     dispatch(
                                       toogleSlots(
@@ -197,16 +199,28 @@ const DateGroup = ({ group }) => {
                                         )}`
                                       )
                                     );
+
+                                    dispatch(
+                                      toogleSlotsObject(group.slots[slotTime][0])
+                                    );
+
+                                    console.log(slotsObjectsRedux)
                                   }}
                                   hover="no"
                                 >
                                   {slotTime}
-                                  {slotsRedux.includes(
+                                  {/* {slotsRedux.includes(
                                     `${convertMskSlotTimeToLocal(
                                       group.date,
                                       slotTime
                                     )}`
                                   ) ? (
+                                    <Check width={20} height={20}></Check>
+                                  ) : (
+                                    ""
+                                  )} */}
+
+                                  {slotsObjectsRedux.findIndex(p => p == group.slots[slotTime][0].id) != -1 ? (
                                     <Check width={20} height={20}></Check>
                                   ) : (
                                     ""

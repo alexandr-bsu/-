@@ -17,6 +17,7 @@ const initialState = {
   amountExpectations: "",
   age: "",
   slots: [],
+  slots_objects: [],
   contactType: "Telegram",
   contact: "",
   name: "",
@@ -228,6 +229,14 @@ export const formSlice = createSlice({
       }
     },
 
+    toogleSlotsObject: (state, slot) => {
+      if (state.slots_objects.includes(slot.payload.id)) {
+        state.slots_objects.splice(state.slots_objects.indexOf(slot.payload.id), 1);
+      } else {
+        state.slots_objects.push(slot.payload.id);
+      }
+    },
+
     setContactType: (state, contactType) => {
       state.contactType = contactType.payload;
     },
@@ -268,6 +277,7 @@ export const {
   setAmountExpectations,
   setAge,
   toogleSlots,
+  toogleSlotsObject,
   setContactType,
   setContact,
   setName,
