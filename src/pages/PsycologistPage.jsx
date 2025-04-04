@@ -928,7 +928,7 @@ const PsycologistPage = () => {
                 <Uploady
                   listeners={uploaderPhoto}
                   // fileFilter={filterByTypePhoto}
-                  destination={{ url: `https://n8n-v2.hrani.live/webhook/upload-psychologist-photo?psychologist=${psychologist_id}` }}
+                  destination={{ url: `https://n8n-v2.hrani.live/webhook/upload-psychologist-photo?psychologist=${psychologist_id}&psychologist_name=${anketa.name}` }}
                 >
 
                   {uploadPhotoState == 'empty' && <UploadButton text="Выберите фотографию" className={`p-4 text-cream border-2 ${showErrorBorder ? 'border-red' : 'border-cream border-dashed'} rounded-xl flex gap-2 items-center justify-center`}><Image size={24} color="
@@ -1020,7 +1020,7 @@ const PsycologistPage = () => {
 
                 <Uploady
                   listeners={uploaderVideo}
-                  destination={{ url: `https://n8n-v2.hrani.live/webhook/upload-psychologist-video?psychologist=${psychologist_id}` }}
+                  destination={{ url: `https://n8n-v2.hrani.live/webhook/upload-psychologist-video?psychologist=${psychologist_id}&psychologist_name=${anketa.name}` }}
                 >
 
                   {uploadVideoState == 'empty' && <UploadButton text="Выберите видео (необязательно)" className="p-4 text-cream border-2 border-cream border-dashed rounded-xl flex gap-2 items-center justify-center"><Clapperboard size={24} color="
