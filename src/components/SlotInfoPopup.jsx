@@ -39,7 +39,6 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
           setStatus("empty");
         } else {
 
-
           resp.data['traumatic_events'] = resp.data['traumatic_events'] == null ? '' : resp.data['traumatic_events']
           
           if (
@@ -47,7 +46,13 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
             resp.data["client_state"]
           ) 
           { 
-            resp.data["client_state"] = JSON.parse(resp.data["client_state"])
+
+            try{
+              resp.data["client_state"] = JSON.parse(resp.data["client_state"])
+            } catch{
+              resp.data["client_state"] = resp.data["client_state"]
+            }
+            
             if(!Array.isArray(resp.data["client_state"])){
               resp.data["client_state"] = resp.data["client_state"].split(";");
             }
@@ -64,7 +69,12 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
             "traumatic_events" in resp.data &&
             resp.data["traumatic_events"]
           ) {
-            resp.data["traumatic_events"] = JSON.parse(resp.data["traumatic_events"])
+            try{
+              resp.data["traumatic_events"] = JSON.parse(resp.data["traumatic_events"])
+            } catch{
+              resp.data["traumatic_events"] = resp.data["traumatic_events"]
+            }
+
             if(!Array.isArray(resp.data["traumatic_events"])){
               resp.data["traumatic_events"] = resp.data["traumatic_events"].split(";");
             }
@@ -81,7 +91,12 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
             "important_in_psychologist" in resp.data &&
             resp.data["important_in_psychologist"]
           ) {
-            resp.data["important_in_psychologist"] = JSON.parse(resp.data["important_in_psychologist"])
+            try{
+              resp.data["important_in_psychologist"] = JSON.parse(resp.data["important_in_psychologist"])
+            } catch{
+              resp.data["important_in_psychologist"] = resp.data["important_in_psychologist"]
+            }
+            
             if(!Array.isArray(resp.data["important_in_psychologist"])){
               resp.data["important_in_psychologist"] = resp.data["important_in_psychologist"].split(";");
             }
