@@ -12,15 +12,15 @@ const MeetType = () => {
   const dispatch = useDispatch();
 
   const ticket_id = useSelector((state) => state.form.ticket_id);
-    
-      useEffect(() => {
-        axios({
-          method: "PUT",
-          url: "https://n8n-v2.hrani.live/webhook/update-tracking-step",
-          data: { step: "Категория психолога", ticket_id },
-        });
-      }, [])
-  
+
+  useEffect(() => {
+    axios({
+      method: "PUT",
+      url: "https://n8n-v2.hrani.live/webhook/update-tracking-step",
+      data: { step: "Категория психолога", ticket_id },
+    });
+  }, [])
+
 
   const categoryList = ["Бесплатно", "300 руб", "500 руб", "1000 руб", "1500 руб", "2000 руб", "3000 руб"];
 
@@ -32,10 +32,10 @@ const MeetType = () => {
       >
         <div className="flex flex-col">
           <h3 className="font-medium text-base text-dark-green">
-          Какую сумму вы готовы выделить в качестве вознаграждения психологу за каждую сессию?
+            Какую сумму вы готовы выделить на каждую сессию?
           </h3>
           <p className="text-gray-disabled text-sm">
-          Психологи в проекте выбирают себе клиентов прежде всего на основе того, какой случай им откликается. Но сумма вознаграждения может <b>значительно повысить скорость подбора</b> специалиста. Цена – это не самый важный критерий, но она должна быть комфортной для всех сторон. Важно, чтобы вы указали ту сумму, которая позволит пробыть в терапии несколько месяцев, чтобы вы могли увидеть результат
+           Вознаграждение влияет на скорость подбора психолога - оно должно быть комфортным для всех сторон.
           </p>
         </div>
       </div>
@@ -75,7 +75,7 @@ const MeetType = () => {
               </li> */}
         </ul>
 
-        
+
       </div>
     </div>
   );
