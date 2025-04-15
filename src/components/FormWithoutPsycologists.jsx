@@ -337,10 +337,10 @@ const Form = ({ maxTabsCount }) => {
         url: "https://n8n-v2.hrani.live/webhook/tilda-zayavka",
       })
         .then(() => {
-          if (problemFromQuery) {
-            ym(100081518, "reachGoal", "submit_form");
+          if (isNext) {
+            ym(100081518, "reachGoal", "submit_form_podbor_issledovanie");
           } else {
-            ym(100081518, "reachGoal", "submit_form");
+            ym(100081518, "reachGoal", "submit_form_podbor_bes_issledovanie");
           }
 
           dispatch(setStatus("ok"));

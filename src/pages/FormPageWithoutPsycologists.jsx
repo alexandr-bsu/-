@@ -161,7 +161,12 @@ const FormPage = () => {
           data: { step: "Заявка отправлена", ticket_id },
         });
 
-        ym(100081518, "reachGoal", "submit_form");
+        if (isNext) {
+          ym(100081518, "reachGoal", "submit_form_podbor_issledovanie");
+        } else {
+          ym(100081518, "reachGoal", "submit_form_podbor_bes_issledovanie");
+        }
+        
       })
       .catch((e) => {
         dispatch(setStatus("error"));

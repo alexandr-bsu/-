@@ -338,9 +338,9 @@ const Form = ({ maxTabsCount }) => {
       })
         .then(() => {
           if (problemFromQuery) {
-            ym(100081518, "reachGoal", "submit_form");
+            ym(100081518, "reachGoal", "submit_form_diasgnostic");
           } else {
-            ym(100081518, "reachGoal", "submit_form");
+            ym(100081518, "reachGoal", "submit_form_diasgnostic");
           }
 
           dispatch(setStatus("ok"));

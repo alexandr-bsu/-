@@ -161,7 +161,7 @@ const FormPage = () => {
           data: { step: "Заявка отправлена", ticket_id },
         });
 
-        ym(100081518, "reachGoal", "submit_form");
+        ym(100081518, "reachGoal", "submit_form_diasgnostic");
       })
       .catch((e) => {
         dispatch(setStatus("error"));
