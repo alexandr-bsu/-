@@ -159,6 +159,8 @@ const FormRegisterHelpHandTicketPage = () => {
           url: "https://n8n-v2.hrani.live/webhook/update-tracking-step",
           data: { step: "Заявка отправлена", ticket_id },
         });
+
+        ym(100081518, "reachGoal", "submit_form");
       })
       .catch((e) => {
         dispatch(setStatus("error"));
