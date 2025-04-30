@@ -3,6 +3,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -33,6 +40,7 @@ import {
   setIsMarried,
   setMinPrice,
   setMaxPrice,
+  setCity,
   setHasChildren,
   setHelpHandMode,
   setAllWithPriceMode,
@@ -110,6 +118,7 @@ const PsycologistPage = () => {
   const helpHandMode = anketa.helpHandMode
   const allWithPriceMode = anketa.allWithPriceMode
   const firstFreeMode = anketa.firstFreeMode
+  const city = anketa.city
   const skillsList = [
     // "Есть диагностированное психическое заболевание (РПП, СДВГ и др)",
     "Есть диагностированное психиатрическое заболевание (ПРЛ, БАР, ПТСР и др)",
@@ -286,6 +295,20 @@ const PsycologistPage = () => {
         return false;
       }
     }
+
+    if (!city && city == undefined) {
+      toast(
+        <div className="flex gap-4 items-center">
+          <CircleX color="#fff" size={36}></CircleX>
+          <div className="flex flex-col text-[#fff]">
+            <p className="font-medium">Напишите название города</p>
+          </div>
+        </div>
+      );
+      return false;
+
+    }
+
     if (emptyKeys.length == 0) {
       return true;
     }
@@ -335,12 +358,12 @@ const PsycologistPage = () => {
         params: { psychologist_id }
       }
     ).then(
-      resp => { 
+      resp => {
         dispatch(setAnketaData(resp.data))
-        if(resp.data?.name?.length != 0){
+        if (resp.data?.name?.length != 0) {
           setIsNameInputEnabled(false)
         }
-       }
+      }
     )
 
     axios(
@@ -417,16 +440,38 @@ const PsycologistPage = () => {
               <Input
                 placeholder="Пожалуйста, введите свою Фамилию и Имя в именительном падеже именно в таком порядке"
                 intent="cream"
-                disabled = {!isNameInputEnabled}
+                disabled={!isNameInputEnabled}
                 value={name}
                 className={showErrorBorder && isEmpty(name) ? "border-red" : ""}
                 onChangeFn={(e) => dispatch(setName(e))}
               ></Input>
             </div>
+
+            <div data-name="question" className="flex flex-col gap-4">
+              <div data-name="header" className="flex gap-4 items-start">
+                <div className="w-10 h-10  text-corp-white font-black text-xl  items-center justify-center rounded-full hidden md:flex md:-ml-[56px]">
+                  2
+                </div>
+                <div className="flex flex-col gap-1">
+                  <h2 className="text-corp-white font-bold text-2xl font-sans">
+                    В каком городе вы находитесь?
+                  </h2>
+
+                </div>
+              </div>
+              <Input
+                placeholder="Пожалуйста, введите введите свой город"
+                intent="cream"
+                value={city}
+                className={showErrorBorder && isEmpty(city) ? "border-red" : ""}
+                onChangeFn={(e) => dispatch(setCity(e))}
+              ></Input>
+            </div>
+
             <div data-name="question" className="flex flex-col gap-4">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 text-corp-white font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full">
-                  2
+                  3
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -447,7 +492,7 @@ const PsycologistPage = () => {
             <div data-name="question" className="flex flex-col gap-4">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 text-corp-white font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full ">
-                  3
+                  4
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -483,7 +528,7 @@ const PsycologistPage = () => {
             <div data-name="question" className="flex flex-col gap-4">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 text-corp-white  font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full ">
-                  4
+                  5
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -505,7 +550,7 @@ const PsycologistPage = () => {
             <div data-name="question" className="flex flex-col gap-6">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 text-corp-white font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full -ml-[56px]">
-                  5
+                  6
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -548,7 +593,7 @@ const PsycologistPage = () => {
             <div data-name="question" className="flex flex-col gap-4">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 text-corp-white font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full ">
-                  6
+                  7
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -583,7 +628,7 @@ const PsycologistPage = () => {
             <div data-name="question" className="flex flex-col gap-6">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 text-corp-white font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full -ml-[56px]">
-                  7
+                  8
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -618,7 +663,7 @@ const PsycologistPage = () => {
             <div data-name="question" className="flex flex-col gap-6">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 text-corp-white font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full ">
-                  8
+                  9
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -640,7 +685,7 @@ const PsycologistPage = () => {
             <div data-name="question" className="flex flex-col gap-4">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 text-corp-white font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full ">
-                  9
+                  10
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -675,7 +720,7 @@ const PsycologistPage = () => {
             <div data-name="question" className="flex flex-col gap-6">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 text-corp-white font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full ">
-                  10
+                  11
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -744,7 +789,7 @@ const PsycologistPage = () => {
             <div data-name="question" className="flex flex-col gap-6">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 text-corp-white font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full ">
-                  11
+                  12
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -779,11 +824,10 @@ const PsycologistPage = () => {
             <div data-name="question" className="flex flex-col gap-6">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 text-corp-white font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full -ml-[56px]">
-                  12
+                  13
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
-   
                     С какими условиями первых сессий вы готовы работать?
                   </h2>
                   <p className="text-corp-white text-sm">
@@ -791,9 +835,9 @@ const PsycologistPage = () => {
                   </p>
                 </div>
               </div>
-   
+
               <ul className={`flex flex-col gap-2 p-2 rounded-[15px] ${allWithPriceMode == false && helpHandMode == false && firstFreeMode == false && showErrorBorder ? 'border-red border' : ''}`}>
-              <li>
+                <li>
                   <Checkbox
                     name="mode"
                     intent="cream"
@@ -802,10 +846,21 @@ const PsycologistPage = () => {
                     checked={firstFreeMode}
                   >
                     Первая сессия бесплатно, последующие по вашей цене
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className='ml-2 p-2 rounded-full border-cream border w-2 h-2 flex items-center justify-center border-solid'>?</span>
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-[600px]">
+                          <p className="rounded-[15px] p-4 border border-cream text-corp-white bg-green">Это клиенты, приходящие к вам на первую бесплатную сессию. При назначении они участвуют в исследовании услуг психологов и проходят фильтры (по занятости, по мотивации, по платежеспособности и тд). Подробный отчет по исследованию <a href="https://drive.google.com/file/d/1WHV-40nOIkPQ9TKn6WK5RxdOgMjHIMim/view" className="text-cream underline" target="_new">можно скачать тут</a>. Клиенты учитываются в общем числе клиентов от Хранителей в месяц.</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+
                   </Checkbox>
                 </li>
 
-                <li>
+                {/* <li>
                   <Checkbox
                     name="mode"
                     intent="cream"
@@ -815,7 +870,7 @@ const PsycologistPage = () => {
                   >
                     Первая и последующие сессии с карточки на сайте по вашей цене
                   </Checkbox>
-                </li>
+                </li> */}
 
                 <li>
                   <Checkbox
@@ -826,6 +881,16 @@ const PsycologistPage = () => {
                     checked={helpHandMode}
                   >
                     Первые 8 сессий по предложенной клиентом цене (проект "Рука помощи от Хранителей")
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className='ml-2 p-2 rounded-full border-cream border w-2 h-2 flex items-center justify-center border-solid'>?</span>
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-[600px]">
+                          <p className="rounded-[15px] p-4 border border-cream text-corp-white bg-green">Это клиенты из проекта "Рука помощи от Хранителей". Клиенты пишут свой запрос и предлагают  вознаграждение за сессию в диапазоне от: Бесплатно до 2000 Р, указывают модальность.  Вы можете выбрать и забронировать интересную заявку в чат-боте.  Клиенты учитываются в общем числе клиентов от Хранителей в месяц. </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </Checkbox>
                 </li>
 
@@ -837,7 +902,7 @@ const PsycologistPage = () => {
             <div data-name="question" className="flex flex-col gap-6">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 text-corp-white font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full -ml-[56px]">
-                  13
+                  14
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -870,7 +935,7 @@ const PsycologistPage = () => {
             <div data-name="question" className="flex flex-col gap-6">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 text-corp-white font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full">
-                  14
+                  15
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -910,7 +975,7 @@ const PsycologistPage = () => {
             <div data-name="question" className="flex flex-col gap-6">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 text-corp-white font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full">
-                  15
+                  16
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">
@@ -1115,7 +1180,7 @@ const PsycologistPage = () => {
             <div data-name="question" className="flex flex-col gap-6">
               <div data-name="header" className="flex gap-4 items-start">
                 <div className="w-10 h-10 text-corp-white font-black text-xl hidden md:flex md:-ml-[56px] items-center justify-center rounded-full">
-                  16
+                  17
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-corp-white font-bold text-2xl font-sans">

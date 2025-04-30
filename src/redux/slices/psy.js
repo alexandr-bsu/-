@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+
 const initialState = {
   name: "",
+  city: "",
   about: "",
   age: "",
   sexClient: "",
@@ -39,6 +41,10 @@ export const psySlice = createSlice({
       state.psychologistPersonalTherapyType = type.payload
     },
 
+    setCity: (state, city) => {
+      state.city = city.payload
+    },
+
     setAllWithPriceMode: (state, mode) => {
       state.allWithPriceMode = mode.payload
     },
@@ -71,6 +77,7 @@ export const psySlice = createSlice({
     setAnketaData: (state, data) => {
       let d = data.payload
       state.name = d.name
+      state.city = d?.city
       state.age = d.age
       state.sexClient = d.sexClient
       state.minClientAge = d.minClientAge
@@ -199,6 +206,7 @@ export const {
   setHelpHandMode,
   setAllWithPriceMode,
   setFirstFreeMode,
+  setCity,
   setPsychologistPersonalTherapyType
 } = psySlice.actions;
 export default psySlice.reducer;
