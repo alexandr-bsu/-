@@ -15,9 +15,9 @@ function isEmpty(value) {
     return Array.isArray(value) ? value.length === 0 : value === "";
 }
 
-function getYearRange({ minYear = 1950 } = {}) {
-    let currentYear = new Date().getFullYear()
-    return Array.from({ length: currentYear - minYear + 1 }, (_, i) => currentYear - i)
+function getYearRange({ minYear = 1999 } = {}) {
+    let currentYear = new Date(2030, 1, 1).getFullYear()
+    return Array.from({ length: currentYear - minYear }, (_, i) => currentYear - i)
 }
 
 const EduList = ({ showError }) => {
