@@ -91,7 +91,7 @@ const Slots = () => {
 
   // Даты начала и конца следующей недели
   let next_date = new Date();
-  next_date.setDate(next_date.getDate() + 7*3);
+  next_date.setDate(next_date.getDate() + 7 * 3);
 
   console.log('nextdate', next_date)
   const nextWeekBorders = getWeekStartEnd(next_date);
@@ -173,30 +173,30 @@ const Slots = () => {
     let endDate = splited_dates[1];
     setSlotStatus("loading");
 
-    function filterSlotsByPsychologist(filtered_groups, psyName){
-      
+    function filterSlotsByPsychologist(filtered_groups, psyName) {
+
       let psychologist_accept = false
       let copy_filtered_groups = JSON.parse(JSON.stringify(filtered_groups))
-          for (let group of filtered_groups) {
-            for (let gs in group.slots) {
-              let temp_slots = []
-              for (let s of group.slots[gs]) {
-                if (s?.psychologist == psyName){
-                  psychologist_accept = true
-                  temp_slots.push(s)
-                }
-              group.slots[gs] = temp_slots
+      for (let group of filtered_groups) {
+        for (let gs in group.slots) {
+          let temp_slots = []
+          for (let s of group.slots[gs]) {
+            if (s?.psychologist == psyName) {
+              psychologist_accept = true
+              temp_slots.push(s)
             }
+            group.slots[gs] = temp_slots
           }
         }
+      }
 
-        
-        if (psychologist_accept){
-          
-          return [psychologist_accept, filtered_groups]
-        } else{
-          return [psychologist_accept, copy_filtered_groups]
-        }
+
+      if (psychologist_accept) {
+
+        return [psychologist_accept, filtered_groups]
+      } else {
+        return [psychologist_accept, copy_filtered_groups]
+      }
     }
 
     axios({
@@ -215,25 +215,25 @@ const Slots = () => {
       url: `https://n8n-v2.hrani.live/webhook/get-agregated-schedule-helpful-hand`,
     })
       .then((resp) => {
-        let slots=resp.data[0].items
+        let slots = resp.data[0].items
         let filtered_groups = remove_first_n_empty_groups(slots);
         let [psychologist_accept, filtered_groups_by_psychologist] = filterSlotsByPsychologist(JSON.parse(JSON.stringify(filtered_groups)), utm_psy)
-        
-        if (psychologist_accept){
+
+        if (psychologist_accept) {
           filtered_groups = filtered_groups_by_psychologist
-          
+
           //Удаляем первые пустые группы слотов если задан конкретный психолог 
           let found = false
           let f_index = 0
-          for(let g of filtered_groups){
-          let gs = g.slots
-            for(let time in gs){
-              if (gs[time].length !=0){
+          for (let g of filtered_groups) {
+            let gs = g.slots
+            for (let time in gs) {
+              if (gs[time].length != 0) {
                 found = true
                 break
               }
             }
-            if(found){
+            if (found) {
               break
             } else {
               f_index++
@@ -372,13 +372,20 @@ const Slots = () => {
       <div className="sticky top-0">
         <>
           {slotStatus != "empty" && (
+            <>
+            <div>
+            <p className="text-base text-dark-green p-4 bg-[#d1e8e2]">
+              Стоимость 8 сессий по цене, указаннной вами в заявке. Далее -  по цене указанной в карточке психолога
+            </p>
+          </div>
+
             <div
               data-name="question-block"
-              className={`bg-white px-5 ${
-                !isNext ? " border-gray border-b" : ""
-              } z-10 w-full py-4 `}
+              className={`bg-white px-5 ${!isNext ? " border-gray border-b" : ""
+                } z-10 w-full py-4 `}
             >
               <div className="flex flex-col">
+
                 <h3 className="font-medium text-base text-dark-green">
                   {slotStatus != "empty"
                     ? "Выберите подходящее время сессии."
@@ -391,6 +398,7 @@ const Slots = () => {
                 </p>
               </div>
             </div>
+            </>
           )}
         </>
         {/* {isNext && !isNaN(age) && ( */}
@@ -503,7 +511,7 @@ const Slots = () => {
             <div className="flex flex-col items-start justify-start gap-2">
               <div className="w-full">
                 <p className="text-base mb-10 p-2 border border-green text-dark-green rounded-[15px] w-full">
-                К стажлению, у выбранного психолога нет слотов. Пожалуйста, свяжитесь с <a href="https://t.me/hranitel_admin" target="_new" className="font-bold underline">администратором</a> в Телеграм чтобы подобрать другого писхолога
+                  К стажлению, у выбранного психолога нет слотов. Пожалуйста, свяжитесь с <a href="https://t.me/hranitel_admin" target="_new" className="font-bold underline">администратором</a> в Телеграм чтобы подобрать другого писхолога
                 </p>
               </div>
 
@@ -610,17 +618,24 @@ const Slots = () => {
           {
             !psychologistAccept && utm_psy && utm_psy !== 'undefined' && utm_psy !== 'null' && (
               <div>
-              <p className="text-base mb-10 p-2 border border-green text-dark-green rounded-[15px] m-4">
-              К сожалению, <b>{utm_psy}</b> не работает с запросами, которые вы обозначили. Но мы автоматически подобрали пихологов, кооторые работают именно с вашими запросами и смогут вам помочь. Выберите подходящие вам дни и время сессии. Можете выбрать несколько вариантов.
-              </p>
-            </div>
+                <p className="text-base mb-10 p-2 border border-green text-dark-green rounded-[15px] m-4">
+                  К сожалению, <b>{utm_psy}</b> не работает с запросами, которые вы обозначили. Но мы автоматически подобрали пихологов, кооторые работают именно с вашими запросами и смогут вам помочь. Выберите подходящие вам дни и время сессии. Можете выбрать несколько вариантов.
+                </p>
+              </div>
             )
           }
+
+          {/* <div>
+            <p className="text-base mb-10 p-2 border border-green text-dark-green rounded-[15px] m-4">
+            Стоимость 8 сессий по цене, указаннной вами в заявке. Далее -  по цене указанной в карточке психолога
+            </p>
+          </div> */}
+
           <div
             id="data-groups"
             data-name="data-groups"
             className="slot-grid-container px-5 pt-5 pb-10 min-h-screen gap-10 overflow-y-scroll"
-          > 
+          >
             {/* <pre>{JSON.stringify(groups_of_slots)}</pre> */}
             {groups_of_slots?.map((group) => (
               !checkDayIsBusy(group) ? <DateGroup group={group}></DateGroup> : <></>
