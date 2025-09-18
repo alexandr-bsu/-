@@ -375,7 +375,7 @@ const PsycologistSupervisionPage = () => {
               data-name="description"
               className="text-regular text-corp-white text-center text-[19px] max-w-[680px] pb-16 px-5 max-md:text-left"
             >
-              Анкета предназначена для заполнения информации в вашей карточке на сайте сообщества. После заполнения мы сохраним анкету и вы сможете вернуться к ней в любое время по ссылке в своем чат-боте. <span className="whitespace-nowrap">чат-боте</span>.
+              Анкета предназначена для заполнения информации в вашей карточке на сайте сообщества. После заполнения мы сохраним анкету и вы сможете вернуться к ней в любое время по ссылке в своем <span className="whitespace-nowrap">чат-боте</span>.
               {/* <a
                 target="_top"
                 href="https://hrani.live/community"
