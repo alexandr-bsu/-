@@ -7,6 +7,8 @@ import FormPageWithoutPsycologistsDiagnostic from "../pages/FormPageWithoutPsyco
 import PsycoSlotsPage from "../pages/PsycoSlotsPage";
 import SaveSlotsPage from "../pages/SaveSlotsPage";
 import PsycologistPage from "@/pages/PsycologistPage";
+import PsycologistSupervisionPage from "@/pages/PsycologistSupervisionPage";
+
 import ClientFeedbackPage from "@/pages/ClientFeedbackPage";
 import PsyFeedbackPage from "@/pages/PsyFeedbackPage";
 import FormHelpfulHandPage from '@/pages/FormHelpfulHandPage'
@@ -36,6 +38,7 @@ export const router = createBrowserRouter([
   },
   { path: "/reassigment", element: <ReassigmentPage /> },
   { path: "/psycologist-anketa", element: <PsycologistPage /> },
+  { path: "/psycologist-supervision-anketa", element: <PsycologistSupervisionPage /> },
   { path: "/helpful-hand", element: <FormHelpfulHandPage /> },
   { path: "/client-feedback-anketa", element: <ClientFeedbackPage /> },
   { path: "/psychologist-feedback-anketa", element: <PsyFeedbackPage /> },

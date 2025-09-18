@@ -12,7 +12,9 @@ const initialState = {
   psychologistPersonalTherapyType: "",
   psychologistPersonalTherapyDuration: "",
   mainModal: '',
+  customMainModal:'',
   additionalModals: [],
+  customAdditionalModals:'',
   skills: [],
   queries: [],
   telegram_link: '',
@@ -86,6 +88,23 @@ export const psySlice = createSlice({
       state.psychologistPersonalTherapyDuration = d.psychologistPersonalTherapyDuration
       state.mainModal = d.mainModal
       state.additionalModals = d.additionalModals
+
+      let modal_list = [
+        'Аналитическая психология',
+        'Психоанализ',
+        'КПТ',
+        'Гештальт',
+        'Нет дополнительной модальности'
+      ]
+
+      if (!modal_list.includes(state.mainModal)){
+        state.customMainModal = d.mainModal
+      }
+
+      if (!modal_list.includes(state.additionalModals[0])){
+        state.customAdditionalModals = d.additionalModals
+      }
+
       state.skills = d.skills
       state.queries = d.queries
       state.telegram_link = d.telegram_link
@@ -99,6 +118,14 @@ export const psySlice = createSlice({
       state.firstFreeMode= d.firstFreeMode, 
       state.helpHandMode= d.helpHandMode,
       state.about = d.about
+    },
+
+    setCustomMainModal: (state, modal) => {
+      state.customMainModal = modal.payload
+    },
+
+    setCustomAdditionalModals: (state, modal) => {
+      state.customAdditionalModals = modal.payload
     },
 
     setEducationList: (state, list) => {
@@ -154,6 +181,10 @@ export const psySlice = createSlice({
       state.mainModal = modal.payload
     },
 
+    setAdditionalModals: (state, modal) => {
+      state.additionalModals = [modal.payload]
+    },
+
     toogleAdditionalModals: (state, modal) => {
       if (state.additionalModals.includes(modal.payload)) {
         state.additionalModals.splice(state.additionalModals.indexOf(modal.payload), 1);
@@ -202,8 +233,11 @@ export const {
   setIsMarried,
   setHasChildren,
   setMinPrice,
+  setCustomMainModal,
+  setCustomAdditionalModals,
   setMaxPrice,
   setHelpHandMode,
+  setAdditionalModals,
   setAllWithPriceMode,
   setFirstFreeMode,
   setCity,

@@ -19,6 +19,10 @@ const PsycoSlots = () => {
     ignoreQueryPrefix: true,
   })?.secret;
 
+  const fromGroup = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.fromGroup;
+
   const [authState, setAuthState] = useState("");
 
   const errorLottieOptions = {
@@ -125,7 +129,7 @@ const PsycoSlots = () => {
     axios({
       method: "POST",
       params: {secret},
-      url: "https://n8n-v2.hrani.live/webhook/send-onboarding-message-after-slot-setup"
+      url: fromGroup == "true" ? "https://n8n-v2.hrani.live/webhook/send-onboarding-message-after-slot-setup-supervisii" : "https://n8n-v2.hrani.live/webhook/send-onboarding-message-after-slot-setup"
     })
   }
 
