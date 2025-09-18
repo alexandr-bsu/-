@@ -220,6 +220,9 @@ const PsycologistSupervisionPage = () => {
 
     if (form.customMainModal){
       emptyKeys = removeElementAtValue(emptyKeys, "mainModal");
+    } else {
+      emptyKeys = removeElementAtValue(emptyKeys, "customMainModal");
+      
     }
 
 
@@ -233,6 +236,20 @@ const PsycologistSupervisionPage = () => {
           <CircleX color="#fff" size={36}></CircleX>
           <div className="flex flex-col text-[#fff]">
             <p className="font-medium">Заполните все поля из раздела Образование</p>
+          </div>
+        </div>
+      );
+
+      return false
+    }
+
+    if (form.name.split(' ').length != 2) {
+      console.log('123')
+      toast(
+        <div className="flex gap-4 items-center">
+          <CircleX color="#fff" size={36}></CircleX>
+          <div className="flex flex-col text-[#fff]">
+            <p className="font-medium">Введите Фамилию и Имя</p>
           </div>
         </div>
       );
@@ -480,7 +497,7 @@ const PsycologistSupervisionPage = () => {
                     Ваше семейное положение (необязательное поле)
                   </h2>
                   <p className="text-corp-white text-sm">
-                    Эта информация для тех клиентов, кому в психологе важен персональный жизненный опыт. Она будет указана отдельно в разделе "О Хранителе"
+                    Эта информация для тех клиентов, кому в психологе важен персональный жизненный опыт. Она будет указана отдельно в разделе "О Психологе"
                   </p>
                 </div>
               </div>
