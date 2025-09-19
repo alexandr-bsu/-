@@ -217,6 +217,8 @@ const PsycologistPage = () => {
     emptyKeys = removeElementAtValue(emptyKeys, "helpHandMode");
     emptyKeys = removeElementAtValue(emptyKeys, "allWithPriceMode");
     emptyKeys = removeElementAtValue(emptyKeys, "maxPrice");
+    emptyKeys = removeElementAtValue(emptyKeys, "customMainModal");
+    emptyKeys = removeElementAtValue(emptyKeys, "customAdditionalModals");
 
     if (form.allWithPriceMode == false && form.helpHandMode == false && form.firstFreeMode == false) {
 
