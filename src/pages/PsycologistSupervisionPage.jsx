@@ -362,7 +362,7 @@ const PsycologistSupervisionPage = () => {
         closeFn={() => setShowPopup(false)}
       ></PopupPsyAnketaSupervisii>
       <div className="bg-dark-green w-full h-full flex flex-col justify-center items-center">
-        <Toaster position="top-center"></Toaster>
+        <Toaster position="bottom-center"></Toaster>
         <div data-name="container" className="max-w-[800px]">
           <div data-name="header" className="flex flex-col items-center">
             <h1
