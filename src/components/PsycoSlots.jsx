@@ -300,7 +300,7 @@ const PsycoSlots = () => {
 
       {slotStatus != "error" && slotStatus != "loading" && (
         <div className="p-10 fixed bottom-0 bg-[#2c3531] w-full">
-          <Link to="/slots-saved" onClick={()=>{send_on_board_message()}}>
+          <Link to="/slots-saved" onClick={()=>{send_on_board_message(); send_on_fill_slots_message()}}>
             <Button intent="cream">Готово</Button>
           </Link>
         </div>
