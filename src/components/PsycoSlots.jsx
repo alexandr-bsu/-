@@ -133,6 +133,14 @@ const PsycoSlots = () => {
     })
   }
 
+  function send_on_fill_slots_message (){
+    axios({
+      method: "POST",
+      params: {secret},
+      url: "https://n8n-v2.hrani.live/webhook/send-slot-change-notifications"
+    })
+  }
+
   return (
     <>
       <div className="sticky top-0">
