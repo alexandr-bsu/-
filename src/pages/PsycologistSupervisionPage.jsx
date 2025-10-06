@@ -225,7 +225,7 @@ const PsycologistSupervisionPage = () => {
       
     }
 
-
+    emptyKeys = removeElementAtValue(emptyKeys, "additionalModals");
     emptyKeys = removeElementAtValue(emptyKeys, "customAdditionalModals");
     emptyKeys = removeElementAtValue(emptyKeys, "minPrice");
 
