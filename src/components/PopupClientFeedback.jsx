@@ -163,7 +163,7 @@ const PopupPsyAnketa = ({ isVisible = true, closeFn }) => {
                 </div>
 
                 <p className="text-black text-sm font-medium text-center max-w-[1200px]">
-                Сертификат для бизкого человека на одну подарочную сессию с психологом можете забрать <a className="underline text-dark-green" target="_top" href="https://cache-eggstv.cdnvideo.ru/fs/pub/hrani.live/certificate.png" download>по ссылке</a>
+                Сертификат для бизкого человека на одну подарочную сессию с психологом можете забрать <a className="underline text-dark-green" target="_top" href="https://fs.sfxmedia.ru/fs/pub/hrani.live/certificate.png" download>по ссылке</a>
                 </p>
                 <div />
                 <Button
