@@ -8,6 +8,7 @@ import PsycoSlotsPage from "../pages/PsycoSlotsPage";
 import SaveSlotsPage from "../pages/SaveSlotsPage";
 import PsycologistPage from "@/pages/PsycologistPage";
 import PsycologistSupervisionPage from "@/pages/PsycologistSupervisionPage";
+import PsycologistRPPage from "@/pages/PsycologistRPPage";
 
 import ClientFeedbackPage from "@/pages/ClientFeedbackPage";
 import PsyFeedbackPage from "@/pages/PsyFeedbackPage";
@@ -39,6 +40,7 @@ export const router = createBrowserRouter([
   { path: "/reassigment", element: <ReassigmentPage /> },
   { path: "/psycologist-anketa", element: <PsycologistPage /> },
   { path: "/psycologist-supervision-anketa", element: <PsycologistSupervisionPage /> },
+  { path: "/psycologist-rp-anketa", element: <PsycologistRPPage /> },
   { path: "/helpful-hand", element: <FormHelpfulHandPage /> },
   { path: "/client-feedback-anketa", element: <ClientFeedbackPage /> },
   { path: "/psychologist-feedback-anketa", element: <PsyFeedbackPage /> },
