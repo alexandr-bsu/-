@@ -129,7 +129,7 @@ const PsycoSlots = () => {
     axios({
       method: "POST",
       params: {secret},
-      url: fromGroup == "true" ? "https://n8n-v2.hrani.live/webhook/send-onboarding-message-after-slot-setup-supervisii" : "https://n8n-v2.hrani.live/webhook/send-onboarding-message-after-slot-setup"
+      url: fromGroup == "rp" ? "https://n8n-v2.hrani.live/webhook/send-onboarding-message-after-slot-setup-rp" : fromGroup == "true" ? "https://n8n-v2.hrani.live/webhook/send-onboarding-message-after-slot-setup-supervisii" : "https://n8n-v2.hrani.live/webhook/send-onboarding-message-after-slot-setup"
     })
   }
 
