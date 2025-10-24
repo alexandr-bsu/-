@@ -402,7 +402,7 @@ const PsycologistPage = () => {
         isVisible={showPopup}
         closeFn={() => setShowPopup(false)}
       ></PopupPsyAnketa>
-      <div className="bg-dark-green w-full h-full flex flex-col justify-center items-center">
+      <div className="bg-[#116466] w-full h-full flex flex-col justify-center items-center">
         <Toaster position="top-center"></Toaster>
         <div data-name="container" className="max-w-[800px]">
           <div data-name="header" className="flex flex-col items-center">
