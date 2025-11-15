@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale/ru";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,16 +24,38 @@ function getColorByModalityLocal(modality) {
 
 const EventViewPopup = ({ event, isOpen, onClose }) => {
   const dispatch = useDispatch();
-  const { registering, registrationSuccess, error } = useSelector((state) => state.events);
-  const [isRegistered, setIsRegistered] = useState(event.registered || false);
+  const { registering, registrationSuccess, error, registeredEvents } = useSelector((state) => state.events);
+  
+  // Мемоизируем значения, чтобы избежать лишних пересчетов
+  const eventDate = useMemo(() => event?.date ? new Date(event.date) : null, [event?.date]);
+  const formattedDate = useMemo(() => 
+    eventDate ? format(eventDate, "d MMMM yyyy", { locale: ru }) : "", 
+    [eventDate]
+  );
+  const eventTime = useMemo(() => event?.time || "", [event?.time]);
+  const formattedDateStr = useMemo(() => eventDate ? format(eventDate, "yyyy-MM-dd") : "", [eventDate]);
+  const eventName = useMemo(() => event?.title || event?.name || "", [event?.title, event?.name]);
+  const eventRegistered = useMemo(() => event?.registered || false, [event?.registered]);
+
+  // Проверяем регистрацию в Redux
+  const checkIsRegistered = useMemo(() => {
+    if (eventRegistered) return true;
+    return registeredEvents.some(
+      (reg) =>
+        reg.date === formattedDateStr &&
+        reg.time === eventTime &&
+        reg.eventName === eventName
+    );
+  }, [eventRegistered, registeredEvents, formattedDateStr, eventTime, eventName]);
+
+  const [isRegistered, setIsRegistered] = useState(() => checkIsRegistered);
+
+  // Обновляем состояние при изменении регистрации
+  useEffect(() => {
+    setIsRegistered(checkIsRegistered);
+  }, [checkIsRegistered]);
 
   if (!isOpen || !event) return null;
-
-  const eventDate = event.date ? new Date(event.date) : null;
-  const formattedDate = eventDate
-    ? format(eventDate, "d MMMM yyyy", { locale: ru })
-    : "";
-  const eventTime = event.time || "";
 
   const modalityColor = getColorByModalityLocal(event.event_modal_type || event.modality);
 
@@ -44,12 +66,11 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
     }
 
     try {
-      const formattedDateStr = format(eventDate, "yyyy-MM-dd");
       await dispatch(
         registerForEvent({
           date: formattedDateStr,
           time: eventTime,
-          eventName: event.title || event.name,
+          eventName: eventName,
         })
       ).unwrap();
       
@@ -84,7 +105,7 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
           />
         </div>
 
-        <div data-name="event-data" className="p-5 flex flex-col gap-8">
+        <div data-name="event-data" className="p-5 flex flex-col gap-4">
           {/* Название мероприятия - как у пациента */}
           <div className="flex flex-col gap-1">
             <p className="text-dark-green flex gap-2">
@@ -121,7 +142,10 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
           {/* Организатор */}
           <div className="flex flex-col gap-1">
             <p className="text-dark-green">
-              <b>{event.organizator_type || event.organizer_role || "Организатор"}:</b> {event.organizator_name || event.organizer_name}
+              <b>{(() => {
+                const organizerType = event.organizator_type || event.organizer_role || "Организатор";
+                return organizerType.charAt(0).toUpperCase() + organizerType.slice(1);
+              })()}:</b> {event.organizator_name || event.organizer_name}
             </p>
             {(event.organizator_link || event.organizer_tg_link) && (
               <a
@@ -232,8 +256,8 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
                 onClick={handleRegister}
                 disabled={registering}
                 style={{
-                  backgroundColor: modalityColor,
-                  borderColor: modalityColor,
+                  backgroundColor: "#204b4a",
+                  borderColor: "#204b4a",
                 }}
               >
                 {registering ? "Записываемся..." : "Записаться"}

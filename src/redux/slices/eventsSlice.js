@@ -13,18 +13,32 @@ const initialState = {
   error: null,
   registrationSuccess: false,
   registrationMessage: null,
+  registeredEvents: [], // Массив объектов {date, time, eventName} для отслеживания регистраций
 };
 
 // Async thunk для получения всех мероприятий
 export const fetchAllEvents = createAsyncThunk(
   "events/fetchAllEvents",
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, getState }) => {
     try {
+      // Проверяем, не загружены ли уже события
+      const state = getState();
+      if (state.events.allEvents.length > 0 && !state.events.loading) {
+        return state.events.allEvents;
+      }
       const events = await getAllEvents();
       return events;
     } catch (error) {
       return rejectWithValue(error.message || "Ошибка загрузки мероприятий");
     }
+  },
+  {
+    // Предотвращаем повторные вызовы, если запрос уже выполняется
+    condition: (_, { getState }) => {
+      const state = getState();
+      // Не вызываем API если уже загружается или уже загружено
+      return !state.events.loading && state.events.allEvents.length === 0;
+    },
   }
 );
 
@@ -116,6 +130,20 @@ const eventsSlice = createSlice({
         state.registering = false;
         state.registrationSuccess = true;
         state.registrationMessage = action.payload.result;
+
+        // Сохраняем регистрацию в registeredEvents
+        const registrationKey = `${action.payload.date}_${action.payload.time}_${action.payload.eventName}`;
+        const existingIndex = state.registeredEvents.findIndex(
+          (reg) => `${reg.date}_${reg.time}_${reg.eventName}` === registrationKey
+        );
+        
+        if (existingIndex === -1) {
+          state.registeredEvents.push({
+            date: action.payload.date,
+            time: action.payload.time,
+            eventName: action.payload.eventName,
+          });
+        }
 
         // Обновляем событие в allEvents, устанавливая registered: true
         const eventIndex = state.allEvents.findIndex(

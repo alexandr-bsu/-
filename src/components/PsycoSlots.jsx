@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 // Временно удалили переключатель недель
 // import WeekToogleContainer from "./WeekToogleContainer";
 import DateGroupPsycoSlots from "./DateGroupPsycoSlots";
@@ -10,12 +10,14 @@ import Lottie from "react-lottie";
 import errorLottie from "../assets/lotties/error";
 import { useSelector, useDispatch } from "react-redux";
 import { setFreeSlots } from "../redux/slices/psycoSlotsSlice";
-import { getAllEvents, formatDateForGroup } from "../api/eventsApi";
+import { fetchAllEvents } from "../redux/slices/eventsSlice";
+import { formatDateForGroup } from "../api/eventsApi";
 import QueryString from "qs";
 import { Link } from "react-router-dom";
 
 const PsycoSlots = () => {
   const dispatch = useDispatch();
+  const allEvents = useSelector((state) => state.events.allEvents);
   const secret = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
   })?.secret;
@@ -83,17 +85,30 @@ const PsycoSlots = () => {
 
   // Флаг показывает загружается ли расписание или нет
   const [slotStatus, setSlotStatus] = useState("loading");
+  // Используем ref для предотвращения повторных вызовов без лишних зависимостей
+  const isLoadingSlotsRef = useRef(false);
+  const lastRequestKeyRef = useRef(null);
 
   // Получаем группы слотов и обновляем переменную groups_of_slots
   // Срабатывает когда выбирается дата в WeekToogleContainer
-  function selectFn(date, secret) {
+  const selectFn = useCallback((date, secret) => {
     let splited_dates = date.split(":");
     let startDate = splited_dates[0];
     let endDate = splited_dates[1];
+    
+    // Создаем уникальный ключ для запроса
+    const requestKey = `${startDate}_${endDate}_${secret}`;
+    
+    // Предотвращаем повторные вызовы с одинаковыми параметрами
+    if (isLoadingSlotsRef.current && lastRequestKeyRef.current === requestKey) {
+      return;
+    }
+    
+    isLoadingSlotsRef.current = true;
+    lastRequestKeyRef.current = requestKey;
     setSlotStatus("loading");
     // setSelectedDate(date);
 
-    Promise.all([
     axios({
       method: "GET",
       params: {
@@ -102,18 +117,18 @@ const PsycoSlots = () => {
         secret: secret,
       },
       url: "https://n8n-v2.hrani.live/webhook/get-slot",
-      }),
-      getAllEvents().catch(() => [])
-    ])
-      .then(([slotsResp, events]) => {
+    })
+      .then((slotsResp) => {
+        // Получаем актуальные события из Redux state
+        const currentEvents = allEvents || [];
         if (slotsResp.data?.error == "unauthored") {
           setAuthState("unauthored");
         }
 
         let groupsOfSlots = slotsResp.data[0].items;
         
-        if (events && events.length > 0) {
-          const eventDates = [...new Set(events.map(event => {
+        if (currentEvents && currentEvents.length > 0) {
+          const eventDates = [...new Set(currentEvents.map(event => {
             return event.date ? new Date(event.date).toISOString().split('T')[0] : null;
           }).filter(Boolean))];
           
@@ -137,7 +152,7 @@ const PsycoSlots = () => {
           groupsOfSlots = groupsOfSlots.map(group => {
             const updatedSlots = { ...group.slots };
             
-            const eventsForThisDate = events.filter(event => {
+            const eventsForThisDate = currentEvents.filter(event => {
               const eventDate = event.date ? new Date(event.date).toISOString().split('T')[0] : null;
               return eventDate === group.date;
             });
@@ -191,11 +206,24 @@ const PsycoSlots = () => {
         setGroupsOfSlots(groupsOfSlots);
         setSlotStatus("active");
         dispatch(setFreeSlots(groupsOfSlots));
+        isLoadingSlotsRef.current = false;
       })
       .catch((thrown) => {
         setSlotStatus("error");
+        isLoadingSlotsRef.current = false;
       });
-  }
+  }, [allEvents, dispatch]);
+
+  // Загружаем события один раз при монтировании компонента
+  useEffect(() => {
+    // Redux thunk сам проверит, нужно ли загружать события
+    // Вызываем только один раз при монтировании
+    const loadEvents = async () => {
+      await dispatch(fetchAllEvents());
+    };
+    loadEvents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Пустой массив зависимостей - выполнится только один раз
 
   // Запрашиваем группы слотов при загрузке страницы
   useEffect(() => {
@@ -205,7 +233,8 @@ const PsycoSlots = () => {
       setAuthState("unauthored");
       setSlotStatus("error");
     }
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Пустой массив - выполнится только один раз при монтировании
 
   function send_on_board_message (){
     axios({

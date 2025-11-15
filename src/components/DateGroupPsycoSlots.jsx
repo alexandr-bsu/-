@@ -4,6 +4,7 @@ import Check from "../assets/check.svg?react";
 import SlotInfoPopup from "./SlotInfoPopup";
 import EventViewPopup from "./EventViewPopup";
 import toast, { Toaster } from "react-hot-toast";
+import { format } from "date-fns";
 
 import { startOfWeek, endOfWeek } from "date-fns";
 import { useSelector, useDispatch } from "react-redux";
@@ -73,6 +74,7 @@ const DateGroupPsycoSlots = ({ group }) => {
 
   const slotsRedux = useSelector((state) => state.psyco.freeSlots);
   const loadListRedux = useSelector((state) => state.psyco.loadList);
+  const registeredEvents = useSelector((state) => state.events?.registeredEvents || []);
   const dispatch = useDispatch();
 
   const toogleSlots = (freeSlots, slot, secret) => {
@@ -106,7 +108,6 @@ const DateGroupPsycoSlots = ({ group }) => {
     } else {
       let Tpromise = axios({
         url: "https://n8n-v2.hrani.live/webhook/add-slot",
-        // signal: AbortSignal.timeout(500),
         data: {
           secret: secret,
           slot: slot,
@@ -269,6 +270,18 @@ const DateGroupPsycoSlots = ({ group }) => {
               });
               
               if (eventSlot) {
+                // Проверяем, зарегистрирован ли пользователь на это мероприятие
+                const eventDate = eventSlot.event.date ? format(new Date(eventSlot.event.date), "yyyy-MM-dd") : group.date;
+                const eventTime = eventSlot.event.time || slotTime;
+                const eventName = eventSlot.event.title || eventSlot.event.name;
+                
+                const isRegistered = registeredEvents.some(
+                  (reg) =>
+                    reg.date === eventDate &&
+                    reg.time === eventTime &&
+                    reg.eventName === eventName
+                ) || eventSlot.event.registered;
+                
                 return (
                   <li key={`${group.slotTime}_${index}`}>
                     <Button
@@ -278,7 +291,7 @@ const DateGroupPsycoSlots = ({ group }) => {
                         setCurrentEvent(eventSlot.event);
                         setShowEventPopup(true);
                       }}
-                      className="text-white border"
+                      className="text-white border flex items-center justify-center"
                       style={{
                         backgroundColor: getColorByModality(eventSlot.event.modality || eventSlot.event.event_modal_type),
                         color: "white",
@@ -286,7 +299,7 @@ const DateGroupPsycoSlots = ({ group }) => {
                       }}
                     >
                       {slotTime}
-                      <Check width={20} height={20}></Check>
+                      {isRegistered && <Check width={20} height={20}></Check>}
                     </Button>
                   </li>
                 );
