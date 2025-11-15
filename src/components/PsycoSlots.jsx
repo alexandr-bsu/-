@@ -10,6 +10,7 @@ import Lottie from "react-lottie";
 import errorLottie from "../assets/lotties/error";
 import { useSelector, useDispatch } from "react-redux";
 import { setFreeSlots } from "../redux/slices/psycoSlotsSlice";
+import { getAllEvents, formatDateForGroup } from "../api/eventsApi";
 import QueryString from "qs";
 import { Link } from "react-router-dom";
 
@@ -92,6 +93,7 @@ const PsycoSlots = () => {
     setSlotStatus("loading");
     // setSelectedDate(date);
 
+    Promise.all([
     axios({
       method: "GET",
       params: {
@@ -100,15 +102,95 @@ const PsycoSlots = () => {
         secret: secret,
       },
       url: "https://n8n-v2.hrani.live/webhook/get-slot",
-    })
-      .then((resp) => {
-        if (resp.data?.error == "unauthored") {
+      }),
+      getAllEvents().catch(() => [])
+    ])
+      .then(([slotsResp, events]) => {
+        if (slotsResp.data?.error == "unauthored") {
           setAuthState("unauthored");
         }
 
-        setGroupsOfSlots(resp.data[0].items);
+        let groupsOfSlots = slotsResp.data[0].items;
+        
+        if (events && events.length > 0) {
+          const eventDates = [...new Set(events.map(event => {
+            return event.date ? new Date(event.date).toISOString().split('T')[0] : null;
+          }).filter(Boolean))];
+          
+          const existingDates = new Set(groupsOfSlots.map(g => g.date));
+          const newGroups = [];
+          
+          eventDates.forEach(eventDate => {
+            if (!existingDates.has(eventDate)) {
+              const { pretty_date, day_name } = formatDateForGroup(eventDate);
+              newGroups.push({
+                date: eventDate,
+                pretty_date: pretty_date,
+                day_name: day_name,
+                slots: {}
+              });
+            }
+          });
+          
+          groupsOfSlots = [...groupsOfSlots, ...newGroups];
+    
+          groupsOfSlots = groupsOfSlots.map(group => {
+            const updatedSlots = { ...group.slots };
+            
+            const eventsForThisDate = events.filter(event => {
+              const eventDate = event.date ? new Date(event.date).toISOString().split('T')[0] : null;
+              return eventDate === group.date;
+            });
+            
+            eventsForThisDate.forEach(matchingEvent => {
+              const eventTime = matchingEvent.time || '';
+              if (!eventTime) return;
+              
+              const slotArray = updatedSlots[eventTime] || [];
+              
+              // Проверяем, есть ли клиент в этом слоте
+              // ЛОГИКА: Status = "Забронирован" и event = null → это клиент
+              const hasClient = slotArray.some(s => {
+                if (!s) return false;
+                return s.status === "Забронирован" && s.event === null;
+              });
+              
+              // Если есть клиент, не добавляем мероприятие (клиент важнее)
+              if (hasClient) {
+                return;
+              }
+              
+              // Если массив слотов пустой, создаем новый слот с мероприятием
+              if (slotArray.length === 0) {
+                updatedSlots[eventTime] = [{
+                  event: matchingEvent,
+                  status: "Свободен",
+                  date: group.date,
+                  time: eventTime
+                }];
+              } else {
+                updatedSlots[eventTime] = slotArray.map(slot => {
+                  if (slot.status === "Забронирован" && slot.event === null) {
+                    return slot;
+                  }
+                  return {
+                    ...slot,
+                    event: matchingEvent
+                  };
+                });
+              }
+            });
+            
+            return {
+              ...group,
+              slots: updatedSlots
+            };
+          });
+        }
+
+        setGroupsOfSlots(groupsOfSlots);
         setSlotStatus("active");
-        dispatch(setFreeSlots(resp.data[0].items));
+        dispatch(setFreeSlots(groupsOfSlots));
       })
       .catch((thrown) => {
         setSlotStatus("error");

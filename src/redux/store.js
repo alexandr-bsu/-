@@ -6,6 +6,7 @@ import formPsyClientInfoSlice from "./slices/formPsyClientInfoSlice";
 import psySlice from "./slices/psy";
 import clientFeedbackSlice  from "./slices/clientFeedback";
 import psyFeedbackSlice  from "./slices/psychologistFeedback";
+import eventsReducer from "./slices/eventsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
     psyco: psycoSlotsSlice,
     psyAnketa: psySlice,
     clientFeedback: clientFeedbackSlice,
-    psyFeedback: psyFeedbackSlice
+    psyFeedback: psyFeedbackSlice,
+    events: eventsReducer
   },
 });

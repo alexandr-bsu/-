@@ -2,6 +2,7 @@ import React from "react";
 import Button from "./Button";
 import Check from "../assets/check.svg?react";
 import SlotInfoPopup from "./SlotInfoPopup";
+import EventViewPopup from "./EventViewPopup";
 import toast, { Toaster } from "react-hot-toast";
 
 import { startOfWeek, endOfWeek } from "date-fns";
@@ -21,6 +22,8 @@ const DateGroupPsycoSlots = ({ group }) => {
   const [slotPopupDate, setSlotPopupDate] = React.useState("");
   const [slotQueryDate, setSlotQueryDate] = React.useState("");
   const [slotQueryTime, setSlotQueryTime] = React.useState("");
+  const [showEventPopup, setShowEventPopup] = React.useState(false);
+  const [currentEvent, setCurrentEvent] = React.useState(null);
 
   //Получаем даты начала и конца недели
   function getWeekStartEnd(date) {
@@ -63,12 +66,6 @@ const DateGroupPsycoSlots = ({ group }) => {
 
     return dates;
   }
-
-  console.log(
-    "dates",
-    getDatesBetween(currDate, nextWeekBorders.sunday),
-    new Date()
-  );
 
   const secret = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
@@ -138,6 +135,60 @@ const DateGroupPsycoSlots = ({ group }) => {
     return date1 <= date2;
   };
 
+  function getColorByModality(modality) {
+    const modalityColors = {
+      jungian: "#8B5CF6",
+      "юнгианство": "#8B5CF6",
+      cbt: "#FCD34D",
+      gestalt: "#10B981",
+      psychoanalysis: "#3B82F6",
+      general: "#10B981",
+      "общие": "#10B981",
+      other: "#6B7280",
+    };
+    const normalizedModality = modality?.toLowerCase();
+    return modalityColors[normalizedModality] || modalityColors[modality] || "#10B981";
+  }
+
+  function getSlotStyle(slot) {
+    // Проверка на клиента (приоритет 1 - важнее мероприятий)
+    // Клиент всегда важнее мероприятия
+    if (slot && (slot.client || slot.status == "Забронирован")) {
+      return {
+        backgroundColor: "#E5D5C3",
+        color: "#1F4A4A",
+        showCheckmark: false,
+        icon: "person",
+      };
+    }
+
+    // Проверка на мероприятие (приоритет 2)
+    // Согласно спецификации: slot.event !== null → МЕРОПРИЯТИЕ
+    if (slot && slot.event !== null && slot.event !== undefined) {
+      return {
+        backgroundColor: getColorByModality(slot.event.modality),
+        color: "white",
+        showCheckmark: true,
+        icon: null,
+      };
+    }
+
+    // Проверка на выбранный слот психолога
+    // Это определяется через Redux state, поэтому здесь возвращаем базовый стиль
+    // Логика выбора будет обработана в рендере
+    return {
+      backgroundColor: "white",
+      color: "#1F4A4A",
+      showCheckmark: false,
+      icon: null,
+    };
+  }
+
+  const handleCloseEventPopup = () => {
+    setShowEventPopup(false);
+    setCurrentEvent(null);
+  };
+
   return (
     <>
       {isPopupShown && (
@@ -147,6 +198,14 @@ const DateGroupPsycoSlots = ({ group }) => {
           queryTime={slotQueryTime}
           closeFn={() => setIsPopupShown(false)}
         ></SlotInfoPopup>
+      )}
+
+      {showEventPopup && currentEvent && (
+        <EventViewPopup
+          event={currentEvent}
+          isOpen={showEventPopup}
+          onClose={handleCloseEventPopup}
+        />
       )}
 
       {getDatesBetween(currDate, nextWeekBorders.sunday).includes(
@@ -165,28 +224,76 @@ const DateGroupPsycoSlots = ({ group }) => {
           <Toaster />
 
           <ul className="slot-grid gap-4">
-            {Object.keys(group.slots).map((slotTime, index) => (
-              <li key={`${group.slotTime}_${index}`}>
-                {group.slots[slotTime].length != 0 &&
-                group.slots[slotTime][0]?.status == "Забронирован" ? (
-                  // Раскомментить позже
-                  <Button
-                    size="small"
-                    intent="cream"
-                    hover="cream"
-                    onClick={() => {
-                      setSlotPopupDate(`${group.pretty_date} ${slotTime}`);
-                      setSlotQueryDate(group.date);
-                      setSlotQueryTime(slotTime);
-                      setIsPopupShown(true);
-                    }}
-                  >
-                    {/* Удалить позже
-                   <Button size="small" intent="cream" hover="no"> */}
-                    {slotTime}
-                    <img src="static/user.png" width={20} height={20}></img>
-                  </Button>
-                ) : (
+            {Object.keys(group.slots).map((slotTime, index) => {
+              const slotArray = group.slots[slotTime];
+              const slot = slotArray.length > 0 ? slotArray[0] : null;
+              
+              const slotStyle = slot ? getSlotStyle(slot) : getSlotStyle({});
+              const isSelectedSlot = slotsRedux.findIndex(
+                (slotObject) =>
+                  slotObject?.slot == `${group.pretty_date} ${slotTime}`
+              ) != -1;
+              const isLoading = loadListRedux.includes(
+                `${group.pretty_date} ${slotTime}`
+              );
+
+              const clientSlot = slotArray.find(s => {
+                if (!s) return false;
+                return s.status === "Забронирован" && s.event === null;
+              });
+
+              if (clientSlot) {
+                return (
+                  <li key={`${group.slotTime}_${index}`}>
+                    <Button
+                      size="small"
+                      intent="cream"
+                      hover="cream"
+                      onClick={() => {
+                        setSlotPopupDate(`${group.pretty_date} ${slotTime}`);
+                        setSlotQueryDate(group.date);
+                        setSlotQueryTime(slotTime);
+                        setIsPopupShown(true);
+                      }}
+                    >
+                      {slotTime}
+                      <img src="static/user.png" width={20} height={20} alt="Клиент"></img>
+                    </Button>
+                  </li>
+                );
+              }
+
+              const eventSlot = slotArray.find(s => {
+                if (!s) return false;
+                return s.event !== null && s.event !== undefined;
+              });
+              
+              if (eventSlot) {
+                return (
+                  <li key={`${group.slotTime}_${index}`}>
+                    <Button
+                      size="small"
+                      hover="no"
+                      onClick={() => {
+                        setCurrentEvent(eventSlot.event);
+                        setShowEventPopup(true);
+                      }}
+                      className="text-white border"
+                      style={{
+                        backgroundColor: getColorByModality(eventSlot.event.modality || eventSlot.event.event_modal_type),
+                        color: "white",
+                        borderColor: getColorByModality(eventSlot.event.modality || eventSlot.event.event_modal_type),
+                      }}
+                    >
+                      {slotTime}
+                      <Check width={20} height={20}></Check>
+                    </Button>
+                  </li>
+                );
+              }
+
+              return (
+                <li key={`${group.slotTime}_${index}`}>
                   <Button
                     size="small"
                     onClick={() => {
@@ -197,20 +304,11 @@ const DateGroupPsycoSlots = ({ group }) => {
                       );
                     }}
                     intent={
-                      slotsRedux.findIndex(
-                        (slotObject) =>
-                          slotObject?.slot == `${group.pretty_date} ${slotTime}`
-                      ) != -1
-                        ? "primary"
-                        : "primary-transparent"
+                      isSelectedSlot ? "primary" : "primary-transparent"
                     }
                   >
                     {slotTime}
-                    {/* Ставим галочку когда пользователь сам нажал на кнопку либо слот свободен */}
-
-                    {loadListRedux.includes(
-                      `${group.pretty_date} ${slotTime}`
-                    ) ? (
+                    {isLoading ? (
                       <svg
                         width={24}
                         height={24}
@@ -284,23 +382,15 @@ const DateGroupPsycoSlots = ({ group }) => {
                       </svg>
                     ) : (
                       <>
-                        {slotsRedux.findIndex(
-                          (slotObject) =>
-                            slotObject?.slot ==
-                            `${group.pretty_date} ${slotTime}`
-                        ) != -1 ? (
-                          <>
-                            <Check width={20} height={20}></Check>
-                          </>
-                        ) : (
-                          ""
+                        {isSelectedSlot && (
+                          <Check width={20} height={20}></Check>
                         )}
                       </>
                     )}
                   </Button>
-                )}
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         </div>
       ) : (
