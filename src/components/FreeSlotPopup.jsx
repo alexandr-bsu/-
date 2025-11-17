@@ -32,10 +32,13 @@ const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn }) => {
   useEffect(() => {
     const fetchPlanningStatus = async () => {
       try {
+        const slotParam = slotId || slotDate;
+        console.log("FreeSlotPopup: Загружаем планирование для слота:", slotParam, "slotId:", slotId, "slotDate:", slotDate);
+        
         const response = await axios.get("https://n8n-v2.hrani.live/webhook/get-root-planned-free-slot", {
           params: {
             secret: secret,
-            slot: slotId || slotDate // Используем slotId, если есть, иначе fallback на slotDate
+            slot: slotParam // Используем UUID слота, если есть, иначе fallback на дату слота
           }
         });
 
@@ -63,9 +66,12 @@ const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn }) => {
     setIsSavingPlan(true);
 
     try {
+      const slotParam = slotId || slotDate;
+      console.log("FreeSlotPopup: Сохраняем планирование для слота:", slotParam, "slotId:", slotId, "slotDate:", slotDate);
+      
       await axios.post("https://n8n-v2.hrani.live/webhook/plan-free-slots", {
         secret: secret,
-        slot: slotId || slotDate, // Используем slotId, если есть, иначе fallback на slotDate
+        slot: slotParam, // Используем UUID слота, если есть, иначе fallback на дату слота
         repeat_period: newPeriod
       });
 

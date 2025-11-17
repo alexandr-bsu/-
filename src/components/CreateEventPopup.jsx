@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { toast } from "sonner";
 import Button from "./Button";
 import Input from "./Input";
 import TextArea from "./TextArea";
@@ -8,33 +9,106 @@ const CreateEventPopup = ({ isOpen, onClose, onSave }) => {
     const [eventName, setEventName] = useState("");
     const [eventDateTime, setEventDateTime] = useState("");
     const [eventDescription, setEventDescription] = useState("");
-    const [planningMode, setPlanningMode] = useState("single");
+    const [planningMode, setPlanningMode] = useState("нет");
 
-    const handleSave = () => {
+    const handleSave = async () => {
+        // Валидация названия
         if (!eventName.trim()) {
-            alert("Пожалуйста, введите название мероприятия");
+            toast.error("Не указано название");
             return;
         }
 
+        // Валидация даты
         if (!eventDateTime) {
-            alert("Пожалуйста, выберите дату и время");
+            toast.error("Не задана дата мероприятия");
             return;
         }
 
-        const eventData = {
-            name: eventName.trim(),
-            dateTime: eventDateTime,
-            description: eventDescription.trim(),
-            planningMode: planningMode
-        };
+        try {
+            // Получаем secret из URL параметров
+            const urlParams = new URLSearchParams(window.location.search);
+            const secret = urlParams.get('secret');
 
-        onSave(eventData);
+            if (!secret) {
+                toast.error("Отсутствует параметр secret в URL");
+                return;
+            }
 
-        // Очищаем форму
-        setEventName("");
-        setEventDateTime("");
-        setEventDescription("");
-        setPlanningMode("single");
+            // Парсим дату и время
+            const dateTimeObj = new Date(eventDateTime);
+            const date = dateTimeObj.toISOString().split('T')[0]; // YYYY-MM-DD
+            // Устанавливаем минуты в 00, часы оставляем без изменений
+            const hours = dateTimeObj.getHours().toString().padStart(2, '0');
+            const time = `${hours}:00`;
+
+            // Подготавливаем данные для API
+            const apiData = {
+                secret: secret,
+                date: date,
+                time: time,
+                title: eventName.trim(),
+                description: eventDescription.trim() || "",
+                repeat_period: planningMode === "нет" ? null : planningMode,
+                event_modal_type: "пользовательское"
+            };
+
+            // Отправляем запрос на API
+            const response = await fetch("https://n8n-v2.hrani.live/webhook/create-custom-event", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(apiData),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+
+            // Форматируем дату в дд.мм формат
+            const [year, month, day] = date.split('-');
+            const formattedDate = `${day}.${month}`;
+
+            // Показываем успешное уведомление с деталями
+            toast.success(
+                `Мероприятие "${eventName.trim()}" успешно создано на ${formattedDate} в ${time}!`,
+                {
+                    duration: 4000,
+                    style: {
+                        background: '#10B981',
+                        color: 'white',
+                    },
+                }
+            );
+
+            // Передаем данные родительскому компоненту для моментального отображения
+            if (onSave) {
+                onSave({
+                    ...result,
+                    isCustomEvent: true, // Флаг для определения пользовательского мероприятия
+                    event_modal_type: "пользовательское", // Модальность для определения пользовательского события
+                    // Дополнительные данные для корректного отображения
+                    originalTitle: eventName.trim(),
+                    originalDescription: eventDescription.trim(),
+                    originalDate: date,
+                    originalTime: time,
+                    originalRepeatPeriod: planningMode
+                });
+            }
+
+            // Очищаем форму и закрываем попап
+            setEventName("");
+            setEventDateTime("");
+            setEventDescription("");
+            setPlanningMode("нет");
+            onClose();
+
+        } catch (error) {
+            console.error("Ошибка при создании мероприятия:", error);
+            toast.error("Ошибка при создании мероприятия. Попробуйте еще раз.");
+        }
     };
 
     const handleClose = () => {
@@ -42,7 +116,7 @@ const CreateEventPopup = ({ isOpen, onClose, onSave }) => {
         setEventName("");
         setEventDateTime("");
         setEventDescription("");
-        setPlanningMode("single");
+        setPlanningMode("нет");
         onClose();
     };
 
@@ -50,8 +124,8 @@ const CreateEventPopup = ({ isOpen, onClose, onSave }) => {
 
     return (
         <div className="fixed top-0 left-0 h-screen w-full flex justify-center items-center p-5 z-20">
-            <div className="bg-[#eed5bf] rounded-lg w-full max-w-md">
-                <div className="bg-[#eed5bf] p-5 border-b border-b-dark-green w-full flex justify-between items-center">
+            <div className="bg-[#eed5bf] w-full max-w-md">
+                <div className="bg-[#eed5bf] p-5 border-b border-b-dark-green w-full flex justify-between items-center rounded-t-lg">
                     <h2 className="text-dark-green font-medium text-xl">Создать мероприятие</h2>
                     <img
                         src="static/close.png"

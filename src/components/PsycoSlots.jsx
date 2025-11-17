@@ -16,6 +16,7 @@ import { formatDateForGroup } from "../api/eventsApi";
 import { store } from "../redux/store";
 import QueryString from "qs";
 import { Link } from "react-router-dom";
+import { Toaster } from "@/components/ui/sonner";
 
 const PsycoSlots = () => {
   const dispatch = useDispatch();
@@ -70,7 +71,7 @@ const PsycoSlots = () => {
 
   // Даты начала и конца следующей недели
   let next_date = new Date();
-  next_date.setDate(next_date.getDate() + 7*3);
+  next_date.setDate(next_date.getDate() + 7 * 3);
   const nextWeekBorders = getWeekStartEnd(next_date);
 
   // Даты для поиска слотов по неделям
@@ -99,22 +100,22 @@ const PsycoSlots = () => {
     let splited_dates = date.split(":");
     let startDate = splited_dates[0];
     let endDate = splited_dates[1];
-    
+
     // Создаем уникальный ключ для запроса
     const requestKey = `${startDate}_${endDate}_${secret}`;
-    
+
     // Получаем текущее количество событий
     const state = store.getState();
     const currentEventsCount = state.events.allEvents.length;
-    
+
     // Предотвращаем повторные вызовы с одинаковыми параметрами
     // НО разрешаем повторный вызов если события загрузились (количество изменилось)
     const eventsJustLoaded = currentEventsCount > 0 && lastEventsCountRef.current === 0;
-    
+
     if (isLoadingSlotsRef.current && lastRequestKeyRef.current === requestKey && !eventsJustLoaded) {
       return;
     }
-    
+
     lastEventsCountRef.current = currentEventsCount;
     isLoadingSlotsRef.current = true;
     lastRequestKeyRef.current = requestKey;
@@ -141,16 +142,16 @@ const PsycoSlots = () => {
 
         let groupsOfSlots = slotsResp.data[0].items;
         console.log('Slots loaded:', groupsOfSlots.length, 'date groups');
-        
+
         if (currentEvents && currentEvents.length > 0) {
           console.log('Processing', currentEvents.length, 'events for slots...');
           const eventDates = [...new Set(currentEvents.map(event => {
             return event.date ? new Date(event.date).toISOString().split('T')[0] : null;
           }).filter(Boolean))];
-          
+
           const existingDates = new Set(groupsOfSlots.map(g => g.date));
           const newGroups = [];
-          
+
           eventDates.forEach(eventDate => {
             if (!existingDates.has(eventDate)) {
               const { pretty_date, day_name } = formatDateForGroup(eventDate);
@@ -162,39 +163,39 @@ const PsycoSlots = () => {
               });
             }
           });
-          
+
           groupsOfSlots = [...groupsOfSlots, ...newGroups];
-    
+
           groupsOfSlots = groupsOfSlots.map(group => {
             const updatedSlots = { ...group.slots };
-            
+
             const eventsForThisDate = currentEvents.filter(event => {
               const eventDate = event.date ? new Date(event.date).toISOString().split('T')[0] : null;
               return eventDate === group.date;
             });
-            
+
             if (eventsForThisDate.length > 0) {
               console.log(`Found ${eventsForThisDate.length} events for date ${group.date}`);
             }
-            
+
             eventsForThisDate.forEach(matchingEvent => {
               const eventTime = matchingEvent.time || '';
               if (!eventTime) return;
-              
+
               const slotArray = updatedSlots[eventTime] || [];
-              
+
               // Проверяем, есть ли клиент в этом слоте
               // ЛОГИКА: Status = "Забронирован" и event = null → это клиент
               const hasClient = slotArray.some(s => {
                 if (!s) return false;
                 return s.status === "Забронирован" && s.event === null;
               });
-              
+
               // Если есть клиент, не добавляем мероприятие (клиент важнее)
               if (hasClient) {
                 return;
               }
-              
+
               // Если массив слотов пустой, создаем новый слот с мероприятием
               if (slotArray.length === 0) {
                 updatedSlots[eventTime] = [{
@@ -215,7 +216,7 @@ const PsycoSlots = () => {
                 });
               }
             });
-            
+
             return {
               ...group,
               slots: updatedSlots
@@ -256,31 +257,42 @@ const PsycoSlots = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allEvents.length]); // Перезапускаем когда события загрузятся
 
-  function send_on_board_message (){
+  function send_on_board_message() {
     axios({
       method: "POST",
-      params: {secret},
+      params: { secret },
       url: fromGroup == "rp" ? "https://n8n-v2.hrani.live/webhook/send-onboarding-message-after-slot-setup-rp" : fromGroup == "true" ? "https://n8n-v2.hrani.live/webhook/send-onboarding-message-after-slot-setup-supervisii" : "https://n8n-v2.hrani.live/webhook/send-onboarding-message-after-slot-setup"
     })
   }
 
-  function send_on_fill_slots_message (){
+  function send_on_fill_slots_message() {
     axios({
       method: "POST",
-      params: {secret},
+      params: { secret },
       url: "https://n8n-v2.hrani.live/webhook/send-slot-change-notifications"
     })
   }
 
-  const handleCreateEvent = (eventData) => {
+  const handleCreateEvent = async (eventData) => {
     console.log("Создание мероприятия:", eventData);
-    // Здесь можно добавить логику сохранения мероприятия
-    // Например, отправка на сервер или добавление в Redux store
+
+    // Добавляем событие в Redux store для моментального отображения
+    if (eventData.isCustomEvent) {
+      // Обновляем события в Redux
+      await dispatch(fetchAllEvents());
+
+      // Перезагружаем слоты для отображения нового мероприятия
+      if (secret) {
+        selectFn(selectedDate, secret);
+      }
+    }
+
     setShowCreateEventPopup(false);
   };
 
   return (
     <>
+      <Toaster position="top-center" />
       <div className="sticky top-0">
         {/* Контейнер для переключателей недель */}
         {/* <WeekToogleContainer
@@ -446,7 +458,7 @@ const PsycoSlots = () => {
             >
               Создать мероприятие
             </Button>
-            <Link to="/slots-saved" onClick={()=>{send_on_board_message(); send_on_fill_slots_message()}} className="flex-1">
+            <Link to="/slots-saved" onClick={() => { send_on_board_message(); send_on_fill_slots_message() }} className="flex-1">
               <Button intent="cream" className="w-full">Готово</Button>
             </Link>
           </div>

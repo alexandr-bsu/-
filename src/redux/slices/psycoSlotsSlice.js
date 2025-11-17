@@ -21,8 +21,17 @@ export const psycoSlots = createSlice({
       state.loadList.splice(index, 1);
     },
 
-    pushSlot: (state, slot) => {
-      state.freeSlots.push({ slot: slot.payload, state: "ok" });
+    pushSlot: (state, action) => {
+      // action.payload может быть строкой (старый формат) или объектом с id и slot
+      if (typeof action.payload === 'string') {
+        state.freeSlots.push({ slot: action.payload, state: "ok" });
+      } else {
+        state.freeSlots.push({ 
+          slot: action.payload.slot, 
+          id: action.payload.id,
+          state: "ok" 
+        });
+      }
     },
 
     spliceSlot: (state, index) => {
@@ -34,8 +43,10 @@ export const psycoSlots = createSlice({
         let slots = groupOfSlots.slots;
         for (let time in slots) {
           if (slots[time].length != 0 && slots[time][0].status == "Свободен") {
+            const slotData = slots[time][0];
             state.freeSlots.push({
               slot: `${groupOfSlots.pretty_date} ${time}`,
+              id: slotData.id, // Сохраняем UUID слота
               state: "ok",
             });
           }

@@ -119,7 +119,12 @@ const DateGroupPsycoSlots = ({ group }) => {
       })
         .then((resp) => {
           dispatch(setStateSlotOk(slot));
-          dispatch(pushSlot(slot));
+          // Если API возвращает ID слота, сохраняем его вместе с датой
+          if (resp.data && resp.data.id) {
+            dispatch(pushSlot({ slot: slot, id: resp.data.id }));
+          } else {
+            dispatch(pushSlot(slot));
+          }
           toast.success(`Слот ${slot} добавлен`);
         })
         .catch((error) => {
@@ -314,6 +319,7 @@ const DateGroupPsycoSlots = ({ group }) => {
                   ) || (typeof eventSlot.event === 'object' && eventSlot.event.registered);
 
                 // Создаем объект события для попапа
+                const slotId = eventSlot?.id || `${group.pretty_date} ${slotTime}`;
                 const eventForPopup = typeof eventSlot.event === 'string' ? {
                   title: eventSlot.event,
                   name: eventSlot.event,
@@ -321,10 +327,12 @@ const DateGroupPsycoSlots = ({ group }) => {
                   time: slotTime,
                   event_modal_type: eventSlot.event_modal_type,
                   modality: eventSlot.event_modal_type,
-                  registered: eventSlot.status === "Забронирован"
+                  registered: eventSlot.status === "Забронирован",
+                  slot_id: slotId // Добавляем ID слота
                 } : {
                   ...eventSlot.event,
-                  registered: eventSlot.status === "Забронирован" || eventSlot.event.registered
+                  registered: eventSlot.status === "Забронирован" || eventSlot.event.registered,
+                  slot_id: slotId // Добавляем ID слота
                 };
 
 
@@ -363,8 +371,11 @@ const DateGroupPsycoSlots = ({ group }) => {
                     onClick={() => {
                       if (isSelectedSlot) {
                         // Если слот выбран (зеленый), показываем попап для удаления
-                        // Получаем ID слота из исходных данных
-                        const slotId = slot?.id || `${group.pretty_date} ${slotTime}`;
+                        // Получаем UUID слота из Redux или исходных данных
+                        const selectedSlotObject = slotsRedux.find(
+                          (slotObject) => slotObject?.slot == `${group.pretty_date} ${slotTime}`
+                        );
+                        const slotId = selectedSlotObject?.id || slot?.id || null;
 
                         setFreeSlotData({
                           slotDate: `${group.pretty_date} ${slotTime}`,
