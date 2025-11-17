@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Button from "./Button";
+import Radio from "./Radio";
 import QueryString from "qs";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -184,30 +185,23 @@ const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn }) => {
                 </svg>
               </div>
             ) : (
-              <div className="space-y-2">
-                {planningOptions.map((option) => (
-                  <label
-                    key={option.value}
-                    className="flex items-center gap-2 cursor-pointer hover:bg-[#e5d4be] p-2 rounded transition-colors"
-                  >
-                    <input
-                      type="radio"
+              <ul className="flex flex-col gap-2 p-2">
+                {planningOptions.map((option, index) => (
+                  <li key={option.value}>
+                    <Radio
                       name="planning"
+                      intent="primary"
+                      id={`planning_${index}`}
                       value={option.value}
-                      checked={repeatPeriod === option.value}
                       onChange={(e) => handlePlanningChange(e.target.value)}
-                      disabled={isSavingPlan}
-                      className="w-4 h-4 text-dark-green focus:ring-dark-green focus:ring-2"
-                    />
-                    <span className="text-dark-green text-sm">
+                      checked={repeatPeriod === option.value}
+                      // disabled={isSavingPlan}
+                    >
                       {option.label}
-                      {isSavingPlan && repeatPeriod !== option.value && (
-                        <span className="ml-2 text-xs opacity-60">...</span>
-                      )}
-                    </span>
-                  </label>
+                    </Radio>
+                  </li>
                 ))}
-              </div>
+              </ul>
             )}
           </div>
 

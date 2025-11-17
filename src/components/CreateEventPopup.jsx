@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import Button from "./Button";
+import Input from "./Input";
+import TextArea from "./TextArea";
+import Radio from "./Radio";
 
 const CreateEventPopup = ({ isOpen, onClose, onSave }) => {
     const [eventName, setEventName] = useState("");
@@ -46,116 +49,135 @@ const CreateEventPopup = ({ isOpen, onClose, onSave }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-[#eed5bf] rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-                <h2 className="text-dark-green font-medium text-xl mb-4">Создать мероприятие</h2>
+        <div className="fixed top-0 left-0 h-screen w-full flex justify-center items-center p-5 z-20">
+            <div className="bg-[#eed5bf] rounded-lg w-full max-w-md">
+                <div className="bg-[#eed5bf] p-5 border-b border-b-dark-green w-full flex justify-between items-center">
+                    <h2 className="text-dark-green font-medium text-xl">Создать мероприятие</h2>
+                    <img
+                        src="static/close.png"
+                        className="cursor-pointer w-5 h-5"
+                        onClick={handleClose}
+                        alt="Закрыть"
+                    />
+                </div>
 
-                <div className="space-y-4">
+                <div className="p-5 flex flex-col gap-4">
                     {/* Поле названия мероприятия */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-dark-green mb-1">
                             Название мероприятия
                         </label>
-                        <input
-                            type="text"
+                        <Input
+                            intent="primary"
                             value={eventName}
-                            onChange={(e) => setEventName(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            onChangeFn={setEventName}
                             placeholder="Введите название мероприятия"
+                            className="w-full"
                         />
                     </div>
 
                     {/* Поле даты и времени */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-dark-green mb-1">
                             Дата и время
                         </label>
-                        <input
+                        <Input
                             type="datetime-local"
+                            intent="primary"
                             value={eventDateTime}
-                            onChange={(e) => setEventDateTime(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            onChangeFn={setEventDateTime}
+                            className="w-full"
                         />
                     </div>
 
                     {/* Поле описания */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-dark-green mb-1">
                             Описание мероприятия
                         </label>
-                        <textarea
+                        <TextArea
+                            intent="primary"
                             value={eventDescription}
-                            onChange={(e) => setEventDescription(e.target.value)}
+                            onChangeFn={setEventDescription}
                             rows={3}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                             placeholder="Введите описание мероприятия"
+                            className="w-full"
                         />
                     </div>
 
                     {/* Радиокнопки режима планирования */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Режим повтора мероприятия
-                        </label>
-                        <div className="space-y-2">
-                            <label className="flex items-center">
-                                <input
-                                    type="radio"
+                        <h3 className="text-dark-green font-medium mb-3">Режим повтора мероприятия</h3>
+                        <ul className="flex flex-col gap-2 p-2">
+                            <li>
+                                <Radio
+                                    name="planningMode"
+                                    intent="primary"
+                                    id="planning_mode_1"
                                     value="нет"
+                                    onChange={(e) => setPlanningMode(e.target.value)}
                                     checked={planningMode === "нет"}
-                                    onChange={(e) => setPlanningMode(e.target.value)}
-                                    className="mr-2"
-                                />
-                                <span className="text-sm">нет</span>
-                            </label>
-                            <label className="flex items-center">
-                                <input
-                                    type="radio"
+                                >
+                                    Нет
+                                </Radio>
+                            </li>
+                            <li>
+                                <Radio
+                                    name="planningMode"
+                                    intent="primary"
+                                    id="planning_mode_2"
                                     value="раз в неделю"
+                                    onChange={(e) => setPlanningMode(e.target.value)}
                                     checked={planningMode === "раз в неделю"}
-                                    onChange={(e) => setPlanningMode(e.target.value)}
-                                    className="mr-2"
-                                />
-                                <span className="text-sm">раз в неделю</span>
-                            </label>
-                            <label className="flex items-center">
-                                <input
-                                    type="radio"
+                                >
+                                    Раз в неделю
+                                </Radio>
+                            </li>
+                            <li>
+                                <Radio
+                                    name="planningMode"
+                                    intent="primary"
+                                    id="planning_mode_3"
                                     value="раз в 2 недели"
+                                    onChange={(e) => setPlanningMode(e.target.value)}
                                     checked={planningMode === "раз в 2 недели"}
-                                    onChange={(e) => setPlanningMode(e.target.value)}
-                                    className="mr-2"
-                                />
-                                <span className="text-sm">раз в 2 недели</span>
-                            </label>
-                            <label className="flex items-center">
-                                <input
-                                    type="radio"
+                                >
+                                    Раз в 2 недели
+                                </Radio>
+                            </li>
+                            <li>
+                                <Radio
+                                    name="planningMode"
+                                    intent="primary"
+                                    id="planning_mode_4"
                                     value="раз в 3 недели"
+                                    onChange={(e) => setPlanningMode(e.target.value)}
                                     checked={planningMode === "раз в 3 недели"}
-                                    onChange={(e) => setPlanningMode(e.target.value)}
-                                    className="mr-2"
-                                />
-                                <span className="text-sm">раз в 3 недели</span>
-                            </label>
-                            <label className="flex items-center">
-                                <input
-                                    type="radio"
+                                >
+                                    Раз в 3 недели
+                                </Radio>
+                            </li>
+                            <li>
+                                <Radio
+                                    name="planningMode"
+                                    intent="primary"
+                                    id="planning_mode_5"
                                     value="раз в месяц"
-                                    checked={planningMode === "раз в месяц"}
                                     onChange={(e) => setPlanningMode(e.target.value)}
-                                    className="mr-2"
-                                />
-                                <span className="text-sm">раз в месяц</span>
-                            </label>
-                        </div>
+                                    checked={planningMode === "раз в месяц"}
+                                >
+                                    Раз в месяц
+                                </Radio>
+                            </li>
+                        </ul>
                     </div>
                 </div>
 
                 {/* Кнопки */}
-                <div className="flex gap-3 mt-6">
+                <div className="flex gap-3 px-5 pb-5">
                     <Button
                         intent="primary-transparent"
+                        hover="primary"
                         onClick={handleClose}
                         className="flex-1"
                     >
@@ -163,8 +185,9 @@ const CreateEventPopup = ({ isOpen, onClose, onSave }) => {
                     </Button>
                     <Button
                         intent="primary"
+                        hover="primary"
                         onClick={handleSave}
-                        className="flex-1 bg-green-600 hover:bg-green-700"
+                        className="flex-1"
                     >
                         Сохранить
                     </Button>
