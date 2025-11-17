@@ -37,7 +37,9 @@ export const fetchAllEvents = createAsyncThunk(
     condition: (_, { getState }) => {
       const state = getState();
       // Не вызываем API если уже загружается или уже загружено
-      return !state.events.loading && state.events.allEvents.length === 0;
+      const shouldFetch = !state.events.loading && state.events.allEvents.length === 0;
+      console.log('fetchAllEvents condition:', { loading: state.events.loading, eventsCount: state.events.allEvents.length, shouldFetch });
+      return shouldFetch;
     },
   }
 );
@@ -98,6 +100,7 @@ const eventsSlice = createSlice({
       .addCase(fetchAllEvents.fulfilled, (state, action) => {
         state.loading = false;
         state.allEvents = action.payload;
+        console.log('Events fetched and stored:', action.payload.length, 'events');
       })
       .addCase(fetchAllEvents.rejected, (state, action) => {
         state.loading = false;

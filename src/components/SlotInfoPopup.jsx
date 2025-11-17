@@ -227,19 +227,25 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
             </div>
 
             {data["important_in_psychologist"]?.length != 0 && (
-              <p className="text-dark-green">
-                <b>В психологе важно: </b>{" "}
-                {data["important_in_psychologist"]?.map((a) => {
-                  return <li>{a}</li>;
-                })}
-              </p>
+              <div className="text-dark-green">
+                <p className="text-dark-green">
+                  <b>В психологе важно: </b>
+                </p>
+                <ul className="text-dark-green list-disc list-inside">
+                  {data["important_in_psychologist"]?.map((a, index) => {
+                    return <li key={index}>{a}</li>;
+                  })}
+                </ul>
+              </div>
             )}
 
             {data["questions_to_psychologist"]?.length != 0 && (
-              <p className="text-dark-green">
-                <b>Клиент хочет обсудить: </b>
+              <div className="text-dark-green">
+                <p className="text-dark-green">
+                  <b>Клиент хочет обсудить: </b>
+                </p>
                 <p className="text-dark-green">{data["questions_to_psychologist"]}</p>
-              </p>
+              </div>
             )}
 
             {data["has_mental_illness"]?.length != 0 && (
@@ -252,22 +258,29 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
             
 
             {data["client_state"]?.length != 0 && (
-              
-              <p className="text-dark-green">
-                <b>Состояние клиента: </b>{" "}
-                {data["client_state"]?.map((a) => {
-                  return <li>{a}</li>;
-                })}
-              </p>
+              <div className="text-dark-green">
+                <p className="text-dark-green">
+                  <b>Состояние клиента: </b>
+                </p>
+                <ul className="text-dark-green list-disc list-inside">
+                  {data["client_state"]?.map((a, index) => {
+                    return <li key={index}>{a}</li>;
+                  })}
+                </ul>
+              </div>
             )}
 
             {data["traumatic_events"]?.length != 0 && (
-              <p className="text-dark-green">
-                <b>Травмирующие события: </b>{" "}
-                {data["traumatic_events"]?.map((a) => {
-                  return <li>{a}</li>;
-                })}
-              </p>
+              <div className="text-dark-green">
+                <p className="text-dark-green">
+                  <b>Травмирующие события: </b>
+                </p>
+                <ul className="text-dark-green list-disc list-inside">
+                  {data["traumatic_events"]?.map((a, index) => {
+                    return <li key={index}>{a}</li>;
+                  })}
+                </ul>
+              </div>
             )}
 
             {/* 

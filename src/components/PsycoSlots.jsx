@@ -99,11 +99,14 @@ const PsycoSlots = () => {
     // Создаем уникальный ключ для запроса
     const requestKey = `${startDate}_${endDate}_${secret}`;
     
-    // Предотвращаем повторные вызовы с одинаковыми параметрами
+    // Предотвращаем повторные вызовы с одинаковыми параметрами только если запрос еще выполняется
+    // Но разрешаем повторный вызов если события загрузились (allEvents изменились)
     if (isLoadingSlotsRef.current && lastRequestKeyRef.current === requestKey) {
+      console.log('Skipping duplicate request:', requestKey);
       return;
     }
     
+    console.log('Starting selectFn with', allEvents.length, 'events loaded');
     isLoadingSlotsRef.current = true;
     lastRequestKeyRef.current = requestKey;
     setSlotStatus("loading");
@@ -121,13 +124,16 @@ const PsycoSlots = () => {
       .then((slotsResp) => {
         // Получаем актуальные события из Redux state
         const currentEvents = allEvents || [];
+        console.log('Events loaded:', currentEvents.length, 'events');
         if (slotsResp.data?.error == "unauthored") {
           setAuthState("unauthored");
         }
 
         let groupsOfSlots = slotsResp.data[0].items;
+        console.log('Slots loaded:', groupsOfSlots.length, 'date groups');
         
         if (currentEvents && currentEvents.length > 0) {
+          console.log('Processing events for slots...');
           const eventDates = [...new Set(currentEvents.map(event => {
             return event.date ? new Date(event.date).toISOString().split('T')[0] : null;
           }).filter(Boolean))];
@@ -159,8 +165,12 @@ const PsycoSlots = () => {
             
             eventsForThisDate.forEach(matchingEvent => {
               const eventTime = matchingEvent.time || '';
-              if (!eventTime) return;
+              if (!eventTime) {
+                console.log('Event has no time:', matchingEvent);
+                return;
+              }
               
+              console.log('Processing event:', matchingEvent.title || matchingEvent.name, 'at', eventTime, 'on', group.date);
               const slotArray = updatedSlots[eventTime] || [];
               
               // Проверяем, есть ли клиент в этом слоте
@@ -177,6 +187,7 @@ const PsycoSlots = () => {
               
               // Если массив слотов пустой, создаем новый слот с мероприятием
               if (slotArray.length === 0) {
+                console.log('Creating new slot for event at', eventTime);
                 updatedSlots[eventTime] = [{
                   event: matchingEvent,
                   status: "Свободен",
@@ -184,6 +195,7 @@ const PsycoSlots = () => {
                   time: eventTime
                 }];
               } else {
+                console.log('Updating existing slot for event at', eventTime);
                 updatedSlots[eventTime] = slotArray.map(slot => {
                   if (slot.status === "Забронирован" && slot.event === null) {
                     return slot;
@@ -225,16 +237,17 @@ const PsycoSlots = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Пустой массив зависимостей - выполнится только один раз
 
-  // Запрашиваем группы слотов при загрузке страницы
+  // Запрашиваем группы слотов при загрузке страницы и после загрузки событий
   useEffect(() => {
     if (secret) {
+      // Ждем загрузки событий или вызываем сразу (события могут загрузиться позже)
       selectFn(selectedDate, secret);
     } else {
       setAuthState("unauthored");
       setSlotStatus("error");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Пустой массив - выполнится только один раз при монтировании
+  }, [allEvents.length]); // Перезапускаем когда события загрузятся
 
   function send_on_board_message (){
     axios({
@@ -403,7 +416,7 @@ const PsycoSlots = () => {
             className="slot-grid-container px-5 pt-5 pb-10 min-h-screen gap-10 "
           >
             {groups_of_slots?.map((group) => (
-              <DateGroupPsycoSlots group={group}></DateGroupPsycoSlots>
+              <DateGroupPsycoSlots key={group.date || group.pretty_date} group={group}></DateGroupPsycoSlots>
             ))}
           </div>
         )}
