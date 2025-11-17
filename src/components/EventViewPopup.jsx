@@ -174,8 +174,8 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
               )}
             </div>
 
-            {/* Ссылка на встречу */}
-            {(event.event_link || event.meeting_link) && (
+            {/* Ссылка на встречу - только для зарегистрированных */}
+            {(event.event_link || event.meeting_link) && isRegistered && (
               <div className="flex flex-col gap-1">
                 <p className="text-dark-green">
                   <b>Ссылка на встречу:</b>
@@ -227,8 +227,9 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
               </div>
             )}
 
-            {/* Папка с кейсами (только для supervision и intervision) */}
+            {/* Папка с кейсами (только для supervision и intervision и только для зарегистрированных) */}
             {event.event_folder &&
+              isRegistered &&
               (event.event_type === "supervision" ||
                 event.event_type === "интервизия" ||
                 event.event_type === "супервизия" ||

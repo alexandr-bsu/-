@@ -53,7 +53,7 @@ const DateGroupPsycoSlots = ({ group }) => {
 
   // Даты начала и конца следующей недели
   let next_date = new Date();
-  next_date.setDate(next_date.getDate() + 7*3);
+  next_date.setDate(next_date.getDate() + 7 * 3);
   const nextWeekBorders = getWeekStartEnd(next_date);
 
   function getDatesBetween(startDate, endDate) {
@@ -228,7 +228,7 @@ const DateGroupPsycoSlots = ({ group }) => {
             {Object.keys(group.slots).map((slotTime, index) => {
               const slotArray = group.slots[slotTime];
               const slot = slotArray.length > 0 ? slotArray[0] : null;
-              
+
               const slotStyle = slot ? getSlotStyle(slot) : getSlotStyle({});
               const isSelectedSlot = slotsRedux.findIndex(
                 (slotObject) =>
@@ -268,12 +268,12 @@ const DateGroupPsycoSlots = ({ group }) => {
                 if (!s) return false;
                 return s.event !== null && s.event !== undefined;
               });
-              
+
               if (eventSlot) {
                 // Проверяем, зарегистрирован ли пользователь на это мероприятие
                 // Если event - это строка (из API), то это название события
                 let eventDate, eventTime, eventName;
-                
+
                 if (typeof eventSlot.event === 'string') {
                   // event - это строка с названием события из API
                   eventDate = group.date;
@@ -285,16 +285,16 @@ const DateGroupPsycoSlots = ({ group }) => {
                   eventTime = eventSlot.event.time || slotTime;
                   eventName = eventSlot.event.title || eventSlot.event.name;
                 }
-                
+
                 // Проверяем регистрацию: если статус "Забронирован", значит пользователь уже записан
-                const isRegistered = eventSlot.status === "Забронирован" || 
+                const isRegistered = eventSlot.status === "Забронирован" ||
                   registeredEvents.some(
                     (reg) =>
                       reg.date === eventDate &&
                       reg.time === eventTime &&
                       reg.eventName === eventName
                   ) || (typeof eventSlot.event === 'object' && eventSlot.event.registered);
-                
+
                 // Создаем объект события для попапа
                 const eventForPopup = typeof eventSlot.event === 'string' ? {
                   title: eventSlot.event,
@@ -308,14 +308,9 @@ const DateGroupPsycoSlots = ({ group }) => {
                   ...eventSlot.event,
                   registered: eventSlot.status === "Забронирован" || eventSlot.event.registered
                 };
-                
-                console.log('DateGroupPsycoSlots - creating event for popup:', {
-                  eventSlotStatus: eventSlot.status,
-                  eventSlotEvent: eventSlot.event,
-                  eventForPopup,
-                  isRegistered
-                });
-                
+
+
+
                 return (
                   <li key={`${group.slotTime}_${index}`}>
                     <Button
