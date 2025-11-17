@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 // Временно удалили переключатель недель
 // import WeekToogleContainer from "./WeekToogleContainer";
 import DateGroupPsycoSlots from "./DateGroupPsycoSlots";
+import CreateEventPopup from "./CreateEventPopup";
 import axios from "axios";
 import { startOfWeek, endOfWeek } from "date-fns";
 import Button from "./Button";
@@ -28,6 +29,7 @@ const PsycoSlots = () => {
   })?.fromGroup;
 
   const [authState, setAuthState] = useState("");
+  const [showCreateEventPopup, setShowCreateEventPopup] = useState(false);
 
   const errorLottieOptions = {
     loop: false,
@@ -270,6 +272,13 @@ const PsycoSlots = () => {
     })
   }
 
+  const handleCreateEvent = (eventData) => {
+    console.log("Создание мероприятия:", eventData);
+    // Здесь можно добавить логику сохранения мероприятия
+    // Например, отправка на сервер или добавление в Redux store
+    setShowCreateEventPopup(false);
+  };
+
   return (
     <>
       <div className="sticky top-0">
@@ -428,12 +437,27 @@ const PsycoSlots = () => {
       </div>
 
       {slotStatus != "error" && slotStatus != "loading" && (
-        <div className="p-10 fixed bottom-0 bg-[#2c3531] w-full">
-          <Link to="/slots-saved" onClick={()=>{send_on_board_message(); send_on_fill_slots_message()}}>
-            <Button intent="cream">Готово</Button>
-          </Link>
+        <div className="p-5 fixed bottom-0 bg-[#2c3531] w-full">
+          <div className="flex gap-3">
+            <Button
+              intent="primary-transparent"
+              onClick={() => setShowCreateEventPopup(true)}
+              className="flex-1 bg-white text-[#2c3531] border-white hover:bg-gray-100"
+            >
+              Создать мероприятие
+            </Button>
+            <Link to="/slots-saved" onClick={()=>{send_on_board_message(); send_on_fill_slots_message()}} className="flex-1">
+              <Button intent="cream" className="w-full">Готово</Button>
+            </Link>
+          </div>
         </div>
       )}
+
+      <CreateEventPopup
+        isOpen={showCreateEventPopup}
+        onClose={() => setShowCreateEventPopup(false)}
+        onSave={handleCreateEvent}
+      />
     </>
   );
 };
