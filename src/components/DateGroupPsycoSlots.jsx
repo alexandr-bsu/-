@@ -271,16 +271,50 @@ const DateGroupPsycoSlots = ({ group }) => {
               
               if (eventSlot) {
                 // Проверяем, зарегистрирован ли пользователь на это мероприятие
-                const eventDate = eventSlot.event.date ? format(new Date(eventSlot.event.date), "yyyy-MM-dd") : group.date;
-                const eventTime = eventSlot.event.time || slotTime;
-                const eventName = eventSlot.event.title || eventSlot.event.name;
+                // Если event - это строка (из API), то это название события
+                let eventDate, eventTime, eventName;
                 
-                const isRegistered = registeredEvents.some(
-                  (reg) =>
-                    reg.date === eventDate &&
-                    reg.time === eventTime &&
-                    reg.eventName === eventName
-                ) || eventSlot.event.registered;
+                if (typeof eventSlot.event === 'string') {
+                  // event - это строка с названием события из API
+                  eventDate = group.date;
+                  eventTime = slotTime;
+                  eventName = eventSlot.event;
+                } else {
+                  // event - это объект события
+                  eventDate = eventSlot.event.date ? format(new Date(eventSlot.event.date), "yyyy-MM-dd") : group.date;
+                  eventTime = eventSlot.event.time || slotTime;
+                  eventName = eventSlot.event.title || eventSlot.event.name;
+                }
+                
+                // Проверяем регистрацию: если статус "Забронирован", значит пользователь уже записан
+                const isRegistered = eventSlot.status === "Забронирован" || 
+                  registeredEvents.some(
+                    (reg) =>
+                      reg.date === eventDate &&
+                      reg.time === eventTime &&
+                      reg.eventName === eventName
+                  ) || (typeof eventSlot.event === 'object' && eventSlot.event.registered);
+                
+                // Создаем объект события для попапа
+                const eventForPopup = typeof eventSlot.event === 'string' ? {
+                  title: eventSlot.event,
+                  name: eventSlot.event,
+                  date: group.date,
+                  time: slotTime,
+                  event_modal_type: eventSlot.event_modal_type,
+                  modality: eventSlot.event_modal_type,
+                  registered: eventSlot.status === "Забронирован"
+                } : {
+                  ...eventSlot.event,
+                  registered: eventSlot.status === "Забронирован" || eventSlot.event.registered
+                };
+                
+                console.log('DateGroupPsycoSlots - creating event for popup:', {
+                  eventSlotStatus: eventSlot.status,
+                  eventSlotEvent: eventSlot.event,
+                  eventForPopup,
+                  isRegistered
+                });
                 
                 return (
                   <li key={`${group.slotTime}_${index}`}>
@@ -288,14 +322,18 @@ const DateGroupPsycoSlots = ({ group }) => {
                       size="small"
                       hover="no"
                       onClick={() => {
-                        setCurrentEvent(eventSlot.event);
+                        setCurrentEvent(eventForPopup);
                         setShowEventPopup(true);
                       }}
                       className="text-white border flex items-center justify-center"
                       style={{
-                        backgroundColor: getColorByModality(eventSlot.event.modality || eventSlot.event.event_modal_type),
+                        backgroundColor: getColorByModality(
+                          (typeof eventSlot.event === 'object' ? eventSlot.event.modality || eventSlot.event.event_modal_type : eventSlot.event_modal_type)
+                        ),
                         color: "white",
-                        borderColor: getColorByModality(eventSlot.event.modality || eventSlot.event.event_modal_type),
+                        borderColor: getColorByModality(
+                          (typeof eventSlot.event === 'object' ? eventSlot.event.modality || eventSlot.event.event_modal_type : eventSlot.event_modal_type)
+                        ),
                       }}
                     >
                       {slotTime}
