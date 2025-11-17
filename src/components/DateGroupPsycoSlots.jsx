@@ -153,6 +153,7 @@ const DateGroupPsycoSlots = ({ group }) => {
       psychoanalysis: "#3B82F6",
       general: "#10B981",
       "общие": "#10B981",
+      "пользовательское": "#000000",
       other: "#6B7280",
     };
     const normalizedModality = modality?.toLowerCase();

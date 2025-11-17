@@ -11,7 +11,7 @@ import QueryString from "qs";
 
 // Функция для получения цвета модальности
 function getColorByModalityLocal(modality) {
-  const modalityColors = {
+    const modalityColors = {
     jungian: "#8B5CF6",
     "юнгианство": "#8B5CF6",
     cbt: "#FCD34D",
@@ -177,6 +177,7 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
 
   const modalityColor = getColorByModalityLocal(event.event_modal_type || event.modality);
 
+  
   const handleRegister = async () => {
     if (!eventDate || !eventTime) {
       toast.error("Не удалось определить дату или время мероприятия");
