@@ -3,6 +3,7 @@ import Button from "./Button";
 import Check from "../assets/check.svg?react";
 import SlotInfoPopup from "./SlotInfoPopup";
 import EventViewPopup from "./EventViewPopup";
+import FreeSlotPopup from "./FreeSlotPopup";
 import toast, { Toaster } from "react-hot-toast";
 import { format } from "date-fns";
 
@@ -25,6 +26,8 @@ const DateGroupPsycoSlots = ({ group }) => {
   const [slotQueryTime, setSlotQueryTime] = React.useState("");
   const [showEventPopup, setShowEventPopup] = React.useState(false);
   const [currentEvent, setCurrentEvent] = React.useState(null);
+  const [showFreeSlotPopup, setShowFreeSlotPopup] = React.useState(false);
+  const [freeSlotData, setFreeSlotData] = React.useState({});
 
   //Получаем даты начала и конца недели
   function getWeekStartEnd(date) {
@@ -190,6 +193,11 @@ const DateGroupPsycoSlots = ({ group }) => {
     setCurrentEvent(null);
   };
 
+  const handleCloseFreeSlotPopup = () => {
+    setShowFreeSlotPopup(false);
+    setFreeSlotData({});
+  };
+
   return (
     <>
       {isPopupShown && (
@@ -206,6 +214,16 @@ const DateGroupPsycoSlots = ({ group }) => {
           event={currentEvent}
           isOpen={showEventPopup}
           onClose={handleCloseEventPopup}
+        />
+      )}
+
+      {showFreeSlotPopup && (
+        <FreeSlotPopup
+          slotDate={freeSlotData.slotDate}
+          slotId={freeSlotData.slotId}
+          queryDate={freeSlotData.queryDate}
+          queryTime={freeSlotData.queryTime}
+          closeFn={handleCloseFreeSlotPopup}
         />
       )}
 
@@ -343,11 +361,26 @@ const DateGroupPsycoSlots = ({ group }) => {
                   <Button
                     size="small"
                     onClick={() => {
-                      toogleSlots(
-                        slotsRedux,
-                        `${group.pretty_date} ${slotTime}`,
-                        secret
-                      );
+                      if (isSelectedSlot) {
+                        // Если слот выбран (зеленый), показываем попап для удаления
+                        // Получаем ID слота из исходных данных
+                        const slotId = slot?.id || `${group.pretty_date} ${slotTime}`;
+
+                        setFreeSlotData({
+                          slotDate: `${group.pretty_date} ${slotTime}`,
+                          slotId: slotId,
+                          queryDate: group.date,
+                          queryTime: slotTime
+                        });
+                        setShowFreeSlotPopup(true);
+                      } else {
+                        // Если слот не выбран, добавляем его
+                        toogleSlots(
+                          slotsRedux,
+                          `${group.pretty_date} ${slotTime}`,
+                          secret
+                        );
+                      }
                     }}
                     intent={
                       isSelectedSlot ? "primary" : "primary-transparent"

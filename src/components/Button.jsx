@@ -31,6 +31,8 @@ const button = cva(
           "border",
           "border-cream",
         ],
+
+        danger: ["bg-red-500", "text-white", "border", "border-red-500"],
       },
 
       hover: {
@@ -53,6 +55,12 @@ const button = cva(
           "hover:border-green",
         ],
         no: ["cursor-default"],
+        danger: [
+          "hover:bg-red-600",
+          "hover:text-white",
+          "hover:border",
+          "hover:border-red-600",
+        ],
       },
 
       size: {

@@ -1,0 +1,297 @@
+import React, { useState, useEffect } from "react";
+import Button from "./Button";
+import QueryString from "qs";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useSelector, useDispatch } from "react-redux";
+import { spliceSlot, setStateSlotLoading, setStateSlotOk } from "../redux/slices/psycoSlotsSlice";
+
+const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn }) => {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [repeatPeriod, setRepeatPeriod] = useState("нет");
+  const [isLoadingPlan, setIsLoadingPlan] = useState(true);
+  const [isSavingPlan, setIsSavingPlan] = useState(false);
+
+  const slotsRedux = useSelector((state) => state.psyco.freeSlots);
+  const dispatch = useDispatch();
+
+  const secret = QueryString.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })?.secret;
+
+  const planningOptions = [
+    { value: "нет", label: "Нет" },
+    { value: "раз в неделю", label: "Раз в неделю" },
+    { value: "раз в 2 недели", label: "Раз в 2 недели" },
+    { value: "раз в 3 недели", label: "Раз в 3 недели" },
+    { value: "раз в месяц", label: "Раз в месяц" }
+  ];
+
+  // Загружаем текущий статус планирования при открытии попапа
+  useEffect(() => {
+    const fetchPlanningStatus = async () => {
+      try {
+        const response = await axios.get("https://n8n-v2.hrani.live/webhook/get-root-planned-free-slot", {
+          params: {
+            secret: secret,
+            slot: slotId || slotDate // Используем slotId, если есть, иначе fallback на slotDate
+          }
+        });
+
+        if (response.data && response.data.repeat_period) {
+          setRepeatPeriod(response.data.repeat_period);
+        }
+      } catch (error) {
+        console.error("Ошибка при загрузке статуса планирования:", error);
+        // Если ошибка, оставляем значение по умолчанию "нет"
+      } finally {
+        setIsLoadingPlan(false);
+      }
+    };
+
+    if (secret && (slotId || slotDate)) {
+      fetchPlanningStatus();
+    } else {
+      setIsLoadingPlan(false);
+    }
+  }, [secret, slotId, slotDate]);
+
+  const handlePlanningChange = async (newPeriod) => {
+    if (isSavingPlan || newPeriod === repeatPeriod) return;
+
+    setIsSavingPlan(true);
+
+    try {
+      await axios.post("https://n8n-v2.hrani.live/webhook/plan-free-slots", {
+        secret: secret,
+        slot: slotId || slotDate, // Используем slotId, если есть, иначе fallback на slotDate
+        repeat_period: newPeriod
+      });
+
+      setRepeatPeriod(newPeriod);
+      toast.success("Настройки планирования сохранены");
+    } catch (error) {
+      console.error("Ошибка при сохранении планирования:", error);
+      toast.error("Ошибка при сохранении настроек планирования");
+    } finally {
+      setIsSavingPlan(false);
+    }
+  };
+
+  const handleDeleteSlot = () => {
+    if (isDeleting) return;
+
+    setIsDeleting(true);
+    const slotKey = slotDate;
+
+    // Находим индекс слота для удаления
+    const index = slotsRedux.findIndex((s) => s.slot === slotKey);
+
+    if (index === -1) {
+      toast.error("Слот не найден");
+      setIsDeleting(false);
+      return;
+    }
+
+    dispatch(setStateSlotLoading(slotKey));
+
+    axios({
+      url: "https://n8n-v2.hrani.live/webhook/delete-slot",
+      data: {
+        slot: slotKey,
+        secret: secret,
+      },
+      method: "POST",
+    })
+      .then(() => {
+        dispatch(setStateSlotOk(slotKey));
+        dispatch(spliceSlot(index));
+        toast.success(`Слот ${slotKey} удалён`);
+        closeFn();
+      })
+      .catch(() => {
+        dispatch(setStateSlotOk(slotKey));
+        toast.error(`Ошибка! Слот ${slotKey} не удалён. Повторите попытку`);
+        setIsDeleting(false);
+      });
+  };
+
+  return (
+    <div className="fixed top-0 left-0 h-screen w-full flex justify-center items-center p-5 z-20">
+      <div className="bg-[#eed5bf] rounded-lg w-full max-w-md">
+        <div className="bg-[#eed5bf] p-5 border-b border-b-dark-green w-full flex justify-between items-center">
+          <h2 className="text-dark-green font-medium text-xl">
+            Свободный слот - {slotDate}
+          </h2>
+          <img
+            src="static/close.png"
+            className="cursor-pointer w-5 h-5"
+            onClick={closeFn}
+            alt="Закрыть"
+          />
+        </div>
+
+        <div className="p-5 flex flex-col gap-4">
+          {/* Секция планирования */}
+          <div className="border-b border-b-dark-green pb-4">
+            <h3 className="text-dark-green font-medium mb-3">Планирование слота</h3>
+
+            {isLoadingPlan ? (
+              <div className="flex items-center justify-center py-4">
+                <svg
+                  width={20}
+                  height={20}
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 200 200"
+                >
+                  <radialGradient
+                    id="a13"
+                    cx=".66"
+                    fx=".66"
+                    cy=".3125"
+                    fy=".3125"
+                    gradientTransform="scale(1.5)"
+                  >
+                    <stop offset="0" stopColor="#4a5d23"></stop>
+                    <stop offset=".3" stopColor="#4a5d23" stopOpacity=".9"></stop>
+                    <stop offset=".6" stopColor="#4a5d23" stopOpacity=".6"></stop>
+                    <stop offset=".8" stopColor="#4a5d23" stopOpacity=".3"></stop>
+                    <stop offset="1" stopColor="#4a5d23" stopOpacity="0"></stop>
+                  </radialGradient>
+                  <circle
+                    transformOrigin="center"
+                    fill="none"
+                    stroke="url(#a13)"
+                    strokeWidth="16"
+                    strokeLinecap="round"
+                    strokeDasharray="200 1000"
+                    strokeDashoffset="0"
+                    cx="100"
+                    cy="100"
+                    r="70"
+                  >
+                    <animateTransform
+                      type="rotate"
+                      attributeName="transform"
+                      calcMode="spline"
+                      dur="2"
+                      values="360;0"
+                      keyTimes="0;1"
+                      keySplines="0 0 1 1"
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                </svg>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {planningOptions.map((option) => (
+                  <label
+                    key={option.value}
+                    className="flex items-center gap-2 cursor-pointer hover:bg-[#e5d4be] p-2 rounded transition-colors"
+                  >
+                    <input
+                      type="radio"
+                      name="planning"
+                      value={option.value}
+                      checked={repeatPeriod === option.value}
+                      onChange={(e) => handlePlanningChange(e.target.value)}
+                      disabled={isSavingPlan}
+                      className="w-4 h-4 text-dark-green focus:ring-dark-green focus:ring-2"
+                    />
+                    <span className="text-dark-green text-sm">
+                      {option.label}
+                      {isSavingPlan && repeatPeriod !== option.value && (
+                        <span className="ml-2 text-xs opacity-60">...</span>
+                      )}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Секция удаления */}
+          <div>
+            {/* <p className="text-dark-green text-center mb-4">
+              Вы уверены, что хотите удалить этот слот?
+            </p> */}
+
+            <div className="flex gap-3">
+              {/* <Button
+                intent="primary-transparent"
+                hover="primary"
+                onClick={closeFn}
+                className="flex-1"
+              >
+                Отмена
+              </Button> */}
+
+              <Button
+                intent="primary"
+                hover="primary"
+                onClick={handleDeleteSlot}
+                disabled={isDeleting}
+                className="flex-1"
+              >
+                {isDeleting ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <svg
+                      width={16}
+                      height={16}
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 200 200"
+                    >
+                      <radialGradient
+                        id="a12"
+                        cx=".66"
+                        fx=".66"
+                        cy=".3125"
+                        fy=".3125"
+                        gradientTransform="scale(1.5)"
+                      >
+                        <stop offset="0" stopColor="#ffffff"></stop>
+                        <stop offset=".3" stopColor="#ffffff" stopOpacity=".9"></stop>
+                        <stop offset=".6" stopColor="#ffffff" stopOpacity=".6"></stop>
+                        <stop offset=".8" stopColor="#ffffff" stopOpacity=".3"></stop>
+                        <stop offset="1" stopColor="#ffffff" stopOpacity="0"></stop>
+                      </radialGradient>
+                      <circle
+                        transformOrigin="center"
+                        fill="none"
+                        stroke="url(#a12)"
+                        strokeWidth="16"
+                        strokeLinecap="round"
+                        strokeDasharray="200 1000"
+                        strokeDashoffset="0"
+                        cx="100"
+                        cy="100"
+                        r="70"
+                      >
+                        <animateTransform
+                          type="rotate"
+                          attributeName="transform"
+                          calcMode="spline"
+                          dur="2"
+                          values="360;0"
+                          keyTimes="0;1"
+                          keySplines="0 0 1 1"
+                          repeatCount="indefinite"
+                        />
+                      </circle>
+                    </svg>
+                    Удаление...
+                  </div>
+                ) : (
+                  "Удалить слот"
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default FreeSlotPopup;
