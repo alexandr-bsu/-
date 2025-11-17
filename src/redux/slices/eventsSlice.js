@@ -38,7 +38,9 @@ export const fetchAllEvents = createAsyncThunk(
       const state = getState();
       // Не вызываем API если уже загружается или уже загружено
       const shouldFetch = !state.events.loading && state.events.allEvents.length === 0;
-      console.log('fetchAllEvents condition:', { loading: state.events.loading, eventsCount: state.events.allEvents.length, shouldFetch });
+      if (!shouldFetch) {
+        console.log('fetchAllEvents skipped:', { loading: state.events.loading, eventsCount: state.events.allEvents.length });
+      }
       return shouldFetch;
     },
   }

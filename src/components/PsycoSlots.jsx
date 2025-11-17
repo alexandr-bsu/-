@@ -12,6 +12,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setFreeSlots } from "../redux/slices/psycoSlotsSlice";
 import { fetchAllEvents } from "../redux/slices/eventsSlice";
 import { formatDateForGroup } from "../api/eventsApi";
+import { store } from "../redux/store";
 import QueryString from "qs";
 import { Link } from "react-router-dom";
 
@@ -88,6 +89,7 @@ const PsycoSlots = () => {
   // Используем ref для предотвращения повторных вызовов без лишних зависимостей
   const isLoadingSlotsRef = useRef(false);
   const lastRequestKeyRef = useRef(null);
+  const lastEventsCountRef = useRef(0);
 
   // Получаем группы слотов и обновляем переменную groups_of_slots
   // Срабатывает когда выбирается дата в WeekToogleContainer
@@ -99,14 +101,19 @@ const PsycoSlots = () => {
     // Создаем уникальный ключ для запроса
     const requestKey = `${startDate}_${endDate}_${secret}`;
     
-    // Предотвращаем повторные вызовы с одинаковыми параметрами только если запрос еще выполняется
-    // Но разрешаем повторный вызов если события загрузились (allEvents изменились)
-    if (isLoadingSlotsRef.current && lastRequestKeyRef.current === requestKey) {
-      console.log('Skipping duplicate request:', requestKey);
+    // Получаем текущее количество событий
+    const state = store.getState();
+    const currentEventsCount = state.events.allEvents.length;
+    
+    // Предотвращаем повторные вызовы с одинаковыми параметрами
+    // НО разрешаем повторный вызов если события загрузились (количество изменилось)
+    const eventsJustLoaded = currentEventsCount > 0 && lastEventsCountRef.current === 0;
+    
+    if (isLoadingSlotsRef.current && lastRequestKeyRef.current === requestKey && !eventsJustLoaded) {
       return;
     }
     
-    console.log('Starting selectFn with', allEvents.length, 'events loaded');
+    lastEventsCountRef.current = currentEventsCount;
     isLoadingSlotsRef.current = true;
     lastRequestKeyRef.current = requestKey;
     setSlotStatus("loading");
@@ -122,9 +129,10 @@ const PsycoSlots = () => {
       url: "https://n8n-v2.hrani.live/webhook/get-slot",
     })
       .then((slotsResp) => {
-        // Получаем актуальные события из Redux state
-        const currentEvents = allEvents || [];
-        console.log('Events loaded:', currentEvents.length, 'events');
+        // Получаем актуальные события из Redux state напрямую (не из замыкания)
+        const state = store.getState();
+        const currentEvents = state.events.allEvents || [];
+        console.log('Events loaded from store:', currentEvents.length, 'events');
         if (slotsResp.data?.error == "unauthored") {
           setAuthState("unauthored");
         }
@@ -133,7 +141,7 @@ const PsycoSlots = () => {
         console.log('Slots loaded:', groupsOfSlots.length, 'date groups');
         
         if (currentEvents && currentEvents.length > 0) {
-          console.log('Processing events for slots...');
+          console.log('Processing', currentEvents.length, 'events for slots...');
           const eventDates = [...new Set(currentEvents.map(event => {
             return event.date ? new Date(event.date).toISOString().split('T')[0] : null;
           }).filter(Boolean))];
@@ -163,14 +171,14 @@ const PsycoSlots = () => {
               return eventDate === group.date;
             });
             
+            if (eventsForThisDate.length > 0) {
+              console.log(`Found ${eventsForThisDate.length} events for date ${group.date}`);
+            }
+            
             eventsForThisDate.forEach(matchingEvent => {
               const eventTime = matchingEvent.time || '';
-              if (!eventTime) {
-                console.log('Event has no time:', matchingEvent);
-                return;
-              }
+              if (!eventTime) return;
               
-              console.log('Processing event:', matchingEvent.title || matchingEvent.name, 'at', eventTime, 'on', group.date);
               const slotArray = updatedSlots[eventTime] || [];
               
               // Проверяем, есть ли клиент в этом слоте
@@ -187,7 +195,6 @@ const PsycoSlots = () => {
               
               // Если массив слотов пустой, создаем новый слот с мероприятием
               if (slotArray.length === 0) {
-                console.log('Creating new slot for event at', eventTime);
                 updatedSlots[eventTime] = [{
                   event: matchingEvent,
                   status: "Свободен",
@@ -195,7 +202,6 @@ const PsycoSlots = () => {
                   time: eventTime
                 }];
               } else {
-                console.log('Updating existing slot for event at', eventTime);
                 updatedSlots[eventTime] = slotArray.map(slot => {
                   if (slot.status === "Забронирован" && slot.event === null) {
                     return slot;
@@ -224,7 +230,7 @@ const PsycoSlots = () => {
         setSlotStatus("error");
         isLoadingSlotsRef.current = false;
       });
-  }, [allEvents, dispatch]);
+  }, [dispatch]); // allEvents больше не нужен, получаем из store напрямую
 
   // Загружаем события один раз при монтировании компонента
   useEffect(() => {
@@ -240,7 +246,6 @@ const PsycoSlots = () => {
   // Запрашиваем группы слотов при загрузке страницы и после загрузки событий
   useEffect(() => {
     if (secret) {
-      // Ждем загрузки событий или вызываем сразу (события могут загрузиться позже)
       selectFn(selectedDate, secret);
     } else {
       setAuthState("unauthored");
