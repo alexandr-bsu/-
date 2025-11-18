@@ -26,9 +26,9 @@ function getColorByModalityLocal(modality) {
   return modalityColors[normalizedModality] || modalityColors[modality] || "#10B981";
 }
 
-const EventViewPopup = ({ event, isOpen, onClose }) => {
+const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent }) => {
   const dispatch = useDispatch();
-  const { registering, registrationSuccess, error, registeredEvents } = useSelector((state) => state.events);
+  const { registering, registrationSuccess, error, registeredEvents, allEvents } = useSelector((state) => state.events);
 
   // Состояние для режима повтора пользовательских событий
   const [repeatPeriod, setRepeatPeriod] = useState("нет");
@@ -208,6 +208,33 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
   const handleClose = () => {
     dispatch(clearRegistrationStatus());
     onClose();
+  };
+
+  // Функция для поиска и открытия связанного события
+  const handleOpenRelatedEvent = (eventTitle) => {
+    if (!onOpenRelatedEvent) return;
+    
+    // Ищем событие в allEvents по названию
+    const relatedEvent = allEvents.find(evt => 
+      evt.title === eventTitle || 
+      evt.name === eventTitle ||
+      evt.title?.includes(eventTitle) ||
+      evt.name?.includes(eventTitle)
+    );
+    
+    if (relatedEvent) {
+      onOpenRelatedEvent(relatedEvent);
+    } else {
+      // Если событие не найдено в загруженных данных, создаем базовый объект
+      const basicEvent = {
+        title: eventTitle,
+        name: eventTitle,
+        description: "Информация о событии загружается...",
+        date: null,
+        time: null
+      };
+      onOpenRelatedEvent(basicEvent);
+    }
   };
 
   return (
@@ -412,7 +439,16 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
             {event.next_event && (
               <div className="flex flex-col gap-1">
                 <p className="text-dark-green">
-                  <b>Следующее аналогичное мероприятие:</b> {event.next_event}
+                  <b>Следующее аналогичное мероприятие:</b> <a 
+                    href="#" 
+                    className="underline cursor-pointer hover:text-green transition-colors"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleOpenRelatedEvent(event.next_event);
+                    }}
+                  >
+                    {event.next_event}
+                  </a>
                 </p>
               </div>
             )}
@@ -450,15 +486,24 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
                   {registering ? "Записываемся..." : "Записаться"}
                 </Button>
               ) : event.is_canceled ? (
-                <div className="p-3 rounded-lg bg-red text-white text-center">
+                <div className="p-3 rounded-lg bg-red text-white">
                   Мероприятие отменено
                 </div>
               ) : event.current_participants >= event.max_participants && !isRegistered && !event.registered ? (
-                <div className="p-3 rounded-lg bg-red text-white text-center">
+                <div className="p-3 rounded-lg bg-green text-white">
                   <div className="space-y-2">
                     <p>К сожалению вы не можете записаться на это мероприятие, поскольку число желающих его посетить уже достигло максимального количества.</p>
                     {event.next_event && (
-                      <p>Следующее аналогичное мероприятие состоится <a href="#" className="underline">{event.next_event}</a> 🙏</p>
+                      <p>Следующее аналогичное мероприятие состоится <a 
+                        href="#" 
+                        className="underline cursor-pointer hover:text-white/80 transition-colors"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleOpenRelatedEvent(event.next_event);
+                        }}
+                      >
+                        {event.next_event}
+                      </a> 🙏</p>
                     )}
                   </div>
                 </div>

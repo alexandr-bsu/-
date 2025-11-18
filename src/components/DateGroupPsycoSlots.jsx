@@ -17,6 +17,7 @@ import {
   setStateSlotLoading,
   setStateSlotOk,
 } from "../redux/slices/psycoSlotsSlice";
+import { fetchAllEvents } from "../redux/slices/eventsSlice";
 import QueryString from "qs";
 
 const DateGroupPsycoSlots = ({ group }) => {
@@ -80,6 +81,11 @@ const DateGroupPsycoSlots = ({ group }) => {
   const loadListRedux = useSelector((state) => state.psyco.loadList);
   const registeredEvents = useSelector((state) => state.events?.registeredEvents || []);
   const dispatch = useDispatch();
+
+  // Загружаем все события при монтировании компонента
+  React.useEffect(() => {
+    dispatch(fetchAllEvents());
+  }, [dispatch]);
 
   const toogleSlots = (freeSlots, slot, secret) => {
     if (loadListRedux.includes(slot)) {
@@ -203,6 +209,11 @@ const DateGroupPsycoSlots = ({ group }) => {
     setCurrentEvent(null);
   };
 
+  const handleOpenRelatedEvent = (relatedEvent) => {
+    setCurrentEvent(relatedEvent);
+    // Popup уже открыт, просто меняем событие
+  };
+
   const handleCloseFreeSlotPopup = () => {
     setShowFreeSlotPopup(false);
     setFreeSlotData({});
@@ -224,6 +235,7 @@ const DateGroupPsycoSlots = ({ group }) => {
           event={currentEvent}
           isOpen={showEventPopup}
           onClose={handleCloseEventPopup}
+          onOpenRelatedEvent={handleOpenRelatedEvent}
         />
       )}
 
