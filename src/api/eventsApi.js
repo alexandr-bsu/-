@@ -54,8 +54,8 @@ export function formatTimeForApi(time) {
  */
 export function formatDateForGroup(dateStr) {
   const date = new Date(dateStr);
-  const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 
-                 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+  const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+    'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
   const days = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
   const day = date.getDate();
   const month = months[date.getMonth()];
@@ -72,9 +72,12 @@ export function formatDateForGroup(dateStr) {
  */
 export async function getAllEvents() {
   try {
+    const secret = getSecretFromUrl();
+
     const response = await axios({
       method: "GET",
       url: `${BASE_URL}/get-all-events`,
+      params: secret ? { secret } : {},
     });
 
     if (response.data) {
