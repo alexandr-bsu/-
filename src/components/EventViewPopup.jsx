@@ -208,8 +208,8 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
   return (
     <>
       <Toaster />
-      <div className="fixed top-0 left-0 h-screen w-full flex justify-center items-center p-5 z-20">
-        <div className="bg-[#eed5bf] rounded-lg h-full w-full overflow-y-scroll">
+      <div className="fixed top-0 left-0 h-screen w-full flex justify-center items-center p-5 z-20 bg-[#000000] bg-opacity-20">
+        <div className="bg-white rounded-[30px] h-full w-full max-w-[960px] mx-5 overflow-y-scroll">
           <div className="bg-[#eed5bf] sticky top-0 p-5 border-b border-b-dark-green mb-10 w-full flex justify-between items-center">
             <div>
               <h2 className="text-dark-green font-medium text-3xl">
@@ -235,7 +235,7 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
             {/* Тип мероприятия */}
             <div className="flex flex-col gap-1">
               <p className="text-dark-green flex gap-2">
-                <b>Тип:</b> {event.event_type || event.type}
+                <b>Мероприятие:</b> {event.event_type || event.type}
               </p>
             </div>
 

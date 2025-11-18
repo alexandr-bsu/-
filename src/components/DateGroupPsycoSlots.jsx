@@ -1,6 +1,7 @@
 import React from "react";
 import Button from "./Button";
 import Check from "../assets/check.svg?react";
+import Edit from "../assets/edit.svg?react";
 import SlotInfoPopup from "./SlotInfoPopup";
 import EventViewPopup from "./EventViewPopup";
 import FreeSlotPopup from "./FreeSlotPopup";
@@ -151,7 +152,7 @@ const DateGroupPsycoSlots = ({ group }) => {
       cbt: "#FCD34D",
       "кпт": "#FCD34D",
       gestalt: "#10B981",
-      "гештальт": "#1c9140", 
+      "гештальт": "#1c9140",
       "психоанализ": "#3B82F6",
       psychoanalysis: "#3B82F6",
       general: "#10B981",
@@ -362,7 +363,7 @@ const DateGroupPsycoSlots = ({ group }) => {
                       }}
                     >
                       {slotTime}
-                      {isRegistered && <Check width={20} height={20}></Check>}
+                      {isRegistered && <Edit width={20} height={20}></Edit>}
                     </Button>
                   </li>
                 );
