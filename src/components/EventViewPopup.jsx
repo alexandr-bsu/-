@@ -8,6 +8,7 @@ import { registerForEvent, clearRegistrationStatus } from "../redux/slices/event
 import toast, { Toaster } from "react-hot-toast";
 import { toast as sonnerToast } from "sonner";
 import QueryString from "qs";
+import TelegramPlane from "../assets/telegram-plane.svg?react";
 
 // Функция для получения цвета модальности
 function getColorByModalityLocal(modality) {
@@ -260,22 +261,25 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
 
             {/* Организатор */}
             <div className="flex flex-col gap-1">
-              <p className="text-dark-green">
+              <p className="text-dark-green flex items-center gap-2">
                 <b>{(() => {
                   const organizerType = event.organizator_type || event.organizer_role || "Организатор";
                   return organizerType.charAt(0).toUpperCase() + organizerType.slice(1);
-                })()}:</b> {event.organizator_name || event.organizer_name}
+                })()}:</b> 
+                
+                {(event.organizator_link || event.organizer_tg_link) && (
+                  <a
+                    href={`https://${event.organizator_link || event.organizer_tg_link}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-green hover:text-dark-green transition-colors inline-flex items-center"
+                    title="Перейти на страницу психолога"
+                  >
+                    <span className="underline">{event.organizator_name || event.organizer_name}</span>
+                    <TelegramPlane width={16} height={16} />
+                  </a>
+                )}
               </p>
-              {(event.organizator_link || event.organizer_tg_link) && (
-                <a
-                  href={`https://${event.organizator_link || event.organizer_tg_link}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-green underline"
-                >
-                  Telegram
-                </a>
-              )}
             </div>
 
             {/* Ссылка на встречу - только для зарегистрированных */}
