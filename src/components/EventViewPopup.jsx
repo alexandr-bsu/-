@@ -263,10 +263,18 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
             <div className="flex flex-col gap-1">
               <p className="text-dark-green flex items-center gap-2">
                 <b>{(() => {
-                  const organizerType = event.organizator_type || event.organizer_role || "Организатор";
-                  return organizerType.charAt(0).toUpperCase() + organizerType.slice(1);
-                })()}:</b> 
-                
+                  const eventType = (event.event_type || event.type || "").toLowerCase();
+
+                  // Определяем название роли согласно типу мероприятия
+                  if (eventType.includes("супервизи")) {
+                    return "Супервизор";
+                  } else if (eventType.includes("интервизи")) {
+                    return "Модератор";
+                  } else {
+                    return "Ведущий";
+                  }
+                })()}:</b>
+
                 {(event.organizator_link || event.organizer_tg_link) && (
                   <a
                     href={`https://${event.organizator_link || event.organizer_tg_link}`}
