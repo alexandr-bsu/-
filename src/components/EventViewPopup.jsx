@@ -17,10 +17,14 @@ function getColorByModalityLocal(modality) {
     jungian: "#8B5CF6",
     "юнгианство": "#8B5CF6",
     cbt: "#FCD34D",
+    "кпт": "#FCD34D",
     gestalt: "#10B981",
+    "гештальт": "#1c9140",
+    "психоанализ": "#3B82F6",
     psychoanalysis: "#3B82F6",
     general: "#10B981",
     "общие": "#10B981",
+    "пользовательское": "#000000",
     other: "#6B7280",
   };
   const normalizedModality = modality?.toLowerCase();
@@ -344,8 +348,8 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
             {event.event_modal_type && !isCustomEvent && (
               <div className="flex flex-col gap-1">
                 <p className="text-dark-green">
-                  <b>Модальность:</b> 
-                  <span 
+                  <b>Модальность:</b>
+                  <span
                     className="ml-2 px-3 py-1 rounded-full text-white font-medium text-sm"
                     style={{ backgroundColor: modalityColor }}
                   >
