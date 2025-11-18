@@ -288,7 +288,8 @@ const DateGroupPsycoSlots = ({ group, onEventCancelled }) => {
 
               const clientSlot = slotArray.find(s => {
                 if (!s) return false;
-                return s.status === "Забронирован" && s.event === null;
+                // Проверяем наличие клиента по разным критериям
+                return (s.client) || (s.status === "Забронирован" && (s.event === null || s.event === undefined));
               });
 
               if (clientSlot) {

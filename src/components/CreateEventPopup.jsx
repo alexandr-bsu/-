@@ -124,9 +124,9 @@ const CreateEventPopup = ({ isOpen, onClose, onSave }) => {
 
     return (
         <div className="fixed top-0 left-0 h-screen w-full flex justify-center items-center p-5 z-20 bg-[#000000] bg-opacity-20">
-            <div className="bg-[#eed5bf] w-full max-w-md max-h-[600px] overflow-y-auto rounded-lg">
-                <div className="bg-[#eed5bf] p-5 border-b border-b-dark-green w-full flex justify-between items-center">
-                    <h2 className="text-dark-green font-medium text-xl">Создать мероприятие</h2>
+            <div className="bg-white rounded-[30px] w-full max-w-[960px] mx-5 max-h-[650px] overflow-y-auto">
+                <div className="bg-white sticky top-0 p-5 border-b border-b-dark-green w-full flex justify-between items-center">
+                    <h2 className="text-dark-green font-medium text-3xl">Создать мероприятие</h2>
                     <img
                         src="static/close.png"
                         className="cursor-pointer w-5 h-5"
@@ -135,7 +135,7 @@ const CreateEventPopup = ({ isOpen, onClose, onSave }) => {
                     />
                 </div>
 
-                <div className="p-5 flex flex-col gap-4">
+                <div className="p-5 flex flex-col gap-8">
                     {/* Поле названия мероприятия */}
                     <div>
                         <label className="block text-sm font-medium text-dark-green mb-1">

@@ -40,23 +40,22 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
         } else {
 
           resp.data['traumatic_events'] = resp.data['traumatic_events'] == null ? '' : resp.data['traumatic_events']
-          
+
           if (
             "client_state" in resp.data &&
             resp.data["client_state"]
-          ) 
-          { 
+          ) {
 
-            try{
+            try {
               resp.data["client_state"] = JSON.parse(resp.data["client_state"])
-            } catch{
+            } catch {
               resp.data["client_state"] = resp.data["client_state"]
             }
-            
-            if(!Array.isArray(resp.data["client_state"])){
+
+            if (!Array.isArray(resp.data["client_state"])) {
               resp.data["client_state"] = resp.data["client_state"].split(";");
             }
-            
+
             if (
               resp.data["client_state"][0] == "" &&
               resp.data["client_state"].length == 1
@@ -69,13 +68,13 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
             "traumatic_events" in resp.data &&
             resp.data["traumatic_events"]
           ) {
-            try{
+            try {
               resp.data["traumatic_events"] = JSON.parse(resp.data["traumatic_events"])
-            } catch{
+            } catch {
               resp.data["traumatic_events"] = resp.data["traumatic_events"]
             }
 
-            if(!Array.isArray(resp.data["traumatic_events"])){
+            if (!Array.isArray(resp.data["traumatic_events"])) {
               resp.data["traumatic_events"] = resp.data["traumatic_events"].split(";");
             }
 
@@ -91,13 +90,13 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
             "important_in_psychologist" in resp.data &&
             resp.data["important_in_psychologist"]
           ) {
-            try{
+            try {
               resp.data["important_in_psychologist"] = JSON.parse(resp.data["important_in_psychologist"])
-            } catch{
+            } catch {
               resp.data["important_in_psychologist"] = resp.data["important_in_psychologist"]
             }
-            
-            if(!Array.isArray(resp.data["important_in_psychologist"])){
+
+            if (!Array.isArray(resp.data["important_in_psychologist"])) {
               resp.data["important_in_psychologist"] = resp.data["important_in_psychologist"].split(";");
             }
 
@@ -109,7 +108,7 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
             }
           }
 
-         
+
           console.log("data", resp.data);
 
           setData(resp.data);
@@ -130,10 +129,10 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
       <div className="bg-white rounded-[30px] w-full max-w-[960px] mx-5 max-h-[650px] overflow-y-auto">
         <div className="bg-white sticky top-0 p-5 border-b border-b-dark-green w-full flex justify-between items-center">
           <div>
-          <h2 className="text-dark-green font-medium text-3xl ">
-            Слот на {slotDate}
-          </h2>
-          <p className="text-dark-green text-xl">{data['is_helpful_hand'] ? "Заявка из Руки помощи " : ''}</p>
+            <h2 className="text-dark-green font-medium text-3xl ">
+              Слот на {slotDate}
+            </h2>
+            <p className="text-dark-green text-xl">{data['is_helpful_hand'] ? "Заявка из Руки помощи " : ''}</p>
           </div>
           <img
             src="static/close.png"
@@ -204,25 +203,25 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
         {status == "ok" && (
           <div data-name="slot-data" className="p-5 flex flex-col gap-8">
             <div className="flex flex-col gap-1">
-            <p className="text-dark-green flex gap-2">
-              <b>Имя: </b> {data["client_name"]}
-            </p>
+              <p className="text-dark-green flex gap-2">
+                <b>Имя: </b> {data["client_name"]}
+              </p>
 
-            <p className="text-dark-green flex gap-2">
-              <b>Возраст: </b> {data["client_age"]}
-            </p>
+              <p className="text-dark-green flex gap-2">
+                <b>Возраст: </b> {data["client_age"]}
+              </p>
 
-            <p className="text-dark-green flex gap-2">
-              <b>Часовой пояс клиента: </b> {data["client_timezone"]}
-            </p>
+              <p className="text-dark-green flex gap-2">
+                <b>Часовой пояс клиента: </b> {data["client_timezone"]}
+              </p>
 
-            <p className="text-dark-green flex gap-2">
-              <b>Опыт клиента: </b> {data["is_helpful_hand"] ? data["past_session_experience"] : data["experience"]}
-            </p>
+              <p className="text-dark-green flex gap-2">
+                <b>Опыт клиента: </b> {data["is_helpful_hand"] ? data["past_session_experience"] : data["experience"]}
+              </p>
 
-            {data["is_helpful_hand"] && <p className="text-dark-green flex gap-2">
-              <b>Оплата: </b> {data["is_helpful_hand"] ? data["psychologist_price"] : ''}
-            </p>}
+              {data["is_helpful_hand"] && <p className="text-dark-green flex gap-2">
+                <b>Оплата: </b> {data["is_helpful_hand"] ? data["psychologist_price"] : ''}
+              </p>}
 
             </div>
 
@@ -251,11 +250,11 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
             {data["has_mental_illness"]?.length != 0 && (
               <p className="text-dark-green">
                 <b>Псих. заболевание: </b>{" "}
-                {data["has_mental_illness"]}. {data["diagnose_medicaments"] ? 'Принимает медикаменты? '+ data['diagnose_medicaments'] : ''}
+                {data["has_mental_illness"] != 'Нет' ? 'Есть психические заболевания' : ''}. {data["diagnose_medicaments"] ? 'Принимает медикаменты' : ''}
               </p>
             )}
 
-            
+
 
             {data["client_state"]?.length != 0 && (
               <div className="text-dark-green">
@@ -289,7 +288,7 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
               <br />
               {data["Вопрос писхологу"]}
             </p> */}
-      
+
           </div>
         )}
 
