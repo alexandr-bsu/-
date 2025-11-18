@@ -312,11 +312,11 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
     <>
       <Toaster />
       <div className="fixed top-0 left-0 h-screen w-full flex justify-center items-center p-5 z-20 bg-[#000000] bg-opacity-20">
-        <div className="bg-white rounded-[30px] w-full max-w-[960px] mx-5 max-h-[650px] overflow-y-auto">
+        <div className="bg-white rounded-[30px] w-full max-w-[660px] mx-5 max-h-[650px] overflow-y-auto">
           <div className="bg-white sticky top-0 p-5 border-b border-b-dark-green w-full flex justify-between items-center">
             <div>
               <h2 className="text-dark-green font-medium text-3xl">
-                Слот на {formattedDate} {eventTime}
+                {formattedDate} {eventTime}
               </h2>
             </div>
             <img
@@ -402,27 +402,9 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
               </div>
             )}
 
-            {/* Ссылка на встречу - только для зарегистрированных */}
-            {(event.event_link || event.meeting_link) && isRegistered && (
-              <div className="flex flex-col gap-1">
-                <p className="text-dark-green">
-                  <b>Ссылка на встречу:</b>
-                </p>
-                <a
-                  href={event.event_link || event.meeting_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-green underline"
-                >
-                  {event.event_link || event.meeting_link}
-                </a>
-              </div>
-            )}
 
-
-
-            {/* Текущее количество участников - скрыто для пользовательских событий */}
-            {event.current_participants !== undefined && !isCustomEvent && (
+             {/* Текущее количество участников - скрыто для пользовательских событий */}
+             {event.current_participants !== undefined && !isCustomEvent && (
               <div className="flex flex-col gap-1">
                 <p className="text-dark-green">
                   <b>Участники:</b> {event.current_participants}/{event.max_participants || 0}
@@ -430,14 +412,38 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
               </div>
             )}
 
-            {/* Период повторения */}
+
+            {/* Ссылка на встречу - только для зарегистрированных */}
+            {(event.event_link || event.meeting_link) && isRegistered && (
+              <div className="flex flex-col gap-1">
+                <p className="text-dark-green">
+                  <b>Ссылка на встречу: </b>
+                  <a
+                    href={event.event_link || event.meeting_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-green underline"
+                  >
+                    {/* {event.event_link || event.meeting_link} */}
+                    Cсылка
+                  </a>
+                </p>
+
+              </div>
+            )}
+
+
+
+           
+
+            {/* Период повторения
             {event.repeat_period && !isCustomEvent && (
               <div className="flex flex-col gap-1">
                 <p className="text-dark-green">
                   <b>Период повторения:</b> {event.repeat_period}
                 </p>
               </div>
-            )}
+            )} */}
 
 
 
@@ -485,13 +491,13 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
             )}
 
             {/* Последняя запланированная дата */}
-            {event.last_planed_date && (
+            {/* {event.last_planed_date && (
               <div className="flex flex-col gap-1">
                 <p className="text-dark-green">
                   <b>Последняя запланированная дата:</b> {format(new Date(event.last_planed_date), "d MMMM yyyy", { locale: ru })}
                 </p>
               </div>
-            )}
+            )} */}
 
             {/* Папка с кейсами (только для supervision и intervision и только для зарегистрированных) */}
             {event.event_folder &&
@@ -500,15 +506,18 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                 event.event_type === "интервизия" ||
                 event.event_type === "супервизия" ||
                 event.event_type === "intervision") && (
-                <div className="flex flex-col gap-1">
-                  <a
-                    href={event.event_folder}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-green underline"
-                  >
-                    Папка с кейсами
-                  </a>
+                <div className="flex gap-1">
+                  <p className="text-dark-green">
+                    <b>Папка с кейсами: </b>
+                    <a
+                      href={event.event_folder}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green underline"
+                    >
+                      Ссылка на папку
+                    </a>
+                  </p>
                 </div>
               )}
 
@@ -598,7 +607,7 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                           <p>Ссылка будет доступна в этой карточке. В чат-бот вам придет напоминание о событии за 24 часа и за 1 час 🙏</p>
                           <p>Если вы хотите вынести кейс, то пожалуйста запишитесь в этой таблице (максимум 2 кейса на одной супервизии): <a href="https://docs.google.com/spreadsheets/d/1Brg-cz6OAp7Li3X3IrrwYPbNPGvckXRMk5fYUSbSH-E/" target="_blank" rel="noopener noreferrer" className="underline">Расписание мероприятий Сообщества Хранители</a>.</p>
                           {eventFolder && (
-                            <p>Кейсы можете загрузить в эту папку: <a href={eventFolder} target="_blank" rel="noopener noreferrer" className="underline">Супервизия_{organizatorName}_{formattedDateShort}</a></p>
+                            <p>Кейсы можете загрузить в папку по ссылке выше</p>
                           )}
                         </div>
                       );
@@ -609,7 +618,7 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                           <p>Ссылка будет доступна в этой карточке. В чат-бот вам придет напоминание о событии за 24 часа и за 1 час 🙏</p>
                           <p>Если вы хотите вынести кейс, то пожалуйста запишитесь в этой таблице (максимум 2 кейса на одной супервизии): <a href="https://docs.google.com/spreadsheets/d/1Brg-cz6OAp7Li3X3IrrwYPbNPGvckXRMk5fYUSbSH-E/" target="_blank" rel="noopener noreferrer" className="underline">Расписание мероприятий Сообщества Хранители</a>.</p>
                           {eventFolder && (
-                            <p>Кейсы можете загрузить в эту папку: <a href={eventFolder} target="_blank" rel="noopener noreferrer" className="underline">Интервизия_{organizatorName}_{formattedDateShort}</a></p>
+                            <p>Кейсы можете загрузить в папку по ссылке выше</p>
                           )}
                         </div>
                       );

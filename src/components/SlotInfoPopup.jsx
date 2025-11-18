@@ -126,11 +126,11 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
 
   return (
     <div className="fixed top-0 left-0 h-screen w-full flex justify-center items-center p-5 z-20 bg-[#000000] bg-opacity-20">
-      <div className="bg-white rounded-[30px] w-full max-w-[960px] mx-5 max-h-[650px] overflow-y-auto">
+      <div className="bg-white rounded-[30px] w-full max-w-[660px] mx-5 max-h-[650px] overflow-y-auto">
         <div className="bg-white sticky top-0 p-5 border-b border-b-dark-green w-full flex justify-between items-center">
           <div>
             <h2 className="text-dark-green font-medium text-3xl ">
-              Слот на {slotDate}
+              {slotDate}
             </h2>
             <p className="text-dark-green text-xl">{data['is_helpful_hand'] ? "Заявка из Руки помощи " : ''}</p>
           </div>
@@ -218,6 +218,20 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
               <p className="text-dark-green flex gap-2">
                 <b>Опыт клиента: </b> {data["is_helpful_hand"] ? data["past_session_experience"] : data["experience"]}
               </p>
+
+              {data["meeting_link"] && (
+                <p className="text-dark-green flex gap-2">
+                  <b>Ссылка на видеоконференцию: </b>
+                  <a
+                    href={data["meeting_link"]}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 underline"
+                  >
+                    {data["meeting_link"]}
+                  </a>
+                </p>
+              )}
 
               {data["is_helpful_hand"] && <p className="text-dark-green flex gap-2">
                 <b>Оплата: </b> {data["is_helpful_hand"] ? data["psychologist_price"] : ''}
