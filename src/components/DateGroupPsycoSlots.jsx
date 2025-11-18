@@ -20,7 +20,7 @@ import {
 import { fetchAllEvents } from "../redux/slices/eventsSlice";
 import QueryString from "qs";
 
-const DateGroupPsycoSlots = ({ group }) => {
+const DateGroupPsycoSlots = ({ group, onEventCancelled }) => {
   const [slotPopupData, setSlotPopupData] = React.useState({});
   const [isPopupShown, setIsPopupShown] = React.useState(false);
   const [slotPopupDate, setSlotPopupDate] = React.useState("");
@@ -236,6 +236,14 @@ const DateGroupPsycoSlots = ({ group }) => {
           isOpen={showEventPopup}
           onClose={handleCloseEventPopup}
           onOpenRelatedEvent={handleOpenRelatedEvent}
+          onEventCancelled={() => {
+            // Перезагружаем события после отмены записи
+            dispatch(fetchAllEvents());
+            // Также вызываем callback родительского компонента для обновления слотов
+            if (onEventCancelled) {
+              onEventCancelled();
+            }
+          }}
         />
       )}
 

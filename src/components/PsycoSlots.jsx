@@ -442,7 +442,16 @@ const PsycoSlots = () => {
             className="slot-grid-container px-5 pt-5 pb-10 min-h-screen gap-10 "
           >
             {groups_of_slots?.map((group) => (
-              <DateGroupPsycoSlots key={group.date || group.pretty_date} group={group}></DateGroupPsycoSlots>
+              <DateGroupPsycoSlots 
+                key={group.date || group.pretty_date} 
+                group={group}
+                onEventCancelled={() => {
+                  // Перезагружаем слоты после отмены записи на мероприятие
+                  if (secret) {
+                    selectFn(selectedDate, secret);
+                  }
+                }}
+              ></DateGroupPsycoSlots>
             ))}
           </div>
         )}

@@ -4,11 +4,12 @@ import { ru } from "date-fns/locale/ru";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "./Button";
 import Radio from "./Radio";
-import { registerForEvent, clearRegistrationStatus } from "../redux/slices/eventsSlice";
+import { registerForEvent, clearRegistrationStatus, fetchAllEvents } from "../redux/slices/eventsSlice";
 import toast, { Toaster } from "react-hot-toast";
 import { toast as sonnerToast } from "sonner";
 import QueryString from "qs";
 import TelegramPlane from "../assets/telegram-plane.svg?react";
+import axios from "axios";
 
 // Функция для получения цвета модальности
 function getColorByModalityLocal(modality) {
@@ -26,7 +27,7 @@ function getColorByModalityLocal(modality) {
   return modalityColors[normalizedModality] || modalityColors[modality] || "#10B981";
 }
 
-const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent }) => {
+const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCancelled }) => {
   const dispatch = useDispatch();
   const { registering, registrationSuccess, error, registeredEvents, allEvents } = useSelector((state) => state.events);
 
@@ -34,6 +35,9 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent }) => {
   const [repeatPeriod, setRepeatPeriod] = useState("нет");
   const [loadingRepeatPeriod, setLoadingRepeatPeriod] = useState(false);
   const [updatingRepeatPeriod, setUpdatingRepeatPeriod] = useState(false);
+
+  // Состояние для отмены записи
+  const [isCancelling, setIsCancelling] = useState(false);
 
   // Получаем secret из URL
   const secret = QueryString.parse(window.location.search, {
@@ -210,18 +214,81 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent }) => {
     onClose();
   };
 
+  // Функция для отмены записи на мероприятие
+  const handleCancelRegistration = async () => {
+    console.log("handleCancelRegistration вызвана");
+    console.log("isCancelling:", isCancelling);
+
+    if (isCancelling) return;
+
+    // Получаем ID слота из различных возможных полей
+    const slotId = event?.slot_id || event?.id || event?.event_id;
+
+    console.log("Отладка отмены записи:", {
+      slotId,
+      secret,
+      event,
+      "event.slot_id": event?.slot_id,
+      "event.id": event?.id,
+      "event.event_id": event?.event_id
+    });
+
+    if (!slotId) {
+      console.error("slotId не найден");
+      toast.error("Не удалось определить ID слота для отмены");
+      return;
+    }
+
+    if (!secret) {
+      console.error("secret не найден");
+      toast.error("Не найден секретный ключ");
+      return;
+    }
+
+    setIsCancelling(true);
+
+    const apiUrl = `https://n8n-v2.hrani.live/webhook/cancel-slot?slot=${slotId}&secret=${secret}`;
+    console.log("Вызываем API:", apiUrl);
+
+    try {
+      const response = await axios.get(apiUrl);
+      console.log("Ответ API:", response);
+
+      if (response.status === 200) {
+        // Обновляем только локальное состояние
+        setIsRegistered(false);
+
+        toast.success("Запись на мероприятие отменена", {
+          duration: 4000, // 4 секунды
+        });
+
+        // Закрываем попап через небольшую задержку
+        setTimeout(() => {
+          handleClose();
+        }, 1500);
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Ошибка при отмене записи:", error);
+      toast.error("Ошибка при отмене записи. Попробуйте еще раз");
+    } finally {
+      setIsCancelling(false);
+    }
+  };
+
   // Функция для поиска и открытия связанного события
   const handleOpenRelatedEvent = (eventTitle) => {
     if (!onOpenRelatedEvent) return;
-    
+
     // Ищем событие в allEvents по названию
-    const relatedEvent = allEvents.find(evt => 
-      evt.title === eventTitle || 
+    const relatedEvent = allEvents.find(evt =>
+      evt.title === eventTitle ||
       evt.name === eventTitle ||
       evt.title?.includes(eventTitle) ||
       evt.name?.includes(eventTitle)
     );
-    
+
     if (relatedEvent) {
       onOpenRelatedEvent(relatedEvent);
     } else {
@@ -277,7 +344,13 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent }) => {
             {event.event_modal_type && !isCustomEvent && (
               <div className="flex flex-col gap-1">
                 <p className="text-dark-green">
-                  <b>Модальность:</b> {event.event_modal_type}
+                  <b>Модальность:</b> 
+                  <span 
+                    className="ml-2 px-3 py-1 rounded-full text-white font-medium text-sm"
+                    style={{ backgroundColor: modalityColor }}
+                  >
+                    {event.event_modal_type}
+                  </span>
                 </p>
               </div>
             )}
@@ -439,8 +512,8 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent }) => {
             {event.next_event && (
               <div className="flex flex-col gap-1">
                 <p className="text-dark-green">
-                  <b>Следующее аналогичное мероприятие:</b> <a 
-                    href="#" 
+                  <b>Следующее аналогичное мероприятие:</b> <a
+                    href="#"
                     className="underline cursor-pointer hover:text-green transition-colors"
                     onClick={(e) => {
                       e.preventDefault();
@@ -462,7 +535,7 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent }) => {
               </div>
             )}
 
-            {/* Кнопка записи */}
+            {/* Кнопки действий */}
             <div className="mt-4 flex flex-col gap-2">
               {(() => {
                 console.log('EventViewPopup - button condition:', {
@@ -494,8 +567,8 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent }) => {
                   <div className="space-y-2">
                     <p>К сожалению вы не можете записаться на это мероприятие, поскольку число желающих его посетить уже достигло максимального количества.</p>
                     {event.next_event && (
-                      <p>Следующее аналогичное мероприятие состоится <a 
-                        href="#" 
+                      <p>Следующее аналогичное мероприятие состоится <a
+                        href="#"
                         className="underline cursor-pointer hover:text-white/80 transition-colors"
                         onClick={(e) => {
                           e.preventDefault();
@@ -547,6 +620,79 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent }) => {
                   })()}
                 </div>
               )}
+
+              {/* Кнопка отмены записи - показывается только если пользователь записан */}
+              {(() => {
+                console.log('Условия для кнопки отмены:', {
+                  isRegistered,
+                  'event.registered': event.registered,
+                  'event.is_canceled': event.is_canceled,
+                  shouldShowCancelButton: (isRegistered || event.registered) && !event.is_canceled
+                });
+                return null;
+              })()}
+              {(isRegistered || event.registered) && !event.is_canceled && (
+                <Button
+                  intent="primary-transparent"
+                  hover="primary"
+                  onClick={handleCancelRegistration}
+                  disabled={isCancelling}
+                  className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+                >
+                  {isCancelling ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <svg
+                        width={16}
+                        height={16}
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 200 200"
+                      >
+                        <radialGradient
+                          id="cancelSpinner"
+                          cx=".66"
+                          fx=".66"
+                          cy=".3125"
+                          fy=".3125"
+                          gradientTransform="scale(1.5)"
+                        >
+                          <stop offset="0" stopColor="#ef4444"></stop>
+                          <stop offset=".3" stopColor="#ef4444" stopOpacity=".9"></stop>
+                          <stop offset=".6" stopColor="#ef4444" stopOpacity=".6"></stop>
+                          <stop offset=".8" stopColor="#ef4444" stopOpacity=".3"></stop>
+                          <stop offset="1" stopColor="#ef4444" stopOpacity="0"></stop>
+                        </radialGradient>
+                        <circle
+                          transformOrigin="center"
+                          fill="none"
+                          stroke="url(#cancelSpinner)"
+                          strokeWidth="16"
+                          strokeLinecap="round"
+                          strokeDasharray="200 1000"
+                          strokeDashoffset="0"
+                          cx="100"
+                          cy="100"
+                          r="70"
+                        >
+                          <animateTransform
+                            type="rotate"
+                            attributeName="transform"
+                            calcMode="spline"
+                            dur="2"
+                            values="360;0"
+                            keyTimes="0;1"
+                            keySplines="0 0 1 1"
+                            repeatCount="indefinite"
+                          />
+                        </circle>
+                      </svg>
+                      Отменяем...
+                    </div>
+                  ) : (
+                    "Отменить запись"
+                  )}
+                </Button>
+              )}
+
               <Button intent="cream" hover="primary" onClick={handleClose}>
                 Закрыть
               </Button>
