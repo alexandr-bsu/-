@@ -233,15 +233,17 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
               </p>
             </div>
 
-            {/* Тип мероприятия */}
-            <div className="flex flex-col gap-1">
-              <p className="text-dark-green flex gap-2">
-                <b>Мероприятие:</b> {event.event_type || event.type}
-              </p>
-            </div>
+            {/* Тип мероприятия - скрыто для пользовательских событий */}
+            {!isCustomEvent && (
+              <div className="flex flex-col gap-1">
+                <p className="text-dark-green flex gap-2">
+                  <b>Мероприятие:</b> {event.event_type || event.type}
+                </p>
+              </div>
+            )}
 
-            {/* Модальность */}
-            {event.event_modal_type && (
+            {/* Модальность - скрыто для пользовательских событий */}
+            {event.event_modal_type && !isCustomEvent && (
               <div className="flex flex-col gap-1">
                 <p className="text-dark-green">
                   <b>Модальность:</b> {event.event_modal_type}
@@ -259,36 +261,38 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
               </div>
             )}
 
-            {/* Организатор */}
-            <div className="flex flex-col gap-1">
-              <p className="text-dark-green flex items-center gap-2">
-                <b>{(() => {
-                  const eventType = (event.event_type || event.type || "").toLowerCase();
+            {/* Организатор - скрыто для пользовательских событий */}
+            {!isCustomEvent && (
+              <div className="flex flex-col gap-1">
+                <p className="text-dark-green flex items-center gap-2">
+                  <b>{(() => {
+                    const eventType = (event.event_type || event.type || "").toLowerCase();
 
-                  // Определяем название роли согласно типу мероприятия
-                  if (eventType.includes("супервизи")) {
-                    return "Супервизор";
-                  } else if (eventType.includes("интервизи")) {
-                    return "Модератор";
-                  } else {
-                    return "Ведущий";
-                  }
-                })()}:</b>
+                    // Определяем название роли согласно типу мероприятия
+                    if (eventType.includes("супервизи")) {
+                      return "Супервизор";
+                    } else if (eventType.includes("интервизи")) {
+                      return "Модератор";
+                    } else {
+                      return "Ведущий";
+                    }
+                  })()}:</b>
 
-                {(event.organizator_link || event.organizer_tg_link) && (
-                  <a
-                    href={`https://${event.organizator_link || event.organizer_tg_link}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-green hover:text-dark-green transition-colors inline-flex items-center"
-                    title="Перейти на страницу психолога"
-                  >
-                    <span className="underline">{event.organizator_name || event.organizer_name}</span>
-                    <TelegramPlane width={16} height={16} />
-                  </a>
-                )}
-              </p>
-            </div>
+                  {(event.organizator_link || event.organizer_tg_link) && (
+                    <a
+                      href={`https://${event.organizator_link || event.organizer_tg_link}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green hover:text-dark-green transition-colors inline-flex items-center"
+                      title="Перейти на страницу психолога"
+                    >
+                      <span className="underline">{event.organizator_name || event.organizer_name}</span>
+                      <TelegramPlane width={16} height={16} />
+                    </a>
+                  )}
+                </p>
+              </div>
+            )}
 
             {/* Ссылка на встречу - только для зарегистрированных */}
             {(event.event_link || event.meeting_link) && isRegistered && (
@@ -307,8 +311,8 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
               </div>
             )}
 
-            {/* Максимальное количество участников */}
-            {event.max_participants && (
+            {/* Максимальное количество участников - скрыто для пользовательских событий */}
+            {event.max_participants && !isCustomEvent && (
               <div className="flex flex-col gap-1">
                 <p className="text-dark-green">
                   <b>Максимальное количество участников:</b> {event.max_participants}
@@ -316,8 +320,8 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
               </div>
             )}
 
-            {/* Текущее количество участников */}
-            {event.current_participants !== undefined && (
+            {/* Текущее количество участников - скрыто для пользовательских событий */}
+            {event.current_participants !== undefined && !isCustomEvent && (
               <div className="flex flex-col gap-1">
                 <p className="text-dark-green">
                   <b>Участники:</b> {event.current_participants}/{event.max_participants || 0}
