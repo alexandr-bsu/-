@@ -315,14 +315,7 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
               </div>
             )}
 
-            {/* Максимальное количество участников - скрыто для пользовательских событий */}
-            {event.max_participants && !isCustomEvent && (
-              <div className="flex flex-col gap-1">
-                <p className="text-dark-green">
-                  <b>Максимальное количество участников:</b> {event.max_participants}
-                </p>
-              </div>
-            )}
+
 
             {/* Текущее количество участников - скрыто для пользовательских событий */}
             {event.current_participants !== undefined && !isCustomEvent && (
@@ -444,7 +437,7 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
                 });
                 return null;
               })()}
-              {!isRegistered && !event.registered && !event.is_canceled ? (
+              {!isRegistered && !event.registered && !event.is_canceled && !(event.current_participants >= event.max_participants) ? (
                 <Button
                   intent="primary"
                   onClick={handleRegister}
@@ -459,6 +452,15 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
               ) : event.is_canceled ? (
                 <div className="p-3 rounded-lg bg-red text-white text-center">
                   Мероприятие отменено
+                </div>
+              ) : event.current_participants >= event.max_participants && !isRegistered && !event.registered ? (
+                <div className="p-3 rounded-lg bg-red text-white text-center">
+                  <div className="space-y-2">
+                    <p>К сожалению вы не можете записаться на это мероприятие, поскольку число желающих его посетить уже достигло максимального количества.</p>
+                    {event.next_event && (
+                      <p>Следующее аналогичное мероприятие состоится <a href="#" className="underline">{event.next_event}</a> 🙏</p>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <div className="p-3 rounded-lg bg-green text-white">
