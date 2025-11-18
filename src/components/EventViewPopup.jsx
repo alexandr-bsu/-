@@ -46,6 +46,10 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
     eventDate ? format(eventDate, "d MMMM yyyy", { locale: ru }) : "",
     [eventDate]
   );
+  const formattedDateShort = useMemo(() =>
+    eventDate ? format(eventDate, "dd.MM.yyyy") : "",
+    [eventDate]
+  );
   const eventTime = useMemo(() => event?.time || "", [event?.time]);
   const formattedDateStr = useMemo(() => eventDate ? format(eventDate, "yyyy-MM-dd") : "", [eventDate]);
   const eventName = useMemo(() => event?.title || event?.name || "", [event?.title, event?.name]);
@@ -457,8 +461,43 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
                   Мероприятие отменено
                 </div>
               ) : (
-                <div className="p-3 rounded-lg bg-green text-white text-center">
-                  Вы записаны на это мероприятие
+                <div className="p-3 rounded-lg bg-green text-white">
+                  {(() => {
+                    const eventType = (event.event_type || event.type || "").toLowerCase();
+                    const organizatorName = event.organizator_name || event.organizer_name || "супервизора";
+                    const eventFolder = event.event_folder;
+
+                    if (eventType.includes("супервизи")) {
+                      return (
+                        <div className="space-y-2">
+                          <p className="font-semibold">Вы успешно записались на супервизию.</p>
+                          <p>Ссылка будет доступна в этой карточке. В чат-бот вам придет напоминание о событии за 24 часа и за 1 час 🙏</p>
+                          <p>Если вы хотите вынести кейс, то пожалуйста запишитесь в этой таблице (максимум 2 кейса на одной супервизии): <a href="https://docs.google.com/spreadsheets/d/1Brg-cz6OAp7Li3X3IrrwYPbNPGvckXRMk5fYUSbSH-E/" target="_blank" rel="noopener noreferrer" className="underline">Расписание мероприятий Сообщества Хранители</a>.</p>
+                          {eventFolder && (
+                            <p>Кейсы можете загрузить в эту папку: <a href={eventFolder} target="_blank" rel="noopener noreferrer" className="underline">Супервизия_{organizatorName}_{formattedDateShort}</a></p>
+                          )}
+                        </div>
+                      );
+                    } else if (eventType.includes("интервизи")) {
+                      return (
+                        <div className="space-y-2">
+                          <p className="font-semibold">Вы успешно записались на интервизию.</p>
+                          <p>Ссылка будет доступна в этой карточке. В чат-бот вам придет напоминание о событии за 24 часа и за 1 час 🙏</p>
+                          <p>Если вы хотите вынести кейс, то пожалуйста запишитесь в этой таблице (максимум 2 кейса на одной супервизии): <a href="https://docs.google.com/spreadsheets/d/1Brg-cz6OAp7Li3X3IrrwYPbNPGvckXRMk5fYUSbSH-E/" target="_blank" rel="noopener noreferrer" className="underline">Расписание мероприятий Сообщества Хранители</a>.</p>
+                          {eventFolder && (
+                            <p>Кейсы можете загрузить в эту папку: <a href={eventFolder} target="_blank" rel="noopener noreferrer" className="underline">Интервизия_{organizatorName}_{formattedDateShort}</a></p>
+                          )}
+                        </div>
+                      );
+                    } else {
+                      return (
+                        <div className="space-y-2">
+                          <p className="font-semibold">Вы успешно записались на мероприятие: {eventName}, которое состоится {formattedDate}.</p>
+                          <p>Ссылка на мероприятие доступна в этой карточке. В чат-бот вам придет напоминание о событии за 24 часа и за 1 час 🙏</p>
+                        </div>
+                      );
+                    }
+                  })()}
                 </div>
               )}
               <Button intent="cream" hover="primary" onClick={handleClose}>
