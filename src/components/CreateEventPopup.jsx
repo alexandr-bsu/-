@@ -123,9 +123,9 @@ const CreateEventPopup = ({ isOpen, onClose, onSave }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed top-0 left-0 h-screen w-full flex justify-center items-center p-5 z-20">
-            <div className="bg-[#eed5bf] w-full max-w-md">
-                <div className="bg-[#eed5bf] p-5 border-b border-b-dark-green w-full flex justify-between items-center rounded-t-lg">
+        <div className="fixed top-0 left-0 h-screen w-full flex justify-center items-center p-5 z-20 bg-[#000000] bg-opacity-20">
+            <div className="bg-[#eed5bf] w-full max-w-md max-h-[600px] overflow-y-auto rounded-lg">
+                <div className="bg-[#eed5bf] p-5 border-b border-b-dark-green w-full flex justify-between items-center">
                     <h2 className="text-dark-green font-medium text-xl">Создать мероприятие</h2>
                     <img
                         src="static/close.png"

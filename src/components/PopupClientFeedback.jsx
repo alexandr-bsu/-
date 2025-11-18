@@ -81,7 +81,7 @@ const PopupPsyAnketa = ({ isVisible = true, closeFn }) => {
     <>
       {isVisible && (
         <div className="w-screen h-screen flex justify-center items-center p-20 fixed top-0 left-0">
-          <div className="flex flex-col justify-center items-center bg-white rounded-[30px] p-5 w-[600px]">
+          <div className="flex flex-col justify-center items-center bg-white rounded-[30px] p-5 w-[600px] max-h-[600px] overflow-y-auto">
             {status == "loading" && (
               <svg
                 className="justify-self-center self-center"

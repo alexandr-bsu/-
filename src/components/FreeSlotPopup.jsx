@@ -34,7 +34,7 @@ const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn }) => {
       try {
         const slotParam = slotId || slotDate;
         console.log("FreeSlotPopup: Загружаем планирование для слота:", slotParam, "slotId:", slotId, "slotDate:", slotDate);
-        
+
         const response = await axios.get("https://n8n-v2.hrani.live/webhook/get-root-planned-free-slot", {
           params: {
             secret: secret,
@@ -68,7 +68,7 @@ const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn }) => {
     try {
       const slotParam = slotId || slotDate;
       console.log("FreeSlotPopup: Сохраняем планирование для слота:", slotParam, "slotId:", slotId, "slotDate:", slotDate);
-      
+
       await axios.post("https://n8n-v2.hrani.live/webhook/plan-free-slots", {
         secret: secret,
         slot: slotParam, // Используем UUID слота, если есть, иначе fallback на дату слота
@@ -124,9 +124,9 @@ const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn }) => {
   };
 
   return (
-    <div className="fixed top-0 left-0 h-screen w-full flex justify-center items-center p-5 z-20">
-      <div className="bg-[#eed5bf] rounded-lg w-full max-w-md">
-        <div className="bg-[#eed5bf] p-5 border-b border-b-dark-green w-full flex justify-between items-center">
+    <div className="fixed top-0 left-0 h-screen w-full flex justify-center items-center p-5 z-20 bg-[#000000] bg-opacity-20">
+      <div className="bg-white rounded-[30px] w-full max-w-[960px] mx-5 max-h-[650px] overflow-y-auto">
+        <div className="bg-white p-5 border-b border-b-dark-green w-full flex justify-between items-center">
           <h2 className="text-dark-green font-medium text-xl">
             Свободный слот - {slotDate}
           </h2>
@@ -201,7 +201,7 @@ const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn }) => {
                       value={option.value}
                       onChange={(e) => handlePlanningChange(e.target.value)}
                       checked={repeatPeriod === option.value}
-                      // disabled={isSavingPlan}
+                    // disabled={isSavingPlan}
                     >
                       {option.label}
                     </Radio>

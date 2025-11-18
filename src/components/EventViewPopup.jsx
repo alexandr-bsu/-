@@ -11,7 +11,7 @@ import QueryString from "qs";
 
 // Функция для получения цвета модальности
 function getColorByModalityLocal(modality) {
-    const modalityColors = {
+  const modalityColors = {
     jungian: "#8B5CF6",
     "юнгианство": "#8B5CF6",
     cbt: "#FCD34D",
@@ -177,7 +177,7 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
 
   const modalityColor = getColorByModalityLocal(event.event_modal_type || event.modality);
 
-  
+
   const handleRegister = async () => {
     if (!eventDate || !eventTime) {
       toast.error("Не удалось определить дату или время мероприятия");
@@ -209,8 +209,8 @@ const EventViewPopup = ({ event, isOpen, onClose }) => {
     <>
       <Toaster />
       <div className="fixed top-0 left-0 h-screen w-full flex justify-center items-center p-5 z-20 bg-[#000000] bg-opacity-20">
-        <div className="bg-white rounded-[30px] h-full w-full max-w-[960px] mx-5 overflow-y-scroll">
-          <div className="bg-[#eed5bf] sticky top-0 p-5 border-b border-b-dark-green mb-10 w-full flex justify-between items-center">
+        <div className="bg-white rounded-[30px] w-full max-w-[960px] mx-5 max-h-[650px] overflow-y-auto">
+          <div className="bg-white sticky top-0 p-5 border-b border-b-dark-green w-full flex justify-between items-center">
             <div>
               <h2 className="text-dark-green font-medium text-3xl">
                 Слот на {formattedDate} {eventTime}
