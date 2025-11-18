@@ -141,7 +141,7 @@ const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn }) => {
         <div className="p-5 flex flex-col gap-4">
           {/* Секция планирования */}
           <div className="border-b border-b-dark-green pb-4">
-            <h3 className="text-dark-green font-medium mb-3">Планирование слота</h3>
+            <h3 className="text-dark-green font-medium mb-3">Повторить слот</h3>
 
             {isLoadingPlan ? (
               <div className="flex items-center justify-center py-4">
