@@ -499,7 +499,7 @@ const DateGroupPsycoSlots = ({ group, onEventCancelled }) => {
                     ) : (
                       <>
                         {isSelectedSlot && (
-                          <Check width={20} height={20}></Check>
+                          <Edit width={20} height={20}></Edit>
                         )}
                       </>
                     )}
