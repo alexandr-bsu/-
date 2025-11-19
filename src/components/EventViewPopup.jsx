@@ -580,16 +580,7 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                   <div className="space-y-2">
                     <p>К сожалению вы не можете записаться на это мероприятие, поскольку число желающих его посетить уже достигло максимального количества.</p>
                     {event.next_event && (
-                      <p>Следующее аналогичное мероприятие состоится <a
-                        href="#"
-                        className="underline cursor-pointer hover:text-white/80 transition-colors"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleOpenRelatedEvent(event.next_event);
-                        }}
-                      >
-                        {event.next_event}
-                      </a> 🙏</p>
+                      <p>Вы можете записаться на аналогичное мероприятие по ссылке выше 🙏</p>
                     )}
                   </div>
                 </div>
