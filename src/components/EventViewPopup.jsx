@@ -314,10 +314,18 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
       <div className="fixed top-0 left-0 h-screen w-full flex justify-center items-center p-5 z-20 bg-[#000000] bg-opacity-20">
         <div className="bg-white rounded-[30px] w-full max-w-[660px] mx-5 max-h-[650px] overflow-y-auto">
           <div className="bg-white sticky top-0 p-5 border-b border-b-dark-green w-full flex justify-between items-center">
-            <div>
-              <h2 className="text-dark-green font-medium text-3xl">
-                {formattedDate} {eventTime}
+            <div className="flex items-center gap-3">
+              <h2 className="text-dark-green font-bold text-2xl">
+                {event.title || event.name}
               </h2>
+              {!isCustomEvent && (
+                <span
+                  className="px-3 py-1 rounded-full text-white font-medium text-sm"
+                  style={{ backgroundColor: modalityColor }}
+                >
+                  {event.event_modal_type || event.modality}
+                </span>
+              )}
             </div>
             <img
               src="static/close.png"
@@ -328,63 +336,38 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
           </div>
 
           <div data-name="event-data" className="p-5 flex flex-col gap-4">
-            {/* Название мероприятия - как у пациента */}
+            {/* Дата и время */}
             <div className="flex flex-col gap-1">
-              <p className="text-dark-green flex gap-2">
-                <b>Название:</b> {event.title || event.name}
-              </p>
+              <h3 className="text-dark-green font-normal text-lg">
+                {formattedDate} в {eventTime}
+              </h3>
             </div>
-
-            {/* Тип мероприятия - скрыто для пользовательских событий */}
-            {!isCustomEvent && (
-              <div className="flex flex-col gap-1">
-                <p className="text-dark-green flex gap-2">
-                  <b>Мероприятие:</b> {event.event_type || event.type}
-                </p>
-              </div>
-            )}
-
-            {/* Модальность - скрыто для пользовательских событий */}
-            {event.event_modal_type && !isCustomEvent && (
-              <div className="flex flex-col gap-1">
-                <p className="text-dark-green">
-                  <b>Модальность:</b>
-                  <span
-                    className="ml-2 px-3 py-1 rounded-full text-white font-medium text-sm"
-                    style={{ backgroundColor: modalityColor }}
-                  >
-                    {event.event_modal_type}
-                  </span>
-                </p>
-              </div>
-            )}
 
             {/* Описание */}
             {event.description && (
               <div className="flex flex-col gap-1">
-                <p className="text-dark-green">
-                  <b>Описание:</b>
-                </p>
-                <p className="text-dark-green">{event.description}</p>
+                <p className="text-dark-green text-base font-normal">{event.description}</p>
               </div>
             )}
 
             {/* Организатор - скрыто для пользовательских событий */}
             {!isCustomEvent && (
               <div className="flex flex-col gap-1">
-                <p className="text-dark-green flex items-center gap-2">
-                  <b>{(() => {
+                <p className="text-dark-green text-base flex items-center gap-2">
+                  <span className="font-normal">{(() => {
                     const eventType = (event.event_type || event.type || "").toLowerCase();
 
                     // Определяем название роли согласно типу мероприятия
                     if (eventType.includes("супервизи")) {
-                      return "Супервизор";
+                      return "Супервизор:";
                     } else if (eventType.includes("интервизи")) {
-                      return "Модератор";
+                      return "Модератор:";
                     } else {
-                      return "Ведущий";
+                      return "Ведущий:";
                     }
-                  })()}:</b>
+                  })()}</span>
+
+                  <span className="font-bold">{event.organizator_name || event.organizer_name}</span>
 
                   {(event.organizator_link || event.organizer_tg_link) && (
                     <a
@@ -394,7 +377,6 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                       className="text-green hover:text-dark-green transition-colors inline-flex items-center"
                       title="Перейти на страницу психолога"
                     >
-                      <span className="underline">{event.organizator_name || event.organizer_name}</span>
                       <TelegramPlane width={16} height={16} />
                     </a>
                   )}
@@ -403,11 +385,11 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
             )}
 
 
-             {/* Текущее количество участников - скрыто для пользовательских событий */}
-             {event.current_participants !== undefined && !isCustomEvent && (
+            {/* Текущее количество участников - скрыто для пользовательских событий */}
+            {event.current_participants !== undefined && !isCustomEvent && (
               <div className="flex flex-col gap-1">
-                <p className="text-dark-green">
-                  <b>Участники:</b> {event.current_participants}/{event.max_participants || 0}
+                <p className="text-dark-green text-base">
+                  <span className="font-normal">Участников:</span> <span className="font-bold">{event.current_participants}/{event.max_participants || 0}</span>
                 </p>
               </div>
             )}
@@ -416,25 +398,22 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
             {/* Ссылка на встречу - только для зарегистрированных */}
             {(event.event_link || event.meeting_link) && isRegistered && (
               <div className="flex flex-col gap-1">
-                <p className="text-dark-green">
-                  <b>Ссылка на встречу: </b>
-                  <a
+                <p className="text-dark-green text-base">
+                  <span className="font-normal">Ссылка на мероприятие:</span> <a
                     href={event.event_link || event.meeting_link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-green underline"
+                    className="text-green underline font-bold"
                   >
-                    {/* {event.event_link || event.meeting_link} */}
-                    Cсылка
+                    ссылка
                   </a>
                 </p>
-
               </div>
             )}
 
 
 
-           
+
 
             {/* Период повторения
             {event.repeat_period && !isCustomEvent && (
@@ -507,15 +486,14 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                 event.event_type === "супервизия" ||
                 event.event_type === "intervision") && (
                 <div className="flex gap-1">
-                  <p className="text-dark-green">
-                    <b>Папка с кейсами: </b>
-                    <a
+                  <p className="text-dark-green text-base">
+                    <span className="font-normal">Папка с кейсами:</span> <a
                       href={event.event_folder}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-green underline"
+                      className="text-green underline font-bold"
                     >
-                      Ссылка на папку
+                      ссылка
                     </a>
                   </p>
                 </div>
@@ -524,10 +502,10 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
             {/* Следующее мероприятие */}
             {event.next_event && (
               <div className="flex flex-col gap-1">
-                <p className="text-dark-green">
-                  <b>Следующее аналогичное мероприятие:</b> <a
+                <p className="text-dark-green text-base">
+                  <span className="font-normal">Следующее мероприятие:</span> <a
                     href="#"
-                    className="underline cursor-pointer hover:text-green transition-colors"
+                    className="underline cursor-pointer hover:text-green transition-colors font-bold"
                     onClick={(e) => {
                       e.preventDefault();
                       handleOpenRelatedEvent(event.next_event);
