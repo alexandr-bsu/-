@@ -1,6 +1,8 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useMemo } from "react";
 import QueryString from "qs";
 import axios from "axios";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale/ru";
 import errorLottie from "../assets/lotties/error";
 import Lottie from "react-lottie";
 import Button from "./Button";
@@ -20,6 +22,20 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
 
   const [data, setData] = useState({});
   const [status, setStatus] = useState("loading");
+
+  // Форматируем дату в нужный формат
+  const formattedDate = useMemo(() => {
+    if (!queryDate || !queryTime) return slotDate;
+
+    try {
+      // Создаем дату из queryDate (формат YYYY-MM-DD) и queryTime (формат HH:MM)
+      const dateObj = new Date(`${queryDate}T${queryTime}:00`);
+      return format(dateObj, "d MMMM 'в' HH:mm", { locale: ru });
+    } catch (error) {
+      console.error("Ошибка форматирования даты:", error);
+      return slotDate;
+    }
+  }, [queryDate, queryTime, slotDate]);
 
   function loadSlotData() {
     setStatus("loading");
@@ -130,7 +146,7 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
         <div className="bg-white sticky top-0 p-5 border-b border-b-dark-green w-full flex justify-between items-center">
           <div>
             <h2 className="text-dark-green font-medium text-3xl ">
-              {slotDate}
+              Сессия с клиентом
             </h2>
             <p className="text-dark-green text-xl">{data['is_helpful_hand'] ? "Заявка из Руки помощи " : ''}</p>
           </div>
@@ -203,6 +219,10 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
         {status == "ok" && (
           <div data-name="slot-data" className="p-5 flex flex-col gap-8">
             <div className="flex flex-col gap-1">
+              <h3 className="text-dark-green font-normal text-lg">
+                {formattedDate}
+              </h3>
+
               <p className="text-dark-green flex gap-2">
                 <b>Имя: </b> {data["client_name"]}
               </p>

@@ -314,8 +314,8 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
       <div className="fixed top-0 left-0 h-screen w-full flex justify-center items-center p-5 z-20 bg-[#000000] bg-opacity-20">
         <div className="bg-white rounded-[30px] w-full max-w-[660px] mx-5 max-h-[650px] overflow-y-auto">
           <div className="bg-white sticky top-0 p-5 border-b border-b-dark-green w-full flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <h2 className="text-dark-green font-bold text-2xl">
+            <div className="flex items-center gap-3 flex-wrap">
+              <h2 className="text-green font-bold text-2xl">
                 {event.title || event.name}
               </h2>
               {!isCustomEvent && (
@@ -336,80 +336,110 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
           </div>
 
           <div data-name="event-data" className="p-5 flex flex-col gap-4">
-            {/* Дата и время */}
-            <div className="flex flex-col gap-1">
-              <h3 className="text-dark-green font-normal text-lg">
-                {formattedDate} в {eventTime}
-              </h3>
+            <div data-group="section">
+              {/* Дата и время */}
+              <div className="flex flex-col gap-1">
+                <h3 className="text-green font-bold text-lg">
+                  {formattedDate} в {eventTime}
+                </h3>
+              </div>
             </div>
 
-            {/* Описание */}
-            {event.description && (
-              <div className="flex flex-col gap-1">
-                <p className="text-dark-green text-base font-normal">{event.description}</p>
-              </div>
-            )}
+            <div data-group="section">
+              {/* Описание */}
+              {event.description && (
+                <div className="flex flex-col gap-1">
+                  <p className="text-green text-base font-normal">{event.description}</p>
+                </div>
+              )}
+            </div>
 
-            {/* Организатор - скрыто для пользовательских событий */}
-            {!isCustomEvent && (
-              <div className="flex flex-col gap-1">
-                <p className="text-dark-green text-base flex items-center gap-2">
-                  <span className="font-normal">{(() => {
-                    const eventType = (event.event_type || event.type || "").toLowerCase();
+            <div data-group="section">
+              {/* Организатор - скрыто для пользовательских событий */}
+              {!isCustomEvent && (
+                <div className="flex flex-wrap">
+                  <p className="text-green text-base flex items-center flex-wrap">
+                    <span className="font-normal mr-1">{(() => {
+                      const eventType = (event.event_type || event.type || "").toLowerCase();
 
-                    // Определяем название роли согласно типу мероприятия
-                    if (eventType.includes("супервизи")) {
-                      return "Супервизор:";
-                    } else if (eventType.includes("интервизи")) {
-                      return "Модератор:";
-                    } else {
-                      return "Ведущий:";
-                    }
-                  })()}</span>
+                      // Определяем название роли согласно типу мероприятия
+                      if (eventType.includes("супервизи")) {
+                        return "Супервизор: ";
+                      } else if (eventType.includes("интервизи")) {
+                        return "Модератор: ";
+                      } else {
+                        return "Ведущий: ";
+                      }
+                    })()}</span>
 
-                  <span className="font-bold">{event.organizator_name || event.organizer_name}</span>
 
-                  {(event.organizator_link || event.organizer_tg_link) && (
-                    <a
-                      href={`https://${event.organizator_link || event.organizer_tg_link}`}
+
+                    {(event.organizator_link || event.organizer_tg_link) && (
+                      <a
+                        href={`https://${event.organizator_link || event.organizer_tg_link}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-green hover:text-green transition-colors inline-flex items-center"
+                        title="Перейти на страницу психолога"
+                      >
+                        <span className="font-bold">{event.organizator_name || event.organizer_name}</span>
+                        <TelegramPlane width={16} height={16} />
+                      </a>
+                    )}
+                  </p>
+                </div>
+              )}
+
+
+              {/* Текущее количество участников - скрыто для пользовательских событий */}
+              {event.current_participants !== undefined && !isCustomEvent && (
+                <div className="flex flex-col flex-wrap">
+                  <p className="text-green text-base">
+                    <span className="font-normal">Участников: </span> <span className="font-bold">{event.current_participants}/{event.max_participants || 0}</span>
+                  </p>
+                </div>
+              )}
+
+
+              {/* Ссылка на встречу - только для зарегистрированных */}
+              {(event.event_link || event.meeting_link) && isRegistered && (
+                <div className="flex flex-col flex-wrap">
+                  <p className="text-green text-base">
+                    <span className="font-normal">Ссылка на мероприятие: </span> <a
+                      href={event.event_link || event.meeting_link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-green hover:text-dark-green transition-colors inline-flex items-center"
-                      title="Перейти на страницу психолога"
+                      className="text-green font-bold"
                     >
-                      <TelegramPlane width={16} height={16} />
+                      ссылка
                     </a>
-                  )}
-                </p>
-              </div>
-            )}
+                  </p>
+                </div>
+              )}
+
+              {/* Папка с кейсами (только для supervision и intervision и только для зарегистрированных) */}
+              {event.event_folder &&
+                isRegistered &&
+                (event.event_type === "supervision" ||
+                  event.event_type === "интервизия" ||
+                  event.event_type === "супервизия" ||
+                  event.event_type === "intervision") && (
+                  <div className="flex flex-wrap">
+                    <p className="text-green text-base">
+                      <span className="font-normal">Папка с кейсами: </span> <a
+                        href={event.event_folder}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-green font-bold"
+                      >
+                        ссылка
+                      </a>
+                    </p>
+                  </div>
+                )}
 
 
-            {/* Текущее количество участников - скрыто для пользовательских событий */}
-            {event.current_participants !== undefined && !isCustomEvent && (
-              <div className="flex flex-col gap-1">
-                <p className="text-dark-green text-base">
-                  <span className="font-normal">Участников:</span> <span className="font-bold">{event.current_participants}/{event.max_participants || 0}</span>
-                </p>
-              </div>
-            )}
-
-
-            {/* Ссылка на встречу - только для зарегистрированных */}
-            {(event.event_link || event.meeting_link) && isRegistered && (
-              <div className="flex flex-col gap-1">
-                <p className="text-dark-green text-base">
-                  <span className="font-normal">Ссылка на мероприятие:</span> <a
-                    href={event.event_link || event.meeting_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-green underline font-bold"
-                  >
-                    ссылка
-                  </a>
-                </p>
-              </div>
-            )}
+            </div>
 
 
 
@@ -418,7 +448,7 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
             {/* Период повторения
             {event.repeat_period && !isCustomEvent && (
               <div className="flex flex-col gap-1">
-                <p className="text-dark-green">
+                <p className="text-green">
                   <b>Период повторения:</b> {event.repeat_period}
                 </p>
               </div>
@@ -428,106 +458,91 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
 
             {/* Радиокнопки режима повтора для пользовательских событий */}
             {isCustomEvent && (
-              <div className="flex flex-col gap-3">
-                <h3 className="text-dark-green font-medium">Режим повтора мероприятия</h3>
-                {loadingRepeatPeriod ? (
-                  <div className="flex items-center gap-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-dark-green"></div>
-                    <span className="text-dark-green text-sm">Загрузка...</span>
-                  </div>
-                ) : (
-                  <ul className="flex flex-col gap-2 p-2">
-                    {[
-                      { value: "нет", label: "Нет" },
-                      { value: "раз в неделю", label: "Раз в неделю" },
-                      { value: "раз в 2 недели", label: "Раз в 2 недели" },
-                      { value: "раз в 3 недели", label: "Раз в 3 недели" },
-                      { value: "раз в месяц", label: "Раз в месяц" }
-                    ].map((option, index) => (
-                      <li key={option.value}>
-                        <Radio
-                          name="repeatPeriod"
-                          intent="primary"
-                          id={`repeat_period_${index}`}
-                          value={option.value}
-                          onChange={(e) => handleRepeatPeriodChange(e.target.value)}
-                          checked={repeatPeriod === option.value}
-                          disabled={updatingRepeatPeriod}
-                        >
-                          {option.label}
-                        </Radio>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                {updatingRepeatPeriod && (
-                  <div className="flex items-center gap-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-dark-green"></div>
-                    <span className="text-dark-green text-sm">Обновление...</span>
-                  </div>
-                )}
+              <div data-group="section">
+                <div className="flex flex-col gap-3">
+                  <h3 className="text-green font-medium">Режим повтора мероприятия</h3>
+                  {loadingRepeatPeriod ? (
+                    <div className="flex items-center gap-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-dark-green"></div>
+                      <span className="text-green text-sm">Загрузка...</span>
+                    </div>
+                  ) : (
+                    <ul className="flex flex-col gap-2 p-2">
+                      {[
+                        { value: "нет", label: "Нет" },
+                        { value: "раз в неделю", label: "Раз в неделю" },
+                        { value: "раз в 2 недели", label: "Раз в 2 недели" },
+                        { value: "раз в 3 недели", label: "Раз в 3 недели" },
+                        { value: "раз в месяц", label: "Раз в месяц" }
+                      ].map((option, index) => (
+                        <li key={option.value}>
+                          <Radio
+                            name="repeatPeriod"
+                            intent="primary"
+                            id={`repeat_period_${index}`}
+                            value={option.value}
+                            onChange={(e) => handleRepeatPeriodChange(e.target.value)}
+                            checked={repeatPeriod === option.value}
+                            disabled={updatingRepeatPeriod}
+                          >
+                            {option.label}
+                          </Radio>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {updatingRepeatPeriod && (
+                    <div className="flex items-center gap-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-dark-green"></div>
+                      <span className="text-green text-sm">Обновление...</span>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
             {/* Последняя запланированная дата */}
             {/* {event.last_planed_date && (
               <div className="flex flex-col gap-1">
-                <p className="text-dark-green">
+                <p className="text-green">
                   <b>Последняя запланированная дата:</b> {format(new Date(event.last_planed_date), "d MMMM yyyy", { locale: ru })}
                 </p>
               </div>
             )} */}
 
-            {/* Папка с кейсами (только для supervision и intervision и только для зарегистрированных) */}
-            {event.event_folder &&
-              isRegistered &&
-              (event.event_type === "supervision" ||
-                event.event_type === "интервизия" ||
-                event.event_type === "супервизия" ||
-                event.event_type === "intervision") && (
-                <div className="flex gap-1">
-                  <p className="text-dark-green text-base">
-                    <span className="font-normal">Папка с кейсами:</span> <a
-                      href={event.event_folder}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-green underline font-bold"
-                    >
-                      ссылка
-                    </a>
-                  </p>
-                </div>
-              )}
 
             {/* Следующее мероприятие */}
             {event.next_event && (
-              <div className="flex flex-col gap-1">
-                <p className="text-dark-green text-base">
-                  <span className="font-normal">Следующее мероприятие:</span> <a
-                    href="#"
-                    className="underline cursor-pointer hover:text-green transition-colors font-bold"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleOpenRelatedEvent(event.next_event);
-                    }}
-                  >
-                    {event.next_event}
-                  </a>
-                </p>
+              <div data-group="section">
+                <div className="flex flex-col gap-1">
+                  <p className="text-green text-base">
+                    <span className="font-normal">Следующее мероприятие:</span> <a
+                      href="#"
+                      className="cursor-pointer hover:text-green transition-colors font-bold"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleOpenRelatedEvent(event.next_event);
+                      }}
+                    >
+                      {event.next_event}
+                    </a>
+                  </p>
+                </div>
               </div>
             )}
 
             {/* Статус отмены */}
-            {event.is_canceled && (
-              <div className="flex flex-col gap-1">
-                <p className="text-red font-bold">
-                  <b>Мероприятие отменено</b>
-                </p>
-              </div>
-            )}
+            {/* {event.is_canceled && (
+                <div className="flex flex-col gap-1">
+                  <p className="text-red font-bold">
+                    <b>Мероприятие отменено</b>
+                  </p>
+                </div>
+              )} */}
+
 
             {/* Кнопки действий */}
-            <div className="mt-4 flex flex-col gap-2">
+            <div className="flex flex-col gap-2">
               {(() => {
                 console.log('EventViewPopup - button condition:', {
                   isRegistered,
@@ -624,33 +639,49 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                   {isCancelling ? (
                     <div className="flex items-center justify-center gap-2">
                       <svg
-                        width={16}
-                        height={16}
+                        width={24}
+                        height={24}
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 200 200"
                       >
                         <radialGradient
-                          id="cancelSpinner"
+                          id="a12"
                           cx=".66"
                           fx=".66"
                           cy=".3125"
                           fy=".3125"
                           gradientTransform="scale(1.5)"
                         >
-                          <stop offset="0" stopColor="#ef4444"></stop>
-                          <stop offset=".3" stopColor="#ef4444" stopOpacity=".9"></stop>
-                          <stop offset=".6" stopColor="#ef4444" stopOpacity=".6"></stop>
-                          <stop offset=".8" stopColor="#ef4444" stopOpacity=".3"></stop>
-                          <stop offset="1" stopColor="#ef4444" stopOpacity="0"></stop>
+                          <stop offset="0" stop-color="#D1A987"></stop>
+                          <stop
+                            offset=".3"
+                            stop-color="#D1A987"
+                            stop-opacity=".9"
+                          ></stop>
+                          <stop
+                            offset=".6"
+                            stop-color="#D1A987"
+                            stop-opacity=".6"
+                          ></stop>
+                          <stop
+                            offset=".8"
+                            stop-color="#D1A987"
+                            stop-opacity=".3"
+                          ></stop>
+                          <stop
+                            offset="1"
+                            stop-color="#D1A987"
+                            stop-opacity="0"
+                          ></stop>
                         </radialGradient>
                         <circle
-                          transformOrigin="center"
+                          transform-origin="center"
                           fill="none"
-                          stroke="url(#cancelSpinner)"
-                          strokeWidth="16"
-                          strokeLinecap="round"
-                          strokeDasharray="200 1000"
-                          strokeDashoffset="0"
+                          stroke="url(#a12)"
+                          stroke-width="16"
+                          stroke-linecap="round"
+                          stroke-dasharray="200 1000"
+                          stroke-dashoffset="0"
                           cx="100"
                           cy="100"
                           r="70"
@@ -664,8 +695,19 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                             keyTimes="0;1"
                             keySplines="0 0 1 1"
                             repeatCount="indefinite"
-                          />
+                          ></animateTransform>
                         </circle>
+                        <circle
+                          transform-origin="center"
+                          fill="none"
+                          opacity=".2"
+                          stroke="#D1A987"
+                          stroke-width="16"
+                          stroke-linecap="round"
+                          cx="100"
+                          cy="100"
+                          r="70"
+                        ></circle>
                       </svg>
                       Отменяем...
                     </div>
