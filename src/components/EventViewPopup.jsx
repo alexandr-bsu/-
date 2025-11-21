@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale/ru";
 import { useDispatch, useSelector } from "react-redux";
-import Button from "./Button";
+import { Button } from "./ui/NewButon";
 import Radio from "./Radio";
 import { registerForEvent, clearRegistrationStatus, fetchAllEvents } from "../redux/slices/eventsSlice";
 import toast, { Toaster } from "react-hot-toast";
@@ -345,89 +345,70 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
               </div>
             </div>
 
-            <div data-group="section">
-              {/* Описание */}
-              {event.description && (
+
+            {/* Описание */}
+            {event.description && (
+              <div data-group="section">
                 <div className="flex flex-col gap-1">
                   <p className="text-green text-base font-normal">{event.description}</p>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
-            <div data-group="section">
-              {/* Организатор - скрыто для пользовательских событий */}
-              {!isCustomEvent && (
-                <div className="flex flex-wrap">
-                  <p className="text-green text-base flex items-center flex-wrap">
-                    <span className="font-normal mr-1">{(() => {
-                      const eventType = (event.event_type || event.type || "").toLowerCase();
-
-                      // Определяем название роли согласно типу мероприятия
-                      if (eventType.includes("супервизи")) {
-                        return "Супервизор: ";
-                      } else if (eventType.includes("интервизи")) {
-                        return "Модератор: ";
-                      } else {
-                        return "Ведущий: ";
-                      }
-                    })()}</span>
-
-
-
-                    {(event.organizator_link || event.organizer_tg_link) && (
-                      <a
-                        href={`https://${event.organizator_link || event.organizer_tg_link}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-green hover:text-green transition-colors inline-flex items-center"
-                        title="Перейти на страницу психолога"
-                      >
-                        <span className="font-bold">{event.organizator_name || event.organizer_name}</span>
-                        <TelegramPlane width={16} height={16} />
-                      </a>
-                    )}
-                  </p>
-                </div>
-              )}
-
-
-              {/* Текущее количество участников - скрыто для пользовательских событий */}
-              {event.current_participants !== undefined && !isCustomEvent && (
-                <div className="flex flex-col flex-wrap">
-                  <p className="text-green text-base">
-                    <span className="font-normal">Участников: </span> <span className="font-bold">{event.current_participants}/{event.max_participants || 0}</span>
-                  </p>
-                </div>
-              )}
-
-
-              {/* Ссылка на встречу - только для зарегистрированных */}
-              {(event.event_link || event.meeting_link) && isRegistered && (
-                <div className="flex flex-col flex-wrap">
-                  <p className="text-green text-base">
-                    <span className="font-normal">Ссылка на мероприятие: </span> <a
-                      href={event.event_link || event.meeting_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-green font-bold"
-                    >
-                      ссылка
-                    </a>
-                  </p>
-                </div>
-              )}
-
-              {/* Папка с кейсами (только для supervision и intervision и только для зарегистрированных) */}
-              {event.event_folder &&
-                isRegistered &&
-                (event.event_type === "supervision" ||
-                  event.event_type === "интервизия" ||
-                  event.event_type === "супервизия" ||
-                  event.event_type === "intervision") && (
+            {!isCustomEvent && (
+              <div data-group="section">
+                {/* Организатор - скрыто для пользовательских событий */}
+                {!isCustomEvent && (
                   <div className="flex flex-wrap">
+                    <p className="text-green text-base flex items-center flex-wrap">
+                      <span className="font-normal mr-1">{(() => {
+                        const eventType = (event.event_type || event.type || "").toLowerCase();
+
+                        // Определяем название роли согласно типу мероприятия
+                        if (eventType.includes("супервизи")) {
+                          return "Супервизор: ";
+                        } else if (eventType.includes("интервизи")) {
+                          return "Модератор: ";
+                        } else {
+                          return "Ведущий: ";
+                        }
+                      })()}</span>
+
+
+
+                      {(event.organizator_link || event.organizer_tg_link) && (
+                        <a
+                          href={`https://${event.organizator_link || event.organizer_tg_link}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-green hover:text-green transition-colors inline-flex items-center"
+                          title="Перейти на страницу психолога"
+                        >
+                          <span className="font-bold">{event.organizator_name || event.organizer_name}</span>
+                          <TelegramPlane width={16} height={16} />
+                        </a>
+                      )}
+                    </p>
+                  </div>
+                )}
+
+
+                {/* Текущее количество участников - скрыто для пользовательских событий */}
+                {event.current_participants !== undefined && !isCustomEvent && (
+                  <div className="flex flex-col flex-wrap">
                     <p className="text-green text-base">
-                      <span className="font-normal">Папка с кейсами: </span> <a
-                        href={event.event_folder}
+                      <span className="font-normal">Участников: </span> <span className="font-bold">{event.current_participants}/{event.max_participants || 0}</span>
+                    </p>
+                  </div>
+                )}
+
+
+                {/* Ссылка на встречу - только для зарегистрированных */}
+                {(event.event_link || event.meeting_link) && isRegistered && (
+                  <div className="flex flex-col flex-wrap">
+                    <p className="text-green text-base">
+                      <span className="font-normal">Ссылка на мероприятие: </span> <a
+                        href={event.event_link || event.meeting_link}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-green font-bold"
@@ -438,8 +419,28 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                   </div>
                 )}
 
+                {/* Папка с кейсами (только для supervision и intervision и только для зарегистрированных) */}
+                {event.event_folder &&
+                  isRegistered &&
+                  (event.event_type === "supervision" ||
+                    event.event_type === "интервизия" ||
+                    event.event_type === "супервизия" ||
+                    event.event_type === "intervision") && (
+                    <div className="flex flex-wrap">
+                      <p className="text-green text-base">
+                        <span className="font-normal">Папка с кейсами: </span> <a
+                          href={event.event_folder}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-green font-bold"
+                        >
+                          ссылка
+                        </a>
+                      </p>
+                    </div>
+                  )}
 
-            </div>
+              </div>)}
 
 
 
@@ -554,22 +555,22 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
               })()}
               {!isRegistered && !event.registered && !event.is_canceled && !(event.current_participants >= event.max_participants) ? (
                 <Button
-                  intent="primary"
+                  variant={'primary'}
+                  className="rounded-full"
+
                   onClick={handleRegister}
                   disabled={registering}
-                  style={{
-                    backgroundColor: "#204b4a",
-                    borderColor: "#204b4a",
-                  }}
+
                 >
                   {registering ? "Записываемся..." : "Записаться"}
                 </Button>
+
               ) : event.is_canceled ? (
                 <div className="p-3 rounded-lg bg-red text-white">
                   Мероприятие отменено
                 </div>
               ) : event.current_participants >= event.max_participants && !isRegistered && !event.registered ? (
-                <div className="p-3 rounded-lg bg-green text-white">
+                <div className="p-3 rounded-[30px] border-2 border-green text-green">
                   <div className="space-y-2">
                     <p>К сожалению вы не можете записаться на это мероприятие, поскольку число желающих его посетить уже достигло максимального количества.</p>
                     {event.next_event && (
@@ -578,7 +579,7 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                   </div>
                 </div>
               ) : (
-                <div className="p-3 rounded-lg bg-green text-white">
+                <div className="p-3 rounded-[30px] border border-2 border-green text-green">
                   {(() => {
                     const eventType = (event.event_type || event.type || "").toLowerCase();
                     const organizatorName = event.organizator_name || event.organizer_name || "супервизора";
@@ -629,12 +630,12 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                 return null;
               })()}
               {(isRegistered || event.registered) && !event.is_canceled && (
-                <Button
-                  intent="primary-transparent"
-                  hover="primary"
+                 <Button
+                 variant={'primary'}
+                 className="rounded-full"
+
                   onClick={handleCancelRegistration}
                   disabled={isCancelling}
-                  className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
                 >
                   {isCancelling ? (
                     <div className="flex items-center justify-center gap-2">
@@ -717,7 +718,7 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                 </Button>
               )}
 
-              <Button intent="cream" hover="primary" onClick={handleClose}>
+              <Button variant="outline" className="rounded-full" onClick={handleClose}>
                 Закрыть
               </Button>
             </div>

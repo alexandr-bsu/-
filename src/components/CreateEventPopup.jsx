@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { toast } from "sonner";
 import Button from "./Button";
-import Input from "./Input";
+import { Input } from "./ui/NewInput";
 import TextArea from "./TextArea";
 import Radio from "./Radio";
 
@@ -125,7 +125,7 @@ const CreateEventPopup = ({ isOpen, onClose, onSave }) => {
     return (
         <div className="fixed top-0 left-0 h-screen w-full flex justify-center items-center p-5 z-20 bg-[#000000] bg-opacity-20">
             <div className="bg-white rounded-[30px] w-full max-w-[660px] mx-5 max-h-[650px] overflow-y-auto">
-                <div className="bg-white sticky top-0 p-5 border-b border-b-dark-green w-full flex justify-between items-center">
+                <div className="bg-white sticky top-0 p-5 border-b border-b-dark-green w-full flex justify-between items-center z-30">
                     <h2 className="text-dark-green font-medium text-3xl">Создать мероприятие</h2>
                     <img
                         src="static/close.png"
@@ -135,33 +135,40 @@ const CreateEventPopup = ({ isOpen, onClose, onSave }) => {
                     />
                 </div>
 
-                <div className="p-5 flex flex-col gap-8">
+                <div className="p-5 flex flex-col gap-4">
                     {/* Поле названия мероприятия */}
                     <div>
-                        <label className="block text-sm font-medium text-dark-green mb-1">
+                        <p className={`font-medium text-green mb-1`}>
                             Название мероприятия
-                        </label>
-                        <Input
-                            intent="primary"
-                            value={eventName}
-                            onChangeFn={setEventName}
-                            placeholder="Введите название мероприятия"
-                            className="w-full"
-                        />
+                        </p>
+                        <div className={`input__text_container`}>
+                            <Input
+                                value={eventName}
+                                onChange={(e) => setEventName(e.target.value)}
+                                placeholder=" "
+                                className={`input__text text-[14px] w-full h-full px-[20px] bg-[#FAFAFA] rounded-[10px] border-none`}
+
+                            />
+
+                        </div>
                     </div>
 
                     {/* Поле даты и времени */}
                     <div>
-                        <label className="block text-sm font-medium text-dark-green mb-1">
-                            Дата и время
-                        </label>
-                        <Input
-                            type="datetime-local"
-                            intent="primary"
-                            value={eventDateTime}
-                            onChangeFn={setEventDateTime}
-                            className="w-full"
-                        />
+                        <p className={`font-medium text-green mb-1`}>
+                            Дата и время мероприятия
+                        </p>
+                        <div className={`input__text_container`}>
+                            <Input
+                                value={eventDateTime}
+                                onChange={(e) => setEventDateTime(e.target.value)}
+                                type="datetime-local"
+                                placeholder=" "
+                                className={`input__text text-[14px] w-full h-full px-[20px] bg-[#FAFAFA] rounded-[10px] border-none`}
+
+                            />
+
+                        </div>
                     </div>
 
                     {/* Поле описания */}
