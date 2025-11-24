@@ -18,6 +18,7 @@ import {
   setStateSlotOk,
 } from "../redux/slices/psycoSlotsSlice";
 import { fetchAllEvents } from "../redux/slices/eventsSlice";
+import { store } from "../redux/store";
 import QueryString from "qs";
 
 const DateGroupPsycoSlots = ({ group, onEventCancelled }) => {
@@ -82,9 +83,12 @@ const DateGroupPsycoSlots = ({ group, onEventCancelled }) => {
   const registeredEvents = useSelector((state) => state.events?.registeredEvents || []);
   const dispatch = useDispatch();
 
-  // Загружаем все события при монтировании компонента
+  // Загружаем все события при монтировании компонента, только если они еще не загружены
   React.useEffect(() => {
-    dispatch(fetchAllEvents());
+    const state = store.getState();
+    if (!state.events.loading && state.events.allEvents.length === 0) {
+      dispatch(fetchAllEvents());
+    }
   }, [dispatch]);
 
   const toogleSlots = (freeSlots, slot, secret) => {
@@ -293,6 +297,53 @@ const DateGroupPsycoSlots = ({ group, onEventCancelled }) => {
               const slotArray = group.slots[slotTime];
               const slot = slotArray.length > 0 ? slotArray[0] : null;
 
+              // Проверка состояния слота 28.11 на 13:00
+              const isTargetSlot = (
+                (group.date === "2025-11-28" || group.date === "2024-11-28" ||
+                 group.pretty_date?.includes("28") && group.pretty_date?.includes("ноября")) &&
+                slotTime === "13:00"
+              );
+              
+              if (isTargetSlot) {
+                console.log("=== СОСТОЯНИЕ СЛОТА 28.11 13:00 ===");
+                console.log("group.date:", group.date);
+                console.log("group.pretty_date:", group.pretty_date);
+                console.log("slotTime:", slotTime);
+                console.log("slotArray:", JSON.stringify(slotArray, null, 2));
+                console.log("slot:", slot);
+                slotArray.forEach((s, idx) => {
+                  console.log(`slotArray[${idx}]:`, {
+                    id: s?.id,
+                    status: s?.status,
+                    event: s?.event,
+                    slot_over_event: s?.slot_over_event,
+                    client: s?.client,
+                    fullSlot: s
+                  });
+                });
+                console.log("registeredEvents:", registeredEvents);
+                console.log("slotsRedux:", slotsRedux);
+                
+                const clientSlot = slotArray.find(s => {
+                  if (!s) return false;
+                  return (s.client) || (s.status === "Забронирован" && (s.event === null || s.event === undefined));
+                });
+                console.log("clientSlot found:", !!clientSlot);
+                
+                const slotOverEvent = slotArray.find(s => {
+                  if (!s) return false;
+                  return s.slot_over_event === true && s.status === "Свободен";
+                });
+                console.log("slotOverEvent found:", !!slotOverEvent, slotOverEvent);
+                
+                const eventSlot = slotArray.find(s => {
+                  if (!s) return false;
+                  return s.event !== null && s.event !== undefined;
+                });
+                console.log("eventSlot found:", !!eventSlot, eventSlot?.event);
+                console.log("=====================================");
+              }
+
               const slotStyle = slot ? getSlotStyle(slot) : getSlotStyle({});
               const isSelectedSlot = slotsRedux.findIndex(
                 (slotObject) =>
@@ -330,19 +381,26 @@ const DateGroupPsycoSlots = ({ group, onEventCancelled }) => {
                 );
               }
 
-              const eventSlot = slotArray.find(s => {
+              // ВАЖНО: Проверяем slot_over_event ПЕРЕД проверкой мероприятия
+              // Если слот имеет slot_over_event = true и статус "Свободен", 
+              // то показываем его как свободный слот, даже если есть мероприятие
+              const slotOverEvent = slotArray.find(s => {
                 if (!s) return false;
-                return s.event !== null && s.event !== undefined;
+                return s.slot_over_event === true && s.status === "Свободен";
               });
 
-              if (eventSlot) {
-                // НОВАЯ ЛОГИКА: Проверяем slot_over_event
-                // Если slot_over_event = true И статус "Свободен", то показываем как свободный слот
-                // Это означает, что слот психолога имеет приоритет над мероприятием
-                if (eventSlot.slot_over_event === true && eventSlot.status === "Свободен") {
-                  // Показываем как свободный слот (переходим к обычной логике свободного слота)
-                  // Не возвращаем ничего здесь, чтобы код продолжился к обычной логике свободного слота
-                } else {
+              // Если найден слот с slot_over_event, показываем как свободный слот
+              // (не проверяем мероприятие, так как слот психолога имеет приоритет)
+              if (slotOverEvent) {
+                // Продолжаем к обычной логике свободного слота (код ниже)
+              } else {
+                // Проверяем мероприятие только если нет slot_over_event
+                const eventSlot = slotArray.find(s => {
+                  if (!s) return false;
+                  return s.event !== null && s.event !== undefined;
+                });
+
+                if (eventSlot) {
                   // Показываем попап с мероприятием (существующая логика)
                   // Проверяем, зарегистрирован ли пользователь на это мероприятие
                   // Если event - это строка (из API), то это название события
@@ -361,6 +419,7 @@ const DateGroupPsycoSlots = ({ group, onEventCancelled }) => {
                   }
 
                   // Проверяем регистрацию: если статус "Забронирован", значит пользователь уже записан
+                  // Также проверяем Redux state для реактивности
                   const isRegistered = eventSlot.status === "Забронирован" ||
                     registeredEvents.some(
                       (reg) =>
@@ -371,6 +430,7 @@ const DateGroupPsycoSlots = ({ group, onEventCancelled }) => {
 
                   // Создаем объект события для попапа
                   const slotId = eventSlot?.id || `${group.pretty_date} ${slotTime}`;
+                  // Используем isRegistered для правильного отображения статуса
                   const eventForPopup = typeof eventSlot.event === 'string' ? {
                     title: eventSlot.event,
                     name: eventSlot.event,
@@ -378,11 +438,11 @@ const DateGroupPsycoSlots = ({ group, onEventCancelled }) => {
                     time: slotTime,
                     event_modal_type: eventSlot.event_modal_type,
                     modality: eventSlot.event_modal_type,
-                    registered: eventSlot.status === "Забронирован",
+                    registered: isRegistered, // Используем вычисленное значение
                     slot_id: slotId // Добавляем ID слота
                   } : {
                     ...eventSlot.event,
-                    registered: eventSlot.status === "Забронирован" || eventSlot.event.registered,
+                    registered: isRegistered, // Используем вычисленное значение
                     slot_id: slotId // Добавляем ID слота
                   };
 

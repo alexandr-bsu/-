@@ -125,16 +125,13 @@ const PsycoSlots = () => {
         // Получаем актуальные события из Redux state напрямую (не из замыкания)
         const state = store.getState();
         const currentEvents = state.events.allEvents || [];
-        console.log('Events loaded from store:', currentEvents.length, 'events');
         if (slotsResp.data?.error == "unauthored") {
           setAuthState("unauthored");
         }
 
         let groupsOfSlots = slotsResp.data[0].items;
-        console.log('Slots loaded:', groupsOfSlots.length, 'date groups');
 
         if (currentEvents && currentEvents.length > 0) {
-          console.log('Processing', currentEvents.length, 'events for slots...');
           const eventDates = [...new Set(currentEvents.map(event => {
             return event.date ? new Date(event.date).toISOString().split('T')[0] : null;
           }).filter(Boolean))];

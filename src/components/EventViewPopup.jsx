@@ -4,7 +4,7 @@ import { ru } from "date-fns/locale/ru";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "./ui/NewButon";
 import Radio from "./Radio";
-import { registerForEvent, clearRegistrationStatus, fetchAllEvents } from "../redux/slices/eventsSlice";
+import { registerForEvent, clearRegistrationStatus, fetchAllEvents, removeRegistration } from "../redux/slices/eventsSlice";
 import toast, { Toaster } from "react-hot-toast";
 import { toast as sonnerToast } from "sonner";
 import QueryString from "qs";
@@ -209,7 +209,17 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
         })
       ).unwrap();
 
+      // Обновляем локальное состояние
       setIsRegistered(true);
+      
+      // Обновляем все события для синхронизации с сервером
+      dispatch(fetchAllEvents());
+      
+      // Вызываем callback для обновления слотов
+      if (onEventCancelled) {
+        onEventCancelled();
+      }
+
       toast.success("Вы успешно записались на мероприятие!");
     } catch (err) {
       toast.error(err || "Не удалось записаться на мероприятие");
@@ -223,31 +233,17 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
 
   // Функция для отмены записи на мероприятие
   const handleCancelRegistration = async () => {
-    console.log("handleCancelRegistration вызвана");
-    console.log("isCancelling:", isCancelling);
-
     if (isCancelling) return;
 
     // Получаем ID слота из различных возможных полей
     const slotId = event?.slot_id || event?.id || event?.event_id;
 
-    console.log("Отладка отмены записи:", {
-      slotId,
-      secret,
-      event,
-      "event.slot_id": event?.slot_id,
-      "event.id": event?.id,
-      "event.event_id": event?.event_id
-    });
-
     if (!slotId) {
-      console.error("slotId не найден");
       toast.error("Не удалось определить ID слота для отмены");
       return;
     }
 
     if (!secret) {
-      console.error("secret не найден");
       toast.error("Не найден секретный ключ");
       return;
     }
@@ -255,19 +251,32 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
     setIsCancelling(true);
 
     const apiUrl = `https://n8n-v2.hrani.live/webhook/cancel-slot?slot=${slotId}&secret=${secret}`;
-    console.log("Вызываем API:", apiUrl);
 
     try {
       const response = await axios.get(apiUrl);
-      console.log("Ответ API:", response);
 
       if (response.status === 200) {
-        // Обновляем только локальное состояние
+        // Обновляем Redux state - удаляем регистрацию
+        dispatch(removeRegistration({
+          date: formattedDateStr,
+          time: eventTime,
+          eventName: eventName,
+        }));
+
+        // Обновляем локальное состояние
         setIsRegistered(false);
+
+        // Обновляем все события для синхронизации с сервером
+        dispatch(fetchAllEvents());
 
         toast.success("Запись на мероприятие отменена", {
           duration: 4000, // 4 секунды
         });
+
+        // Вызываем callback для обновления слотов
+        if (onEventCancelled) {
+          onEventCancelled();
+        }
 
         // Закрываем попап через небольшую задержку
         setTimeout(() => {
@@ -592,8 +601,8 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                 </div>
               )} */}
 
-            {/* Кнопка "Открыть слот для клиентов" - только для психологов */}
-            {secret && !isCustomEvent && (
+            {/* Кнопка "Открыть слот для клиентов" - только для психологов, незарегистрированных на мероприятие */}
+            {secret && !isCustomEvent && !isRegistered && !event.registered && (
               <div className="flex flex-col gap-2">
                 <Button
                   variant={'primary'}

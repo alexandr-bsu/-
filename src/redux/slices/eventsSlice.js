@@ -14,6 +14,7 @@ const initialState = {
   registrationSuccess: false,
   registrationMessage: null,
   registeredEvents: [], // Массив объектов {date, time, eventName} для отслеживания регистраций
+  lastFetchTime: null, // Время последнего успешного запроса
 };
 
 // Async thunk для получения всех мероприятий
@@ -28,10 +29,18 @@ export const fetchAllEvents = createAsyncThunk(
     }
   },
   {
-    // Предотвращаем повторные вызовы, если запрос уже выполняется или события уже загружены
+    // Предотвращаем повторные вызовы, если запрос уже выполняется
+    // Или если прошло меньше 2 секунд с последнего успешного запроса
     condition: (_, { getState }) => {
       const state = getState();
-      const shouldFetch = !state.events.loading && state.events.allEvents.length === 0;
+      const now = Date.now();
+      const lastFetchTime = state.events.lastFetchTime;
+      const timeSinceLastFetch = lastFetchTime ? now - lastFetchTime : Infinity;
+      
+      // Не делаем запрос, если:
+      // 1. Уже идет загрузка
+      // 2. Прошло меньше 2 секунд с последнего запроса
+      const shouldFetch = !state.events.loading && timeSinceLastFetch > 2000;
       return shouldFetch;
     },
   }
@@ -58,7 +67,7 @@ export const registerForEvent = createAsyncThunk(
   async ({ date, time, eventName }, { rejectWithValue }) => {
     try {
       const result = await joinToEvent(date, time, eventName);
-      return { result, eventName };
+      return { result, date, time, eventName };
     } catch (error) {
       return rejectWithValue(
         error.message || "Ошибка регистрации на мероприятие"
@@ -82,6 +91,22 @@ const eventsSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    // Удаление регистрации из registeredEvents
+    removeRegistration: (state, action) => {
+      const { date, time, eventName } = action.payload;
+      state.registeredEvents = state.registeredEvents.filter(
+        (reg) =>
+          !(reg.date === date && reg.time === time && reg.eventName === eventName)
+      );
+      
+      // Обновляем событие в allEvents, устанавливая registered: false
+      const eventIndex = state.allEvents.findIndex(
+        (event) => event.name === eventName || event.title === eventName
+      );
+      if (eventIndex !== -1) {
+        state.allEvents[eventIndex].registered = false;
+      }
+    },
   },
   extraReducers: (builder) => {
     // fetchAllEvents
@@ -92,8 +117,48 @@ const eventsSlice = createSlice({
       })
       .addCase(fetchAllEvents.fulfilled, (state, action) => {
         state.loading = false;
-        state.allEvents = action.payload;
-        console.log('Events fetched and stored:', action.payload.length, 'events');
+        state.lastFetchTime = Date.now(); // Сохраняем время успешного запроса
+        const newEvents = action.payload;
+        
+        // Синхронизируем registeredEvents с новыми данными событий
+        // Если событие помечено как registered в новых данных, добавляем его в registeredEvents
+        newEvents.forEach((event) => {
+          if (event.registered && event.date && event.time) {
+            // Нормализуем дату в формат YYYY-MM-DD
+            let normalizedDate = event.date;
+            if (typeof event.date === 'string' && !/^\d{4}-\d{2}-\d{2}$/.test(event.date)) {
+              // Если дата не в формате YYYY-MM-DD, конвертируем
+              try {
+                normalizedDate = new Date(event.date).toISOString().split('T')[0];
+              } catch (e) {
+                console.warn('Failed to normalize date:', event.date);
+                return; // Пропускаем это событие
+              }
+            }
+            
+            const eventName = event.name || event.title;
+            if (!eventName) return; // Пропускаем события без названия
+            
+            const existingIndex = state.registeredEvents.findIndex(
+              (reg) =>
+                reg.date === normalizedDate &&
+                reg.time === event.time &&
+                reg.eventName === eventName
+            );
+            
+            if (existingIndex === -1) {
+              state.registeredEvents.push({
+                date: normalizedDate,
+                time: event.time,
+                eventName: eventName,
+              });
+            }
+          }
+        });
+        
+        // Обновляем allEvents
+        state.allEvents = newEvents;
+        console.log('Events fetched and stored:', newEvents.length, 'events');
       })
       .addCase(fetchAllEvents.rejected, (state, action) => {
         state.loading = false;
@@ -156,7 +221,7 @@ const eventsSlice = createSlice({
   },
 });
 
-export const { clearRegistrationStatus, clearCurrentEvent, clearError } =
+export const { clearRegistrationStatus, clearCurrentEvent, clearError, removeRegistration } =
   eventsSlice.actions;
 
 export default eventsSlice.reducer;
