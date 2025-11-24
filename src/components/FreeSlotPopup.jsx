@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { useSelector, useDispatch } from "react-redux";
 import { spliceSlot, setStateSlotLoading, setStateSlotOk } from "../redux/slices/psycoSlotsSlice";
 
-const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn }) => {
+const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn, onSlotDeleted }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [repeatPeriod, setRepeatPeriod] = useState("нет");
   const [isLoadingPlan, setIsLoadingPlan] = useState(true);
@@ -114,6 +114,10 @@ const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn }) => {
         dispatch(setStateSlotOk(slotKey));
         dispatch(spliceSlot(index));
         toast.success(`Слот ${slotKey} удалён`);
+        // Обновляем слоты после удаления, чтобы мероприятие снова отобразилось
+        if (onSlotDeleted) {
+          onSlotDeleted();
+        }
         closeFn();
       })
       .catch(() => {

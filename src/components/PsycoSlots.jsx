@@ -186,6 +186,17 @@ const PsycoSlots = () => {
                 return;
               }
 
+              // Проверяем, есть ли слот с slot_over_event = true
+              // Если есть, то не добавляем мероприятие (слот психолога имеет приоритет)
+              const hasSlotOverEvent = slotArray.some(s => {
+                if (!s) return false;
+                return s.slot_over_event === true && s.status === "Свободен";
+              });
+
+              if (hasSlotOverEvent) {
+                return;
+              }
+
               // Если массив слотов пустой, создаем новый слот с мероприятием
               if (slotArray.length === 0) {
                 updatedSlots[eventTime] = [{
@@ -197,6 +208,10 @@ const PsycoSlots = () => {
               } else {
                 updatedSlots[eventTime] = slotArray.map(slot => {
                   if (slot.status === "Забронирован" && slot.event === null) {
+                    return slot;
+                  }
+                  // Если слот уже имеет slot_over_event = true, не перезаписываем его
+                  if (slot.slot_over_event === true) {
                     return slot;
                   }
                   return {

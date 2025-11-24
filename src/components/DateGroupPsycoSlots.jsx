@@ -110,6 +110,10 @@ const DateGroupPsycoSlots = ({ group, onEventCancelled }) => {
           dispatch(setStateSlotOk(slot));
           dispatch(spliceSlot(index));
           toast.success(`Слот ${slot} удалён`);
+          // Обновляем слоты после удаления, чтобы мероприятие снова отобразилось
+          if (onEventCancelled) {
+            onEventCancelled();
+          }
         })
         .catch((error) => {
           dispatch(setStateSlotOk(slot));
@@ -265,6 +269,7 @@ const DateGroupPsycoSlots = ({ group, onEventCancelled }) => {
           queryDate={freeSlotData.queryDate}
           queryTime={freeSlotData.queryTime}
           closeFn={handleCloseFreeSlotPopup}
+          onSlotDeleted={onEventCancelled}
         />
       )}
 

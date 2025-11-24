@@ -43,6 +43,9 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
   // Состояние для отмены записи
   const [isCancelling, setIsCancelling] = useState(false);
 
+  // Состояние для открытия слота над мероприятием
+  const [isOpeningSlot, setIsOpeningSlot] = useState(false);
+
   // Получаем secret из URL
   const secret = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
@@ -308,6 +311,54 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
     }
   };
 
+  // Функция для открытия слота над мероприятием
+  const handleOpenSlotOverEvent = async () => {
+    if (!eventDate || !eventTime || !secret) {
+      toast.error("Не удалось определить дату, время или секретный ключ");
+      return;
+    }
+
+    if (isOpeningSlot) return;
+
+    setIsOpeningSlot(true);
+
+    // Форматируем дату как "dd.MM" и время как "HH:mm"
+    const formattedSlotDate = format(eventDate, "dd.MM");
+    const formattedSlotTime = eventTime; // Уже в формате "HH:mm"
+    const slotString = `${formattedSlotDate} ${formattedSlotTime}`;
+
+    try {
+      const response = await axios.post(
+        "https://n8n-v2.hrani.live/webhook/add-slot-over-event",
+        {
+          secret: secret,
+          slot: slotString,
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Слот успешно открыт для клиентов");
+        
+        // Обновляем слоты после успешного создания
+        if (onEventCancelled) {
+          onEventCancelled();
+        }
+        
+        // Закрываем попап через небольшую задержку
+        setTimeout(() => {
+          handleClose();
+        }, 1500);
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Ошибка при открытии слота:", error);
+      toast.error("Ошибка при открытии слота. Попробуйте еще раз");
+    } finally {
+      setIsOpeningSlot(false);
+    }
+  };
+
   return (
     <>
       <Toaster />
@@ -541,6 +592,96 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                 </div>
               )} */}
 
+            {/* Кнопка "Открыть слот для клиентов" - только для психологов */}
+            {secret && !isCustomEvent && (
+              <div className="flex flex-col gap-2">
+                <Button
+                  variant={'primary'}
+                  className="rounded-full"
+                  onClick={handleOpenSlotOverEvent}
+                  disabled={isOpeningSlot}
+                >
+                  {isOpeningSlot ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <svg
+                        width={24}
+                        height={24}
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 200 200"
+                      >
+                        <radialGradient
+                          id="a13"
+                          cx=".66"
+                          fx=".66"
+                          cy=".3125"
+                          fy=".3125"
+                          gradientTransform="scale(1.5)"
+                        >
+                          <stop offset="0" stop-color="#D1A987"></stop>
+                          <stop
+                            offset=".3"
+                            stop-color="#D1A987"
+                            stop-opacity=".9"
+                          ></stop>
+                          <stop
+                            offset=".6"
+                            stop-color="#D1A987"
+                            stop-opacity=".6"
+                          ></stop>
+                          <stop
+                            offset=".8"
+                            stop-color="#D1A987"
+                            stop-opacity=".3"
+                          ></stop>
+                          <stop
+                            offset="1"
+                            stop-color="#D1A987"
+                            stop-opacity="0"
+                          ></stop>
+                        </radialGradient>
+                        <circle
+                          transform-origin="center"
+                          fill="none"
+                          stroke="url(#a13)"
+                          stroke-width="16"
+                          stroke-linecap="round"
+                          stroke-dasharray="200 1000"
+                          stroke-dashoffset="0"
+                          cx="100"
+                          cy="100"
+                          r="70"
+                        >
+                          <animateTransform
+                            type="rotate"
+                            attributeName="transform"
+                            calcMode="spline"
+                            dur="2"
+                            values="360;0"
+                            keyTimes="0;1"
+                            keySplines="0 0 1 1"
+                            repeatCount="indefinite"
+                          ></animateTransform>
+                        </circle>
+                        <circle
+                          transform-origin="center"
+                          fill="none"
+                          opacity=".2"
+                          stroke="#D1A987"
+                          stroke-width="16"
+                          stroke-linecap="round"
+                          cx="100"
+                          cy="100"
+                          r="70"
+                        ></circle>
+                      </svg>
+                      Открываем...
+                    </div>
+                  ) : (
+                    "Открыть слот для клиентов"
+                  )}
+                </Button>
+              </div>
+            )}
 
             {/* Кнопки действий */}
             <div className="flex flex-col gap-2">
