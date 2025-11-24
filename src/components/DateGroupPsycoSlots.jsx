@@ -173,7 +173,7 @@ const DateGroupPsycoSlots = ({ group, onEventCancelled }) => {
   function getSlotStyle(slot) {
     // Проверка на клиента (приоритет 1 - важнее мероприятий)
     // Клиент всегда важнее мероприятия
-    if (slot && (slot.client || slot.status == "Забронирован")) {
+    if (slot && (slot.client || (slot.status == "Забронирован" && (slot.event === null || slot.event === undefined)))) {
       return {
         backgroundColor: "#E5D5C3",
         color: "#1F4A4A",
@@ -183,14 +183,25 @@ const DateGroupPsycoSlots = ({ group, onEventCancelled }) => {
     }
 
     // Проверка на мероприятие (приоритет 2)
-    // Согласно спецификации: slot.event !== null → МЕРОПРИЯТИЕ
+    // НОВАЯ ЛОГИКА: Если slot_over_event = true И статус "Свободен", то показываем как свободный слот
     if (slot && slot.event !== null && slot.event !== undefined) {
-      return {
-        backgroundColor: getColorByModality(slot.event.modality),
-        color: "white",
-        showCheckmark: true,
-        icon: null,
-      };
+      if (slot.slot_over_event === true && slot.status === "Свободен") {
+        // Показываем как свободный слот
+        return {
+          backgroundColor: "white",
+          color: "#1F4A4A",
+          showCheckmark: false,
+          icon: null,
+        };
+      } else {
+        // Показываем как мероприятие
+        return {
+          backgroundColor: getColorByModality(slot.event.modality),
+          color: "white",
+          showCheckmark: true,
+          icon: null,
+        };
+      }
     }
 
     // Проверка на выбранный слот психолога
@@ -289,6 +300,7 @@ const DateGroupPsycoSlots = ({ group, onEventCancelled }) => {
               const clientSlot = slotArray.find(s => {
                 if (!s) return false;
                 // Проверяем наличие клиента по разным критериям
+                // Клиент: есть поле client ИЛИ статус "Забронирован" и НЕТ мероприятия
                 return (s.client) || (s.status === "Забронирован" && (s.event === null || s.event === undefined));
               });
 
@@ -319,75 +331,82 @@ const DateGroupPsycoSlots = ({ group, onEventCancelled }) => {
               });
 
               if (eventSlot) {
-                // Проверяем, зарегистрирован ли пользователь на это мероприятие
-                // Если event - это строка (из API), то это название события
-                let eventDate, eventTime, eventName;
-
-                if (typeof eventSlot.event === 'string') {
-                  // event - это строка с названием события из API
-                  eventDate = group.date;
-                  eventTime = slotTime;
-                  eventName = eventSlot.event;
+                // НОВАЯ ЛОГИКА: Проверяем slot_over_event
+                // Если slot_over_event = true И статус "Свободен", то показываем как свободный слот
+                // Это означает, что слот психолога имеет приоритет над мероприятием
+                if (eventSlot.slot_over_event === true && eventSlot.status === "Свободен") {
+                  // Показываем как свободный слот (переходим к обычной логике свободного слота)
+                  // Не возвращаем ничего здесь, чтобы код продолжился к обычной логике свободного слота
                 } else {
-                  // event - это объект события
-                  eventDate = eventSlot.event.date ? format(new Date(eventSlot.event.date), "yyyy-MM-dd") : group.date;
-                  eventTime = eventSlot.event.time || slotTime;
-                  eventName = eventSlot.event.title || eventSlot.event.name;
+                  // Показываем попап с мероприятием (существующая логика)
+                  // Проверяем, зарегистрирован ли пользователь на это мероприятие
+                  // Если event - это строка (из API), то это название события
+                  let eventDate, eventTime, eventName;
+
+                  if (typeof eventSlot.event === 'string') {
+                    // event - это строка с названием события из API
+                    eventDate = group.date;
+                    eventTime = slotTime;
+                    eventName = eventSlot.event;
+                  } else {
+                    // event - это объект события
+                    eventDate = eventSlot.event.date ? format(new Date(eventSlot.event.date), "yyyy-MM-dd") : group.date;
+                    eventTime = eventSlot.event.time || slotTime;
+                    eventName = eventSlot.event.title || eventSlot.event.name;
+                  }
+
+                  // Проверяем регистрацию: если статус "Забронирован", значит пользователь уже записан
+                  const isRegistered = eventSlot.status === "Забронирован" ||
+                    registeredEvents.some(
+                      (reg) =>
+                        reg.date === eventDate &&
+                        reg.time === eventTime &&
+                        reg.eventName === eventName
+                    ) || (typeof eventSlot.event === 'object' && eventSlot.event.registered);
+
+                  // Создаем объект события для попапа
+                  const slotId = eventSlot?.id || `${group.pretty_date} ${slotTime}`;
+                  const eventForPopup = typeof eventSlot.event === 'string' ? {
+                    title: eventSlot.event,
+                    name: eventSlot.event,
+                    date: group.date,
+                    time: slotTime,
+                    event_modal_type: eventSlot.event_modal_type,
+                    modality: eventSlot.event_modal_type,
+                    registered: eventSlot.status === "Забронирован",
+                    slot_id: slotId // Добавляем ID слота
+                  } : {
+                    ...eventSlot.event,
+                    registered: eventSlot.status === "Забронирован" || eventSlot.event.registered,
+                    slot_id: slotId // Добавляем ID слота
+                  };
+
+                  return (
+                    <li key={`${group.slotTime}_${index}`}>
+                      <Button
+                        size="small"
+                        hover="no"
+                        onClick={() => {
+                          setCurrentEvent(eventForPopup);
+                          setShowEventPopup(true);
+                        }}
+                        className="text-white border flex items-center justify-center"
+                        style={{
+                          backgroundColor: getColorByModality(
+                            (typeof eventSlot.event === 'object' ? eventSlot.event.modality || eventSlot.event.event_modal_type : eventSlot.event_modal_type)
+                          ),
+                          color: "white",
+                          borderColor: getColorByModality(
+                            (typeof eventSlot.event === 'object' ? eventSlot.event.modality || eventSlot.event.event_modal_type : eventSlot.event_modal_type)
+                          ),
+                        }}
+                      >
+                        {slotTime}
+                        {isRegistered && <Edit width={20} height={20}></Edit>}
+                      </Button>
+                    </li>
+                  );
                 }
-
-                // Проверяем регистрацию: если статус "Забронирован", значит пользователь уже записан
-                const isRegistered = eventSlot.status === "Забронирован" ||
-                  registeredEvents.some(
-                    (reg) =>
-                      reg.date === eventDate &&
-                      reg.time === eventTime &&
-                      reg.eventName === eventName
-                  ) || (typeof eventSlot.event === 'object' && eventSlot.event.registered);
-
-                // Создаем объект события для попапа
-                const slotId = eventSlot?.id || `${group.pretty_date} ${slotTime}`;
-                const eventForPopup = typeof eventSlot.event === 'string' ? {
-                  title: eventSlot.event,
-                  name: eventSlot.event,
-                  date: group.date,
-                  time: slotTime,
-                  event_modal_type: eventSlot.event_modal_type,
-                  modality: eventSlot.event_modal_type,
-                  registered: eventSlot.status === "Забронирован",
-                  slot_id: slotId // Добавляем ID слота
-                } : {
-                  ...eventSlot.event,
-                  registered: eventSlot.status === "Забронирован" || eventSlot.event.registered,
-                  slot_id: slotId // Добавляем ID слота
-                };
-
-
-
-                return (
-                  <li key={`${group.slotTime}_${index}`}>
-                    <Button
-                      size="small"
-                      hover="no"
-                      onClick={() => {
-                        setCurrentEvent(eventForPopup);
-                        setShowEventPopup(true);
-                      }}
-                      className="text-white border flex items-center justify-center"
-                      style={{
-                        backgroundColor: getColorByModality(
-                          (typeof eventSlot.event === 'object' ? eventSlot.event.modality || eventSlot.event.event_modal_type : eventSlot.event_modal_type)
-                        ),
-                        color: "white",
-                        borderColor: getColorByModality(
-                          (typeof eventSlot.event === 'object' ? eventSlot.event.modality || eventSlot.event.event_modal_type : eventSlot.event_modal_type)
-                        ),
-                      }}
-                    >
-                      {slotTime}
-                      {isRegistered && <Edit width={20} height={20}></Edit>}
-                    </Button>
-                  </li>
-                );
               }
 
               return (
