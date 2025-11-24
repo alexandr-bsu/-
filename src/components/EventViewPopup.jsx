@@ -339,7 +339,7 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
             <div data-group="section">
               {/* Дата и время */}
               <div className="flex flex-col gap-1">
-                <h3 className="text-green font-bold text-lg">
+                <h3 className="text-green font-bold text-[19px]">
                   {formattedDate} в {eventTime}
                 </h3>
               </div>
@@ -473,7 +473,7 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                         { value: "нет", label: "Нет" },
                         { value: "раз в неделю", label: "Раз в неделю" },
                         { value: "раз в 2 недели", label: "Раз в 2 недели" },
-                        { value: "раз в 3 недели", label: "Раз в 3 недели" },
+                        // { value: "раз в 3 недели", label: "Раз в 3 недели" },
                         { value: "раз в месяц", label: "Раз в месяц" }
                       ].map((option, index) => (
                         <li key={option.value}>
@@ -553,7 +553,14 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                 });
                 return null;
               })()}
-              {!isRegistered && !event.registered && !event.is_canceled && !(event.current_participants >= event.max_participants) ? (
+              {/* Проверка на запрет подключения к супервизии */}
+              {!isRegistered && !event.registered && !event.is_canceled &&
+                event.allow_connect === false &&
+                (event.event_type || event.type || "").toLowerCase().includes("супервизи") ? (
+                <div className="p-3 rounded-[30px] border-2 border-green text-green">
+                  К сожалению ваш тариф не включает в себя посещение супервизий
+                </div>
+              ) : !isRegistered && !event.registered && !event.is_canceled && !(event.current_participants >= event.max_participants) ? (
                 <Button
                   variant={'primary'}
                   className="rounded-full"
@@ -630,9 +637,9 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                 return null;
               })()}
               {(isRegistered || event.registered) && !event.is_canceled && (
-                 <Button
-                 variant={'primary'}
-                 className="rounded-full"
+                <Button
+                  variant={'primary'}
+                  className="rounded-full"
 
                   onClick={handleCancelRegistration}
                   disabled={isCancelling}

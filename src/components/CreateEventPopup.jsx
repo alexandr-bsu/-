@@ -226,7 +226,7 @@ const CreateEventPopup = ({ isOpen, onClose, onSave }) => {
                                     Раз в 2 недели
                                 </Radio>
                             </li>
-                            <li>
+                            {/* <li>
                                 <Radio
                                     name="planningMode"
                                     intent="primary"
@@ -237,7 +237,7 @@ const CreateEventPopup = ({ isOpen, onClose, onSave }) => {
                                 >
                                     Раз в 3 недели
                                 </Radio>
-                            </li>
+                            </li> */}
                             <li>
                                 <Radio
                                     name="planningMode"

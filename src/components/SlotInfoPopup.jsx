@@ -145,10 +145,10 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
       <div className="bg-white rounded-[30px] w-full max-w-[660px] mx-5 max-h-[650px] overflow-y-auto">
         <div className="bg-white sticky top-0 p-5 border-b border-b-dark-green w-full flex justify-between items-center">
           <div>
-            <h2 className="text-dark-green font-medium text-3xl ">
+            <h2 className="text-green font-bold text-2xl ">
               Сессия с клиентом
             </h2>
-            <p className="text-dark-green text-xl">{data['is_helpful_hand'] ? "Заявка из Руки помощи " : ''}</p>
+            <p className="text-green text-xl">{data['is_helpful_hand'] ? "Заявка из Руки помощи " : ''}</p>
           </div>
           <img
             src="static/close.png"
@@ -217,54 +217,54 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
         )}
 
         {status == "ok" && (
-          <div data-name="slot-data" className="p-5 flex flex-col gap-8">
-            <div className="flex flex-col gap-1">
-              <h3 className="text-dark-green font-normal text-lg">
+          <div data-name="slot-data" className="p-5 flex flex-col gap-4">
+            <div className="flex flex-col gap-1 ">
+              <h3 className="text-green font-bold text-[19px] mb-2">
                 {formattedDate}
               </h3>
 
-              <p className="text-dark-green flex gap-2">
-                <b>Имя: </b> {data["client_name"]}
+              <p className="text-green flex gap-2">
+                Имя: <b>{data["client_name"]}</b>
               </p>
 
-              <p className="text-dark-green flex gap-2">
-                <b>Возраст: </b> {data["client_age"]}
+              <p className="text-green flex gap-2">
+                Возраст: <b>{data["client_age"]}</b>
               </p>
 
-              <p className="text-dark-green flex gap-2">
-                <b>Часовой пояс клиента: </b> {data["client_timezone"]}
+              <p className="text-green flex gap-2">
+                Часовой пояс клиента: <b>{data["client_timezone"]}</b>
               </p>
 
-              <p className="text-dark-green flex gap-2">
-                <b>Опыт клиента: </b> {data["is_helpful_hand"] ? data["past_session_experience"] : data["experience"]}
+              <p className="text-green flex gap-2">
+                Опыт клиента: <b>{data["is_helpful_hand"] ? data["past_session_experience"] : data["experience"]}</b>
               </p>
 
               {data["meeting_link"] && (
-                <p className="text-dark-green flex gap-2">
-                  <b>Ссылка на видеоконференцию: </b>
+                <p className="text-green flex gap-2">
+                  Ссылка на видеоконференцию:
                   <a
                     href={data["meeting_link"]}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800 underline"
+                    className="text-blue-600 hover:text-blue-800 font-bold"
                   >
-                    {data["meeting_link"]}
+                    ссылка
                   </a>
                 </p>
               )}
 
-              {data["is_helpful_hand"] && <p className="text-dark-green flex gap-2">
-                <b>Оплата: </b> {data["is_helpful_hand"] ? data["psychologist_price"] : ''}
+              {data["is_helpful_hand"] && <p className="text-green flex gap-2">
+                Оплата: <b>{data["is_helpful_hand"] ? data["psychologist_price"] : ''}</b>
               </p>}
 
             </div>
 
             {data["important_in_psychologist"]?.length != 0 && (
-              <div className="text-dark-green">
-                <p className="text-dark-green">
-                  <b>В психологе важно: </b>
+              <div className="text-green">
+                <p className="text-green">
+                  В психологе важно:
                 </p>
-                <ul className="text-dark-green list-disc list-inside">
+                <ul className="text-green list-disc list-inside font-bold">
                   {data["important_in_psychologist"]?.map((a, index) => {
                     return <li key={index}>{a}</li>;
                   })}
@@ -273,29 +273,28 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
             )}
 
             {data["questions_to_psychologist"]?.length != 0 && (
-              <div className="text-dark-green">
-                <p className="text-dark-green">
-                  <b>Клиент хочет обсудить: </b>
+              <div className="text-green">
+                <p className="text-green">
+                  Клиент хочет обсудить:
                 </p>
-                <p className="text-dark-green">{data["questions_to_psychologist"]}</p>
+                <p className="text-green font-bold">{data["questions_to_psychologist"]}</p>
               </div>
             )}
 
             {data["has_mental_illness"]?.length != 0 && (
-              <p className="text-dark-green">
-                <b>Псих. заболевание: </b>{" "}
-                {data["has_mental_illness"] != 'Нет' ? 'Есть психические заболевания' : ''}. {data["diagnose_medicaments"] ? 'Принимает медикаменты' : ''}
+              <p className="text-green">
+                Псих. заболевание: <b>{data["has_mental_illness"] != 'Нет' ? 'Есть психические заболевания' : ''}. {data["diagnose_medicaments"] ? 'Принимает медикаменты' : ''}</b>
               </p>
             )}
 
 
 
             {data["client_state"]?.length != 0 && (
-              <div className="text-dark-green">
-                <p className="text-dark-green">
-                  <b>Состояние клиента: </b>
+              <div className="text-green">
+                <p className="text-green">
+                  Состояние клиента:
                 </p>
-                <ul className="text-dark-green list-disc list-inside">
+                <ul className="text-green list-disc list-inside font-bold">
                   {data["client_state"]?.map((a, index) => {
                     return <li key={index}>{a}</li>;
                   })}
@@ -304,11 +303,11 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
             )}
 
             {data["traumatic_events"]?.length != 0 && (
-              <div className="text-dark-green">
-                <p className="text-dark-green">
-                  <b>Травмирующие события: </b>
+              <div className="text-green">
+                <p className="text-green">
+                  Травмирующие события:
                 </p>
-                <ul className="text-dark-green list-disc list-inside">
+                <ul className="text-green list-disc list-inside font-bold">
                   {data["traumatic_events"]?.map((a, index) => {
                     return <li key={index}>{a}</li>;
                   })}
@@ -317,7 +316,7 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
             )}
 
             {/* 
-            <p className="text-dark-green max-w-2xl">
+            <p className="text-green max-w-2xl">
               <b>Вопрос психологу:</b>
               <br />
               {data["Вопрос писхологу"]}
@@ -328,7 +327,7 @@ const SlotInfoPopup = ({ slotDate, closeFn, queryDate, queryTime }) => {
 
         {status == "empty" && (
           <div className="p-5 m-auto text-center flex flex-col gap-4">
-            <p className="text-dark-green font-medium text-3xl">Нет данных</p>
+            <p className="text-green font-medium text-3xl">Нет данных</p>
             <p className="text-black font-medium">
               Для получения подробной информации обратитесь к администратору
             </p>

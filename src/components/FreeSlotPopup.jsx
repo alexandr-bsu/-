@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Button from "./Button";
+import { Button } from "./ui/NewButon";
 import Radio from "./Radio";
 import QueryString from "qs";
 import axios from "axios";
@@ -24,7 +24,7 @@ const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn }) => {
     { value: "нет", label: "Нет" },
     { value: "раз в неделю", label: "Раз в неделю" },
     { value: "раз в 2 недели", label: "Раз в 2 недели" },
-    { value: "раз в 3 недели", label: "Раз в 3 недели" },
+    // { value: "раз в 3 недели", label: "Раз в 3 недели" },
     { value: "раз в месяц", label: "Раз в месяц" }
   ];
 
@@ -127,7 +127,7 @@ const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn }) => {
     <div className="fixed top-0 left-0 h-screen w-full flex justify-center items-center p-5 z-20 bg-[#000000] bg-opacity-20">
       <div className="bg-white rounded-[30px] w-full max-w-[660px] mx-5 max-h-[650px] overflow-y-auto">
         <div className="bg-white p-5 border-b border-b-dark-green w-full flex justify-between items-center">
-          <h2 className="text-dark-green font-medium text-xl">
+          <h2 className="text-green font-bold text-2xl">
             Свободный слот - {slotDate}
           </h2>
           <img
@@ -141,7 +141,7 @@ const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn }) => {
         <div className="p-5 flex flex-col gap-4">
           {/* Секция планирования */}
           <div className="border-b border-b-dark-green pb-4">
-            <h3 className="text-dark-green font-medium mb-3">Повторить слот</h3>
+            <h3 className="text-green font-bold text-[19px] mb-3">Повторить слот</h3>
 
             {isLoadingPlan ? (
               <div className="flex items-center justify-center py-4">
@@ -213,7 +213,7 @@ const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn }) => {
 
           {/* Секция удаления */}
           <div>
-            {/* <p className="text-dark-green text-center mb-4">
+            {/* <p className="text-green text-center mb-4">
               Вы уверены, что хотите удалить этот слот?
             </p> */}
 
@@ -228,11 +228,11 @@ const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn }) => {
               </Button> */}
 
               <Button
-                intent="primary"
-                hover="primary"
+                variant={'primary'}
+                className="rounded-full flex-1"
                 onClick={handleDeleteSlot}
                 disabled={isDeleting}
-                className="flex-1"
+
               >
                 {isDeleting ? (
                   <div className="flex items-center justify-center gap-2">

@@ -6,7 +6,7 @@ import DateGroupPsycoSlots from "./DateGroupPsycoSlots";
 import CreateEventPopup from "./CreateEventPopup";
 import axios from "axios";
 import { startOfWeek, endOfWeek } from "date-fns";
-import Button from "./Button";
+import { Button } from "./ui/NewButon";
 import Lottie from "react-lottie";
 import errorLottie from "../assets/lotties/error";
 import { useSelector, useDispatch } from "react-redux";
@@ -419,8 +419,8 @@ const PsycoSlots = () => {
                         Пожалуйста повторите попытку
                       </p>
                       <Button
-                        intent="cream"
-                        hover="primary"
+                        variant={'primary'}
+                        className="rounded-full"
                         onClick={() => {
                           selectFn(selectedDate, secret);
                         }}
@@ -442,8 +442,8 @@ const PsycoSlots = () => {
             className="slot-grid-container px-5 pt-5 pb-10 min-h-screen gap-10 "
           >
             {groups_of_slots?.map((group) => (
-              <DateGroupPsycoSlots 
-                key={group.date || group.pretty_date} 
+              <DateGroupPsycoSlots
+                key={group.date || group.pretty_date}
                 group={group}
                 onEventCancelled={() => {
                   // Перезагружаем слоты после отмены записи на мероприятие
@@ -458,17 +458,19 @@ const PsycoSlots = () => {
       </div>
 
       {slotStatus != "error" && slotStatus != "loading" && (
-        <div className="p-5 fixed bottom-0 bg-[#2c3531] w-full">
+        <div className="p-5 fixed bottom-0 bg-[#f4f4f4] w-full">
           <div className="flex gap-3">
-            <Button
+            {/* <Button
               intent="primary-transparent"
               onClick={() => setShowCreateEventPopup(true)}
               className="flex-1 bg-white text-[#2c3531] border-white hover:bg-gray-100"
             >
               Создать мероприятие
-            </Button>
+            </Button> */}
             <Link to="/slots-saved" onClick={() => { send_on_board_message(); send_on_fill_slots_message() }} className="flex-1">
-              <Button intent="cream" className="w-full">Готово</Button>
+            <Button
+                  variant={'primary'}
+                  className="rounded-full w-full">Готово</Button>
             </Link>
           </div>
         </div>
