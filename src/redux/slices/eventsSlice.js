@@ -19,13 +19,8 @@ const initialState = {
 // Async thunk для получения всех мероприятий
 export const fetchAllEvents = createAsyncThunk(
   "events/fetchAllEvents",
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      // Проверяем, не загружены ли уже события
-      const state = getState();
-      if (state.events.allEvents.length > 0 && !state.events.loading) {
-        return state.events.allEvents;
-      }
       const events = await getAllEvents();
       return events;
     } catch (error) {
@@ -33,14 +28,10 @@ export const fetchAllEvents = createAsyncThunk(
     }
   },
   {
-    // Предотвращаем повторные вызовы, если запрос уже выполняется
+    // Предотвращаем повторные вызовы, если запрос уже выполняется или события уже загружены
     condition: (_, { getState }) => {
       const state = getState();
-      // Не вызываем API если уже загружается или уже загружено
       const shouldFetch = !state.events.loading && state.events.allEvents.length === 0;
-      if (!shouldFetch) {
-        console.log('fetchAllEvents skipped:', { loading: state.events.loading, eventsCount: state.events.allEvents.length });
-      }
       return shouldFetch;
     },
   }

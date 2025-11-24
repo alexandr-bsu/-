@@ -92,7 +92,6 @@ const PsycoSlots = () => {
   // Используем ref для предотвращения повторных вызовов без лишних зависимостей
   const isLoadingSlotsRef = useRef(false);
   const lastRequestKeyRef = useRef(null);
-  const lastEventsCountRef = useRef(0);
 
   // Получаем группы слотов и обновляем переменную groups_of_slots
   // Срабатывает когда выбирается дата в WeekToogleContainer
@@ -104,19 +103,10 @@ const PsycoSlots = () => {
     // Создаем уникальный ключ для запроса
     const requestKey = `${startDate}_${endDate}_${secret}`;
 
-    // Получаем текущее количество событий
-    const state = store.getState();
-    const currentEventsCount = state.events.allEvents.length;
-
     // Предотвращаем повторные вызовы с одинаковыми параметрами
-    // НО разрешаем повторный вызов если события загрузились (количество изменилось)
-    const eventsJustLoaded = currentEventsCount > 0 && lastEventsCountRef.current === 0;
-
-    if (isLoadingSlotsRef.current && lastRequestKeyRef.current === requestKey && !eventsJustLoaded) {
+    if (isLoadingSlotsRef.current && lastRequestKeyRef.current === requestKey) {
       return;
     }
-
-    lastEventsCountRef.current = currentEventsCount;
     isLoadingSlotsRef.current = true;
     lastRequestKeyRef.current = requestKey;
     setSlotStatus("loading");
@@ -235,27 +225,23 @@ const PsycoSlots = () => {
       });
   }, [dispatch]); // allEvents больше не нужен, получаем из store напрямую
 
-  // Загружаем события один раз при монтировании компонента
+  // Загружаем события и слоты один раз при монтировании компонента
   useEffect(() => {
-    // Redux thunk сам проверит, нужно ли загружать события
-    // Вызываем только один раз при монтировании
-    const loadEvents = async () => {
-      await dispatch(fetchAllEvents());
+    const loadEventsAndSlots = async () => {
+      if (secret) {
+        // Сначала загружаем события
+        await dispatch(fetchAllEvents());
+        // Затем загружаем слоты с учетом событий
+        selectFn(selectedDate, secret);
+      } else {
+        setAuthState("unauthored");
+        setSlotStatus("error");
+      }
     };
-    loadEvents();
+    
+    loadEventsAndSlots();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Пустой массив зависимостей - выполнится только один раз
-
-  // Запрашиваем группы слотов при загрузке страницы и после загрузки событий
-  useEffect(() => {
-    if (secret) {
-      selectFn(selectedDate, secret);
-    } else {
-      setAuthState("unauthored");
-      setSlotStatus("error");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allEvents.length]); // Перезапускаем когда события загрузятся
+  }, []); // Выполняется только один раз при монтировании
 
   function send_on_board_message() {
     axios({
