@@ -63,6 +63,7 @@ export const psycoSlots = createSlice({
       state.slotOverEventNotification = {
         date: action.payload.date,
         time: action.payload.time,
+        slotId: action.payload.slotId,
         timestamp: Date.now()
       };
     },

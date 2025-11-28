@@ -450,6 +450,7 @@ const DateGroupPsycoSlots = ({ group, onEventCancelled }) => {
                           (slotObject) => slotObject?.slot == `${group.pretty_date} ${slotTime}`
                         );
                         const slotId = selectedSlotObject?.id || slot?.id || null;
+                        console.log('DateGroupPsycoSlots: передаем slotId в FreeSlotPopup:', slotId, 'selectedSlotObject:', selectedSlotObject, 'slot:', slot);
 
                         setFreeSlotData({
                           slotDate: `${group.pretty_date} ${slotTime}`,

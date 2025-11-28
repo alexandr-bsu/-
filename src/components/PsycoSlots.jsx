@@ -254,7 +254,7 @@ const PsycoSlots = () => {
         setSlotStatus("error");
       }
     };
-    
+
     loadEventsAndSlots();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Выполняется только один раз при монтировании
@@ -262,15 +262,15 @@ const PsycoSlots = () => {
   // Обрабатываем уведомления о создании/сбросе слота над мероприятием
   useEffect(() => {
     if (slotOverEventNotification) {
-      const { date, time, cleared } = slotOverEventNotification;
+      const { date, time, cleared, slotId } = slotOverEventNotification;
       console.log('PsycoSlots: получено уведомление', { date, time, cleared });
-      
+
       // Обновляем локальное состояние слотов
       setGroupsOfSlots(prevGroups => {
         return prevGroups.map(group => {
           if (group.date === date) {
             const updatedSlots = { ...group.slots };
-            
+
             if (updatedSlots[time]) {
               if (cleared) {
                 console.log('PsycoSlots: сбрасываем slot_over_event для', date, time);
@@ -285,16 +285,17 @@ const PsycoSlots = () => {
                   };
                 });
               } else {
-                console.log('PsycoSlots: устанавливаем slot_over_event для', date, time);
+                console.log('PsycoSlots: устанавливаем slot_over_event для', date, time, 'slotId:', slotId);
                 // Устанавливаем slot_over_event при создании слота
                 updatedSlots[time] = updatedSlots[time].map(slot => ({
                   ...slot,
                   slot_over_event: true,
-                  status: "Свободен"
+                  status: "Свободен",
+                  id: slotId || slot.id // Сохраняем ID слота
                 }));
               }
             }
-            
+
             return {
               ...group,
               slots: updatedSlots
@@ -517,9 +518,9 @@ const PsycoSlots = () => {
               Создать мероприятие
             </Button> */}
             <Link to="/slots-saved" onClick={() => { send_on_board_message(); send_on_fill_slots_message() }} className="flex-1">
-            <Button
-                  variant={'primary'}
-                  className="rounded-full w-full">Готово</Button>
+              <Button
+                variant={'primary'}
+                className="rounded-full w-full">Готово</Button>
             </Link>
           </div>
         </div>

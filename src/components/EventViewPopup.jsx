@@ -352,10 +352,16 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
       );
 
       if (response.status === 200) {
+        // API может возвращать объект или массив
+        const slotId = Array.isArray(response.data)
+          ? response.data[0]?.id
+          : response.data?.id;
+          console.log('EventViewPopup: получен ID слота от API:', slotId, 'response.data:', response.data);
+
         // Добавляем новый слот в Redux для реактивного обновления
         dispatch(pushSlot({
           slot: slotString,
-          id: response.data?.id || null // Если API возвращает ID слота
+          id: slotId
         }));
 
         // Обновляем мероприятие, устанавливая slot_over_event: true
@@ -366,9 +372,11 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
         }));
 
         // Уведомляем о создании слота над мероприятием
+        console.log('EventViewPopup: отправляем уведомление с slotId:', slotId);
         dispatch(notifySlotOverEvent({
           date: formattedDateStr,
-          time: eventTime
+          time: eventTime,
+          slotId: slotId
         }));
 
         toast.success("Слот успешно открыт для клиентов");
