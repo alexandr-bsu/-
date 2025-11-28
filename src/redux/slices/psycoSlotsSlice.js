@@ -6,6 +6,8 @@ const initialState = {
   freeSlots: [],
   // Впроцессе обработке
   loadList: [],
+  // Уведомление о создании слота над мероприятием
+  slotOverEventNotification: null,
 };
 
 export const psycoSlots = createSlice({
@@ -26,10 +28,10 @@ export const psycoSlots = createSlice({
       if (typeof action.payload === 'string') {
         state.freeSlots.push({ slot: action.payload, state: "ok" });
       } else {
-        state.freeSlots.push({ 
-          slot: action.payload.slot, 
+        state.freeSlots.push({
+          slot: action.payload.slot,
           id: action.payload.id,
-          state: "ok" 
+          state: "ok"
         });
       }
     },
@@ -53,6 +55,17 @@ export const psycoSlots = createSlice({
         }
       }
     },
+
+    // Новое действие для уведомления о создании слота над мероприятием
+    notifySlotOverEvent: (state, action) => {
+      // Это действие используется для уведомления компонентов о том, 
+      // что нужно обновить отображение слота
+      state.slotOverEventNotification = {
+        date: action.payload.date,
+        time: action.payload.time,
+        timestamp: Date.now()
+      };
+    },
   },
 });
 
@@ -62,5 +75,6 @@ export const {
   setStateSlotOk,
   pushSlot,
   setFreeSlots,
+  notifySlotOverEvent,
 } = psycoSlots.actions;
 export default psycoSlots.reducer;

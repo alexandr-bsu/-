@@ -114,10 +114,7 @@ const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn, onSlot
         dispatch(setStateSlotOk(slotKey));
         dispatch(spliceSlot(index));
         toast.success(`Слот ${slotKey} удалён`);
-        // Обновляем слоты после удаления, чтобы мероприятие снова отобразилось
-        if (onSlotDeleted) {
-          onSlotDeleted();
-        }
+        // Слот уже удален из Redux, перезагрузка не нужна
         closeFn();
       })
       .catch(() => {

@@ -4,7 +4,8 @@ import { ru } from "date-fns/locale/ru";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "./ui/NewButon";
 import Radio from "./Radio";
-import { registerForEvent, clearRegistrationStatus, fetchAllEvents, cancelEventRegistration } from "../redux/slices/eventsSlice";
+import { registerForEvent, clearRegistrationStatus, fetchAllEvents, cancelEventRegistration, setSlotOverEvent } from "../redux/slices/eventsSlice";
+import { pushSlot, notifySlotOverEvent } from "../redux/slices/psycoSlotsSlice";
 import toast, { Toaster } from "react-hot-toast";
 import { toast as sonnerToast } from "sonner";
 import QueryString from "qs";
@@ -351,12 +352,28 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
       );
 
       if (response.status === 200) {
+        // Добавляем новый слот в Redux для реактивного обновления
+        dispatch(pushSlot({
+          slot: slotString,
+          id: response.data?.id || null // Если API возвращает ID слота
+        }));
+
+        // Обновляем мероприятие, устанавливая slot_over_event: true
+        dispatch(setSlotOverEvent({
+          date: formattedDateStr,
+          time: eventTime,
+          eventName: eventName
+        }));
+
+        // Уведомляем о создании слота над мероприятием
+        dispatch(notifySlotOverEvent({
+          date: formattedDateStr,
+          time: eventTime
+        }));
+
         toast.success("Слот успешно открыт для клиентов");
 
-        // Обновляем слоты после успешного создания
-        if (onEventCancelled) {
-          onEventCancelled();
-        }
+        // Слот уже добавлен в Redux, перезагрузка не нужна
 
         // Закрываем попап через небольшую задержку
         setTimeout(() => {

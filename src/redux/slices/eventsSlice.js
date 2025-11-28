@@ -103,6 +103,24 @@ const eventsSlice = createSlice({
         }
       }
     },
+    setSlotOverEvent: (state, action) => {
+      const { date, time, eventName } = action.payload;
+
+      // Находим событие и устанавливаем slot_over_event: true
+      const eventIndex = state.allEvents.findIndex(
+        (event) => {
+          const eventDate = event.date ? new Date(event.date).toISOString().split('T')[0] : null;
+          return (event.name === eventName || event.title === eventName) && 
+                 eventDate === date && 
+                 event.time === time;
+        }
+      );
+      
+      if (eventIndex !== -1) {
+        state.allEvents[eventIndex].slot_over_event = true;
+        state.allEvents[eventIndex].status = "Свободен";
+      }
+    },
   },
   extraReducers: (builder) => {
     // fetchAllEvents
@@ -181,7 +199,7 @@ const eventsSlice = createSlice({
   },
 });
 
-export const { clearRegistrationStatus, clearCurrentEvent, clearError, cancelEventRegistration } =
+export const { clearRegistrationStatus, clearCurrentEvent, clearError, cancelEventRegistration, setSlotOverEvent } =
   eventsSlice.actions;
 
 export default eventsSlice.reducer;

@@ -21,6 +21,7 @@ import { Toaster } from "@/components/ui/sonner";
 const PsycoSlots = () => {
   const dispatch = useDispatch();
   const allEvents = useSelector((state) => state.events.allEvents);
+  const slotOverEventNotification = useSelector((state) => state.psyco.slotOverEventNotification);
   const secret = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
   })?.secret;
@@ -257,6 +258,37 @@ const PsycoSlots = () => {
     loadEventsAndSlots();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Выполняется только один раз при монтировании
+
+  // Обрабатываем уведомления о создании слота над мероприятием
+  useEffect(() => {
+    if (slotOverEventNotification) {
+      const { date, time } = slotOverEventNotification;
+      
+      // Обновляем локальное состояние слотов
+      setGroupsOfSlots(prevGroups => {
+        return prevGroups.map(group => {
+          if (group.date === date) {
+            const updatedSlots = { ...group.slots };
+            
+            if (updatedSlots[time]) {
+              // Обновляем существующие слоты, устанавливая slot_over_event: true
+              updatedSlots[time] = updatedSlots[time].map(slot => ({
+                ...slot,
+                slot_over_event: true,
+                status: "Свободен"
+              }));
+            }
+            
+            return {
+              ...group,
+              slots: updatedSlots
+            };
+          }
+          return group;
+        });
+      });
+    }
+  }, [slotOverEventNotification]);
 
   function send_on_board_message() {
     axios({
