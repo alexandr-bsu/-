@@ -275,30 +275,56 @@ const PsycoSlots = () => {
             if (updatedSlots[time]) {
               if (cleared) {
                 console.log('PsycoSlots: сбрасываем slot_over_event для', date, time);
-                // Сбрасываем slot_over_event при удалении слота
-                updatedSlots[time] = updatedSlots[time].map(slot => {
-                  console.log('PsycoSlots: обновляем слот', slot, '-> slot_over_event: false');
 
-                  // Определяем правильный статус для мероприятия после удаления слота
-                  let newStatus = "Свободен"; // По умолчанию мероприятие свободно
-
-                  // Если есть мероприятие, проверяем, записан ли пользователь на него
-                  if (slot.event) {
-                    const eventName = typeof slot.event === 'string' ? slot.event : (slot.event.title || slot.event.name);
-                    const isRegistered = registeredEvents.some(reg =>
-                      reg.date === date &&
-                      reg.time === time &&
-                      reg.eventName === eventName
-                    );
-                    newStatus = isRegistered ? "Забронирован" : "Свободен";
-                  }
-
-                  return {
-                    ...slot,
-                    slot_over_event: false,
-                    status: newStatus
-                  };
+                // Ищем мероприятие для этой даты и времени в allEvents
+                const matchingEvent = allEvents.find(event => {
+                  const eventDate = event.date ? new Date(event.date).toISOString().split('T')[0] : null;
+                  return eventDate === date && event.time === time;
                 });
+
+                if (matchingEvent) {
+                  console.log('PsycoSlots: найдено мероприятие для восстановления:', matchingEvent.title || matchingEvent.name);
+
+                  // Проверяем, записан ли пользователь на это мероприятие
+                  const eventName = matchingEvent.title || matchingEvent.name;
+                  const isRegistered = registeredEvents.some(reg =>
+                    reg.date === date &&
+                    reg.time === time &&
+                    reg.eventName === eventName
+                  );
+
+                  // Восстанавливаем слот с мероприятием
+                  updatedSlots[time] = [{
+                    event: matchingEvent,
+                    status: isRegistered ? "Забронирован" : "Свободен",
+                    slot_over_event: false,
+                    date: date,
+                    time: time
+                  }];
+                } else {
+                  // Если мероприятие не найдено, просто сбрасываем slot_over_event
+                  updatedSlots[time] = updatedSlots[time].map(slot => {
+                    console.log('PsycoSlots: обновляем слот без мероприятия', slot, '-> slot_over_event: false');
+
+                    // Определяем правильный статус
+                    let newStatus = "Свободен";
+                    if (slot.event) {
+                      const eventName = typeof slot.event === 'string' ? slot.event : (slot.event.title || slot.event.name);
+                      const isRegistered = registeredEvents.some(reg =>
+                        reg.date === date &&
+                        reg.time === time &&
+                        reg.eventName === eventName
+                      );
+                      newStatus = isRegistered ? "Забронирован" : "Свободен";
+                    }
+
+                    return {
+                      ...slot,
+                      slot_over_event: false,
+                      status: newStatus
+                    };
+                  });
+                }
               } else {
                 console.log('PsycoSlots: устанавливаем slot_over_event для', date, time, 'slotId:', slotId);
                 // Устанавливаем slot_over_event при создании слота
