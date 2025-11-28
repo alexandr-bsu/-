@@ -278,11 +278,25 @@ const PsycoSlots = () => {
                 // Сбрасываем slot_over_event при удалении слота
                 updatedSlots[time] = updatedSlots[time].map(slot => {
                   console.log('PsycoSlots: обновляем слот', slot, '-> slot_over_event: false');
+
+                  // Определяем правильный статус для мероприятия после удаления слота
+                  let newStatus = "Свободен"; // По умолчанию мероприятие свободно
+
+                  // Если есть мероприятие, проверяем, записан ли пользователь на него
+                  if (slot.event) {
+                    const eventName = typeof slot.event === 'string' ? slot.event : (slot.event.title || slot.event.name);
+                    const isRegistered = registeredEvents.some(reg =>
+                      reg.date === date &&
+                      reg.time === time &&
+                      reg.eventName === eventName
+                    );
+                    newStatus = isRegistered ? "Забронирован" : "Свободен";
+                  }
+
                   return {
                     ...slot,
                     slot_over_event: false,
-                    // Убираем статус "Свободен", возвращаем к исходному состоянию мероприятия
-                    status: undefined
+                    status: newStatus
                   };
                 });
               } else {
@@ -314,7 +328,7 @@ const PsycoSlots = () => {
     setGroupsOfSlots(prevGroups => {
       return prevGroups.map(group => {
         const updatedSlots = { ...group.slots };
-        
+
         // Проходим по всем слотам в группе
         Object.keys(updatedSlots).forEach(time => {
           const slotArray = updatedSlots[time];
@@ -323,14 +337,14 @@ const PsycoSlots = () => {
               // Если это слот с мероприятием
               if (slot.event && slot.event !== null) {
                 const eventName = typeof slot.event === 'string' ? slot.event : (slot.event.title || slot.event.name);
-                
+
                 // Проверяем, есть ли регистрация на это мероприятие
-                const isRegistered = registeredEvents.some(reg => 
-                  reg.date === group.date && 
-                  reg.time === time && 
+                const isRegistered = registeredEvents.some(reg =>
+                  reg.date === group.date &&
+                  reg.time === time &&
                   reg.eventName === eventName
                 );
-                
+
                 // Обновляем статус слота в зависимости от регистрации
                 return {
                   ...slot,
@@ -341,7 +355,7 @@ const PsycoSlots = () => {
             });
           }
         });
-        
+
         return {
           ...group,
           slots: updatedSlots
