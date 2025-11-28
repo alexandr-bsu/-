@@ -272,8 +272,10 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
       console.log("Ответ API:", response);
 
       if (response.status === 200) {
-        // Обновляем и локальное состояние, и Redux store
+        // Обновляем локальное состояние
         setIsRegistered(false);
+
+        // Обновляем Redux store
         dispatch(cancelEventRegistration({
           date: formattedDateStr,
           time: eventTime,
@@ -356,7 +358,7 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
         const slotId = Array.isArray(response.data)
           ? response.data[0]?.id
           : response.data?.id;
-          console.log('EventViewPopup: получен ID слота от API:', slotId, 'response.data:', response.data);
+        console.log('EventViewPopup: получен ID слота от API:', slotId, 'response.data:', response.data);
 
         // Добавляем новый слот в Redux для реактивного обновления
         dispatch(pushSlot({

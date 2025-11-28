@@ -92,7 +92,12 @@ const eventsSlice = createSlice({
 
       // Обновляем событие в allEvents, устанавливая registered: false и уменьшая количество участников
       const eventIndex = state.allEvents.findIndex(
-        (event) => event.name === eventName || event.title === eventName
+        (event) => {
+          const eventDate = event.date ? new Date(event.date).toISOString().split('T')[0] : null;
+          return (event.name === eventName || event.title === eventName) && 
+                 eventDate === date && 
+                 event.time === time;
+        }
       );
       if (eventIndex !== -1) {
         state.allEvents[eventIndex].registered = false;

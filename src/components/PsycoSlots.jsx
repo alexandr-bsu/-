@@ -21,6 +21,7 @@ import { Toaster } from "@/components/ui/sonner";
 const PsycoSlots = () => {
   const dispatch = useDispatch();
   const allEvents = useSelector((state) => state.events.allEvents);
+  const registeredEvents = useSelector((state) => state.events.registeredEvents);
   const slotOverEventNotification = useSelector((state) => state.psyco.slotOverEventNotification);
   const secret = QueryString.parse(window.location.search, {
     ignoreQueryPrefix: true,
@@ -306,6 +307,48 @@ const PsycoSlots = () => {
       });
     }
   }, [slotOverEventNotification]);
+
+  // Отслеживаем изменения в registeredEvents для обновления статуса слотов
+  useEffect(() => {
+    // Обновляем локальное состояние слотов при изменении registeredEvents
+    setGroupsOfSlots(prevGroups => {
+      return prevGroups.map(group => {
+        const updatedSlots = { ...group.slots };
+        
+        // Проходим по всем слотам в группе
+        Object.keys(updatedSlots).forEach(time => {
+          const slotArray = updatedSlots[time];
+          if (slotArray && slotArray.length > 0) {
+            updatedSlots[time] = slotArray.map(slot => {
+              // Если это слот с мероприятием
+              if (slot.event && slot.event !== null) {
+                const eventName = typeof slot.event === 'string' ? slot.event : (slot.event.title || slot.event.name);
+                
+                // Проверяем, есть ли регистрация на это мероприятие
+                const isRegistered = registeredEvents.some(reg => 
+                  reg.date === group.date && 
+                  reg.time === time && 
+                  reg.eventName === eventName
+                );
+                
+                // Обновляем статус слота в зависимости от регистрации
+                return {
+                  ...slot,
+                  status: isRegistered ? "Забронирован" : "Свободен"
+                };
+              }
+              return slot;
+            });
+          }
+        });
+        
+        return {
+          ...group,
+          slots: updatedSlots
+        };
+      });
+    });
+  }, [registeredEvents]);
 
   function send_on_board_message() {
     axios({
