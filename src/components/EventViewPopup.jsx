@@ -4,7 +4,7 @@ import { ru } from "date-fns/locale/ru";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "./ui/NewButon";
 import Radio from "./Radio";
-import { registerForEvent, clearRegistrationStatus, fetchAllEvents } from "../redux/slices/eventsSlice";
+import { registerForEvent, clearRegistrationStatus, fetchAllEvents, cancelEventRegistration } from "../redux/slices/eventsSlice";
 import toast, { Toaster } from "react-hot-toast";
 import { toast as sonnerToast } from "sonner";
 import QueryString from "qs";
@@ -51,8 +51,19 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
     ignoreQueryPrefix: true,
   })?.secret;
 
+  // Получаем актуальное событие из Redux store для реактивного обновления
+  const currentEventFromStore = useMemo(() => {
+    const eventName = event?.title || event?.name || "";
+    return allEvents.find(evt =>
+      evt.title === eventName ||
+      evt.name === eventName ||
+      evt.id === event?.id ||
+      evt.slot_id === event?.slot_id
+    ) || event;
+  }, [allEvents, event]);
+
   // Мемоизируем значения, чтобы избежать лишних пересчетов
-  const eventDate = useMemo(() => event?.date ? new Date(event.date) : null, [event?.date]);
+  const eventDate = useMemo(() => currentEventFromStore?.date ? new Date(currentEventFromStore.date) : null, [currentEventFromStore?.date]);
   const formattedDate = useMemo(() =>
     eventDate ? format(eventDate, "d MMMM yyyy", { locale: ru }) : "",
     [eventDate]
@@ -61,10 +72,10 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
     eventDate ? format(eventDate, "dd.MM.yyyy") : "",
     [eventDate]
   );
-  const eventTime = useMemo(() => event?.time || "", [event?.time]);
+  const eventTime = useMemo(() => currentEventFromStore?.time || "", [currentEventFromStore?.time]);
   const formattedDateStr = useMemo(() => eventDate ? format(eventDate, "yyyy-MM-dd") : "", [eventDate]);
-  const eventName = useMemo(() => event?.title || event?.name || "", [event?.title, event?.name]);
-  const eventRegistered = useMemo(() => event?.registered || false, [event?.registered]);
+  const eventName = useMemo(() => currentEventFromStore?.title || currentEventFromStore?.name || "", [currentEventFromStore?.title, currentEventFromStore?.name]);
+  const eventRegistered = useMemo(() => currentEventFromStore?.registered || false, [currentEventFromStore?.registered]);
 
   // Проверяем регистрацию в Redux
   const checkIsRegistered = useMemo(() => {
@@ -102,13 +113,11 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
   // Проверяем, является ли событие пользовательским
   const isCustomEvent = useMemo(() => {
     // Пользовательские события определяются по модальности "пользовательское"
-    const modality = event?.event_modal_type || event?.modality;
+    const modality = currentEventFromStore?.event_modal_type || currentEventFromStore?.modality;
     const result = modality === "пользовательское";
 
-
-
     return result;
-  }, [event]);
+  }, [currentEventFromStore]);
 
   // Получаем актуальное состояние режима повтора для пользовательских событий
   useEffect(() => {
@@ -191,7 +200,7 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
 
   if (!isOpen || !event) return null;
 
-  const modalityColor = getColorByModalityLocal(event.event_modal_type || event.modality);
+  const modalityColor = getColorByModalityLocal(currentEventFromStore.event_modal_type || currentEventFromStore.modality);
 
 
   const handleRegister = async () => {
@@ -262,8 +271,13 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
       console.log("Ответ API:", response);
 
       if (response.status === 200) {
-        // Обновляем только локальное состояние
+        // Обновляем и локальное состояние, и Redux store
         setIsRegistered(false);
+        dispatch(cancelEventRegistration({
+          date: formattedDateStr,
+          time: eventTime,
+          eventName: eventName,
+        }));
 
         toast.success("Запись на мероприятие отменена", {
           duration: 4000, // 4 секунды
@@ -314,7 +328,7 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
   // Функция для открытия слота над мероприятием
   const handleOpenSlotOverEvent = async () => {
     if (!eventDate || !eventTime || !secret) {
-      toast.error("Не удалось определить дату, время или секретный ключ");
+      toast.error("Что-то пошло не так");
       return;
     }
 
@@ -338,12 +352,12 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
 
       if (response.status === 200) {
         toast.success("Слот успешно открыт для клиентов");
-        
+
         // Обновляем слоты после успешного создания
         if (onEventCancelled) {
           onEventCancelled();
         }
-        
+
         // Закрываем попап через небольшую задержку
         setTimeout(() => {
           handleClose();
@@ -367,14 +381,14 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
           <div className="bg-white sticky top-0 p-5 border-b border-b-dark-green w-full flex justify-between items-center">
             <div className="flex items-center gap-3 flex-wrap">
               <h2 className="text-green font-bold text-2xl">
-                {event.title || event.name}
+                {currentEventFromStore.title || currentEventFromStore.name}
               </h2>
               {!isCustomEvent && (
                 <span
                   className="px-3 py-1 rounded-full text-white font-medium text-sm"
                   style={{ backgroundColor: modalityColor }}
                 >
-                  {event.event_modal_type || event.modality}
+                  {currentEventFromStore.event_modal_type || currentEventFromStore.modality}
                 </span>
               )}
             </div>
@@ -398,10 +412,10 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
 
 
             {/* Описание */}
-            {event.description && (
+            {currentEventFromStore.description && (
               <div data-group="section">
                 <div className="flex flex-col gap-1">
-                  <p className="text-green text-base font-normal">{event.description}</p>
+                  <p className="text-green text-base font-normal">{currentEventFromStore.description}</p>
                 </div>
               </div>
             )}
@@ -413,7 +427,7 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                   <div className="flex flex-wrap">
                     <p className="text-green text-base flex items-center flex-wrap">
                       <span className="font-normal mr-1">{(() => {
-                        const eventType = (event.event_type || event.type || "").toLowerCase();
+                        const eventType = (currentEventFromStore.event_type || currentEventFromStore.type || "").toLowerCase();
 
                         // Определяем название роли согласно типу мероприятия
                         if (eventType.includes("супервизи")) {
@@ -425,17 +439,15 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                         }
                       })()}</span>
 
-
-
-                      {(event.organizator_link || event.organizer_tg_link) && (
+                      {(currentEventFromStore.organizator_link || currentEventFromStore.organizer_tg_link) && (
                         <a
-                          href={`https://${event.organizator_link || event.organizer_tg_link}`}
+                          href={`https://${currentEventFromStore.organizator_link || currentEventFromStore.organizer_tg_link}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-green hover:text-green transition-colors inline-flex items-center"
                           title="Перейти на страницу психолога"
                         >
-                          <span className="font-bold">{event.organizator_name || event.organizer_name}</span>
+                          <span className="font-bold">{currentEventFromStore.organizator_name || currentEventFromStore.organizer_name}</span>
                           <TelegramPlane width={16} height={16} />
                         </a>
                       )}
@@ -445,21 +457,21 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
 
 
                 {/* Текущее количество участников - скрыто для пользовательских событий */}
-                {event.current_participants !== undefined && !isCustomEvent && (
+                {currentEventFromStore.current_participants !== undefined && !isCustomEvent && (
                   <div className="flex flex-col flex-wrap">
                     <p className="text-green text-base">
-                      <span className="font-normal">Участников: </span> <span className="font-bold">{event.current_participants}/{event.max_participants || 0}</span>
+                      <span className="font-normal">Участников: </span> <span className="font-bold">{currentEventFromStore.current_participants}/{currentEventFromStore.max_participants || 0}</span>
                     </p>
                   </div>
                 )}
 
 
                 {/* Ссылка на встречу - только для зарегистрированных */}
-                {(event.event_link || event.meeting_link) && isRegistered && (
+                {(currentEventFromStore.event_link || currentEventFromStore.meeting_link) && isRegistered && (
                   <div className="flex flex-col flex-wrap">
                     <p className="text-green text-base">
                       <span className="font-normal">Ссылка на мероприятие: </span> <a
-                        href={event.event_link || event.meeting_link}
+                        href={currentEventFromStore.event_link || currentEventFromStore.meeting_link}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-green font-bold"
@@ -471,16 +483,16 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                 )}
 
                 {/* Папка с кейсами (только для supervision и intervision и только для зарегистрированных) */}
-                {event.event_folder &&
+                {currentEventFromStore.event_folder &&
                   isRegistered &&
-                  (event.event_type === "supervision" ||
-                    event.event_type === "интервизия" ||
-                    event.event_type === "супервизия" ||
-                    event.event_type === "intervision") && (
+                  (currentEventFromStore.event_type === "supervision" ||
+                    currentEventFromStore.event_type === "интервизия" ||
+                    currentEventFromStore.event_type === "супервизия" ||
+                    currentEventFromStore.event_type === "intervision") && (
                     <div className="flex flex-wrap">
                       <p className="text-green text-base">
                         <span className="font-normal">Папка с кейсами: </span> <a
-                          href={event.event_folder}
+                          href={currentEventFromStore.event_folder}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-green font-bold"
@@ -564,7 +576,7 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
 
 
             {/* Следующее мероприятие */}
-            {event.next_event && (
+            {currentEventFromStore.next_event && (
               <div data-group="section">
                 <div className="flex flex-col gap-1">
                   <p className="text-green text-base">
@@ -573,10 +585,10 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                       className="cursor-pointer hover:text-green transition-colors font-bold"
                       onClick={(e) => {
                         e.preventDefault();
-                        handleOpenRelatedEvent(event.next_event);
+                        handleOpenRelatedEvent(currentEventFromStore.next_event);
                       }}
                     >
-                      {event.next_event}
+                      {currentEventFromStore.next_event}
                     </a>
                   </p>
                 </div>
@@ -592,7 +604,7 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                 </div>
               )} */}
 
-            
+
 
             {/* Кнопки действий */}
             <div className="flex flex-col gap-2">
@@ -606,13 +618,13 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                 return null;
               })()}
               {/* Проверка на запрет подключения к супервизии */}
-              {!isRegistered && !event.registered && !event.is_canceled &&
-                event.allow_connect === false &&
-                (event.event_type || event.type || "").toLowerCase().includes("супервизи") ? (
+              {!isRegistered && !currentEventFromStore.registered && !currentEventFromStore.is_canceled &&
+                currentEventFromStore.allow_connect === false &&
+                (currentEventFromStore.event_type || currentEventFromStore.type || "").toLowerCase().includes("супервизи") ? (
                 <div className="p-3 rounded-[30px] border-2 border-green text-green">
                   К сожалению ваш тариф не включает в себя посещение супервизий
                 </div>
-              ) : !isRegistered && !event.registered && !event.is_canceled && !(event.current_participants >= event.max_participants) ? (
+              ) : !isRegistered && !currentEventFromStore.registered && !currentEventFromStore.is_canceled && !(currentEventFromStore.current_participants >= currentEventFromStore.max_participants) ? (
                 <Button
                   variant={'primary'}
                   className="rounded-full"
@@ -624,15 +636,15 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                   {registering ? "Записываемся..." : "Записаться"}
                 </Button>
 
-              ) : event.is_canceled ? (
+              ) : currentEventFromStore.is_canceled ? (
                 <div className="p-3 rounded-lg bg-red text-white">
                   Мероприятие отменено
                 </div>
-              ) : event.current_participants >= event.max_participants && !isRegistered && !event.registered ? (
+              ) : currentEventFromStore.current_participants >= currentEventFromStore.max_participants && !isRegistered && !currentEventFromStore.registered ? (
                 <div className="p-3 rounded-[30px] border-2 border-green text-green">
                   <div className="space-y-2">
                     <p>К сожалению вы не можете записаться на это мероприятие, поскольку число желающих его посетить уже достигло максимального количества.</p>
-                    {event.next_event && (
+                    {currentEventFromStore.next_event && (
                       <p>Вы можете записаться на аналогичное мероприятие по ссылке выше 🙏</p>
                     )}
                   </div>
@@ -640,9 +652,9 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
               ) : (
                 <div className="p-3 rounded-[30px] border border-2 border-green text-green">
                   {(() => {
-                    const eventType = (event.event_type || event.type || "").toLowerCase();
-                    const organizatorName = event.organizator_name || event.organizer_name || "супервизора";
-                    const eventFolder = event.event_folder;
+                    const eventType = (currentEventFromStore.event_type || currentEventFromStore.type || "").toLowerCase();
+                    const organizatorName = currentEventFromStore.organizator_name || currentEventFromStore.organizer_name || "супервизора";
+                    const eventFolder = currentEventFromStore.event_folder;
 
                     if (eventType.includes("супервизи")) {
                       return (
@@ -688,7 +700,7 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                 });
                 return null;
               })()}
-              {(isRegistered || event.registered) && !event.is_canceled && (
+              {(isRegistered || currentEventFromStore.registered) && !currentEventFromStore.is_canceled && (
                 <Button
                   variant={'primary'}
                   className="rounded-full"
@@ -782,24 +794,24 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
               </Button>
 
               {/* Кнопка "Открыть слот для клиентов" - только для психологов */}
-            {secret && !isCustomEvent && (
-              <div className="flex w-full items-center p-2 justify-center">
-                <p
-                  
-                  className="text-green underline cursor-pointer"
-                  onClick={handleOpenSlotOverEvent}
-                  disabled={isOpeningSlot}
-                >
-                  {isOpeningSlot ? (
-                    
-                    "Открываем..."
-                    
-                  ) : (
-                    "Открыть слот для клиентов"
-                  )}
-                </p>
-              </div>
-            )}
+              {secret && !isCustomEvent && (
+                <div className="flex w-full items-center p-2 justify-center">
+                  <p
+
+                    className="text-green underline cursor-pointer"
+                    onClick={handleOpenSlotOverEvent}
+                    disabled={isOpeningSlot}
+                  >
+                    {isOpeningSlot ? (
+
+                      "Открываем..."
+
+                    ) : (
+                      "Открыть слот для клиентов"
+                    )}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>

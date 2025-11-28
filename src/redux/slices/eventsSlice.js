@@ -58,7 +58,7 @@ export const registerForEvent = createAsyncThunk(
   async ({ date, time, eventName }, { rejectWithValue }) => {
     try {
       const result = await joinToEvent(date, time, eventName);
-      return { result, eventName };
+      return { result, eventName, date, time };
     } catch (error) {
       return rejectWithValue(
         error.message || "Ошибка регистрации на мероприятие"
@@ -81,6 +81,27 @@ const eventsSlice = createSlice({
     },
     clearError: (state) => {
       state.error = null;
+    },
+    cancelEventRegistration: (state, action) => {
+      const { date, time, eventName } = action.payload;
+
+      // Удаляем регистрацию из registeredEvents
+      state.registeredEvents = state.registeredEvents.filter(
+        (reg) => !(reg.date === date && reg.time === time && reg.eventName === eventName)
+      );
+
+      // Обновляем событие в allEvents, устанавливая registered: false и уменьшая количество участников
+      const eventIndex = state.allEvents.findIndex(
+        (event) => event.name === eventName || event.title === eventName
+      );
+      if (eventIndex !== -1) {
+        state.allEvents[eventIndex].registered = false;
+        // Уменьшаем количество участников на 1, но не ниже 0
+        if (typeof state.allEvents[eventIndex].current_participants === 'number' && 
+            state.allEvents[eventIndex].current_participants > 0) {
+          state.allEvents[eventIndex].current_participants -= 1;
+        }
+      }
     },
   },
   extraReducers: (builder) => {
@@ -132,7 +153,7 @@ const eventsSlice = createSlice({
         const existingIndex = state.registeredEvents.findIndex(
           (reg) => `${reg.date}_${reg.time}_${reg.eventName}` === registrationKey
         );
-        
+
         if (existingIndex === -1) {
           state.registeredEvents.push({
             date: action.payload.date,
@@ -141,12 +162,16 @@ const eventsSlice = createSlice({
           });
         }
 
-        // Обновляем событие в allEvents, устанавливая registered: true
+        // Обновляем событие в allEvents, устанавливая registered: true и увеличивая количество участников
         const eventIndex = state.allEvents.findIndex(
-          (event) => event.name === action.payload.eventName
+          (event) => event.name === action.payload.eventName || event.title === action.payload.eventName
         );
         if (eventIndex !== -1) {
           state.allEvents[eventIndex].registered = true;
+          // Увеличиваем количество участников на 1
+          if (typeof state.allEvents[eventIndex].current_participants === 'number') {
+            state.allEvents[eventIndex].current_participants += 1;
+          }
         }
       })
       .addCase(registerForEvent.rejected, (state, action) => {
@@ -156,7 +181,7 @@ const eventsSlice = createSlice({
   },
 });
 
-export const { clearRegistrationStatus, clearCurrentEvent, clearError } =
+export const { clearRegistrationStatus, clearCurrentEvent, clearError, cancelEventRegistration } =
   eventsSlice.actions;
 
 export default eventsSlice.reducer;
