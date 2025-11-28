@@ -5,7 +5,7 @@ import QueryString from "qs";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useSelector, useDispatch } from "react-redux";
-import { spliceSlot, setStateSlotLoading, setStateSlotOk } from "../redux/slices/psycoSlotsSlice";
+import { spliceSlot, setStateSlotLoading, setStateSlotOk, notifySlotCleared } from "../redux/slices/psycoSlotsSlice";
 
 const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn, onSlotDeleted }) => {
   const [isDeleting, setIsDeleting] = useState(false);
@@ -114,7 +114,26 @@ const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn, onSlot
         dispatch(setStateSlotOk(slotKey));
         dispatch(spliceSlot(index));
         toast.success(`Слот ${slotKey} удалён`);
-        // Слот уже удален из Redux, перезагрузка не нужна
+
+        // Парсим дату и время из строки слота для уведомления о сбросе
+        const slotParts = slotKey.split(' ');
+        if (slotParts.length >= 2) {
+          const slotDatePart = slotParts[0]; // "dd.MM"
+          const slotTime = slotParts[1]; // "HH:mm"
+
+          // Преобразуем дату в формат yyyy-MM-dd
+          const currentYear = new Date().getFullYear();
+          const [day, month] = slotDatePart.split('.');
+          const slotDate = `${currentYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+
+          // Отправляем уведомление о сбросе слота
+          console.log('FreeSlotPopup: отправляем уведомление о сбросе слота', { date: slotDate, time: slotTime });
+          dispatch(notifySlotCleared({
+            date: slotDate,
+            time: slotTime
+          }));
+        }
+
         closeFn();
       })
       .catch(() => {

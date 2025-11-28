@@ -66,6 +66,16 @@ export const psycoSlots = createSlice({
         timestamp: Date.now()
       };
     },
+    // Действие для уведомления о сбросе слота над мероприятием
+    notifySlotCleared: (state, action) => {
+      // Уведомляем о том, что слот был удален и нужно сбросить slot_over_event
+      state.slotOverEventNotification = {
+        date: action.payload.date,
+        time: action.payload.time,
+        cleared: true,
+        timestamp: Date.now()
+      };
+    },
   },
 });
 
@@ -76,5 +86,6 @@ export const {
   pushSlot,
   setFreeSlots,
   notifySlotOverEvent,
+  notifySlotCleared,
 } = psycoSlots.actions;
 export default psycoSlots.reducer;

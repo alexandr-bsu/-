@@ -16,6 +16,7 @@ import {
   spliceSlot,
   setStateSlotLoading,
   setStateSlotOk,
+  notifySlotCleared,
 } from "../redux/slices/psycoSlotsSlice";
 import { fetchAllEvents } from "../redux/slices/eventsSlice";
 import QueryString from "qs";
@@ -110,7 +111,25 @@ const DateGroupPsycoSlots = ({ group, onEventCancelled }) => {
           dispatch(setStateSlotOk(slot));
           dispatch(spliceSlot(index));
           toast.success(`Слот ${slot} удалён`);
-          Он          // Слот уже удален из Redux, перезагрузка не нужна
+
+          // Парсим дату и время из строки слота для уведомления о сбросе
+          const slotParts = slot.split(' ');
+          if (slotParts.length >= 2) {
+            const slotDatePart = slotParts[0]; // "dd.MM"
+            const slotTime = slotParts[1]; // "HH:mm"
+
+            // Преобразуем дату в формат yyyy-MM-dd
+            const currentYear = new Date().getFullYear();
+            const [day, month] = slotDatePart.split('.');
+            const slotDate = `${currentYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+
+            // Отправляем уведомление о сбросе слота
+            console.log('DateGroupPsycoSlots: отправляем уведомление о сбросе слота', { date: slotDate, time: slotTime });
+            dispatch(notifySlotCleared({
+              date: slotDate,
+              time: slotTime
+            }));
+          }
         })
         .catch((error) => {
           dispatch(setStateSlotOk(slot));
@@ -186,7 +205,14 @@ const DateGroupPsycoSlots = ({ group, onEventCancelled }) => {
     // Проверка на мероприятие (приоритет 2)
     // НОВАЯ ЛОГИКА: Если slot_over_event = true И статус "Свободен", то показываем как свободный слот
     if (slot && slot.event !== null && slot.event !== undefined) {
+      console.log('getSlotStyle: проверяем мероприятие', {
+        slot_over_event: slot.slot_over_event,
+        status: slot.status,
+        event: slot.event?.title || slot.event?.name || slot.event
+      });
+
       if (slot.slot_over_event === true && slot.status === "Свободен") {
+        console.log('getSlotStyle: показываем как свободный слот');
         // Показываем как свободный слот
         return {
           backgroundColor: "white",
@@ -195,6 +221,7 @@ const DateGroupPsycoSlots = ({ group, onEventCancelled }) => {
           icon: null,
         };
       } else {
+        console.log('getSlotStyle: показываем как мероприятие');
         // Показываем как мероприятие
         return {
           backgroundColor: getColorByModality(slot.event.modality),

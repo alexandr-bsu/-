@@ -259,10 +259,11 @@ const PsycoSlots = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Выполняется только один раз при монтировании
 
-  // Обрабатываем уведомления о создании слота над мероприятием
+  // Обрабатываем уведомления о создании/сбросе слота над мероприятием
   useEffect(() => {
     if (slotOverEventNotification) {
-      const { date, time } = slotOverEventNotification;
+      const { date, time, cleared } = slotOverEventNotification;
+      console.log('PsycoSlots: получено уведомление', { date, time, cleared });
       
       // Обновляем локальное состояние слотов
       setGroupsOfSlots(prevGroups => {
@@ -271,12 +272,27 @@ const PsycoSlots = () => {
             const updatedSlots = { ...group.slots };
             
             if (updatedSlots[time]) {
-              // Обновляем существующие слоты, устанавливая slot_over_event: true
-              updatedSlots[time] = updatedSlots[time].map(slot => ({
-                ...slot,
-                slot_over_event: true,
-                status: "Свободен"
-              }));
+              if (cleared) {
+                console.log('PsycoSlots: сбрасываем slot_over_event для', date, time);
+                // Сбрасываем slot_over_event при удалении слота
+                updatedSlots[time] = updatedSlots[time].map(slot => {
+                  console.log('PsycoSlots: обновляем слот', slot, '-> slot_over_event: false');
+                  return {
+                    ...slot,
+                    slot_over_event: false,
+                    // Убираем статус "Свободен", возвращаем к исходному состоянию мероприятия
+                    status: undefined
+                  };
+                });
+              } else {
+                console.log('PsycoSlots: устанавливаем slot_over_event для', date, time);
+                // Устанавливаем slot_over_event при создании слота
+                updatedSlots[time] = updatedSlots[time].map(slot => ({
+                  ...slot,
+                  slot_over_event: true,
+                  status: "Свободен"
+                }));
+              }
             }
             
             return {
