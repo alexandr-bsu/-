@@ -834,7 +834,7 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                       "Открываем..."
 
                     ) : (
-                      "Открыть слот для клиентов"
+                      "Открыть слот для записи клиентов"
                     )}
                   </p>
                 </div>
