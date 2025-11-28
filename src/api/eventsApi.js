@@ -154,9 +154,21 @@ export async function joinToEvent(date, time, eventName) {
       },
     });
 
+    // Проверяем на специфическую ошибку max_supervision_tarif_reached
+    if (response.data && response.data.error === "max_supervision_tarif_reached") {
+      throw new Error("К сожалению ваш тариф не включает в себя посещение супервизий");
+    }
+
     return response.data;
   } catch (error) {
     console.error("Error joining event:", error);
+    
+    // Если это наша специфическая ошибка, передаем её как есть
+    if (error.message === "К сожалению ваш тариф не включает в себя посещение супервизий") {
+      throw error;
+    }
+    
+    // Для всех остальных ошибок используем общее сообщение
     throw new Error("Не удалось записаться на мероприятие");
   }
 }

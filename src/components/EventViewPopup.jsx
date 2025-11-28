@@ -222,6 +222,13 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
       setIsRegistered(true);
       toast.success("Вы успешно записались на мероприятие!");
     } catch (err) {
+      // Проверяем на специфическую ошибку лимита супервизий
+      if (err === "К сожалению ваш тариф не включает в себя посещение супервизий") {
+        toast.error("К сожалению ваш тариф не включает в себя посещение супервизий");
+        // НЕ устанавливаем isRegistered в true, так как регистрация не прошла
+        return;
+      }
+
       toast.error(err || "Не удалось записаться на мероприятие");
     }
   };
@@ -644,14 +651,7 @@ const EventViewPopup = ({ event, isOpen, onClose, onOpenRelatedEvent, onEventCan
                 });
                 return null;
               })()}
-              {/* Проверка на запрет подключения к супервизии */}
-              {!isRegistered && !currentEventFromStore.registered && !currentEventFromStore.is_canceled &&
-                currentEventFromStore.allow_connect === false &&
-                (currentEventFromStore.event_type || currentEventFromStore.type || "").toLowerCase().includes("супервизи") ? (
-                <div className="p-3 rounded-[30px] border-2 border-green text-green">
-                  К сожалению ваш тариф не включает в себя посещение супервизий
-                </div>
-              ) : !isRegistered && !currentEventFromStore.registered && !currentEventFromStore.is_canceled && !(currentEventFromStore.current_participants >= currentEventFromStore.max_participants) ? (
+              {!isRegistered && !currentEventFromStore.registered && !currentEventFromStore.is_canceled && !(currentEventFromStore.current_participants >= currentEventFromStore.max_participants) ? (
                 <Button
                   variant={'primary'}
                   className="rounded-full"
