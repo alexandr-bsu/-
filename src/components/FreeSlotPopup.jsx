@@ -5,7 +5,8 @@ import QueryString from "qs";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useSelector, useDispatch } from "react-redux";
-import { spliceSlot, setStateSlotLoading, setStateSlotOk, notifySlotCleared } from "../redux/slices/psycoSlotsSlice";
+import { spliceSlot, setStateSlotLoading, setStateSlotOk, notifySlotCleared, pushSlot } from "../redux/slices/psycoSlotsSlice";
+import { format } from "date-fns";
 
 const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn, onSlotDeleted }) => {
   const [isDeleting, setIsDeleting] = useState(false);
@@ -33,7 +34,6 @@ const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn, onSlot
     const fetchPlanningStatus = async () => {
       try {
         const slotParam = slotId || slotDate;
-        console.log("FreeSlotPopup: Загружаем планирование для слота:", slotParam, "slotId:", slotId, "slotDate:", slotDate);
 
         const response = await axios.get("https://n8n-v2.hrani.live/webhook/get-root-planned-free-slot", {
           params: {
@@ -60,6 +60,126 @@ const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn, onSlot
     }
   }, [secret, slotId, slotDate]);
 
+  // Функция для правильного склонения слова "создан/созданы"
+  const getCreatedWord = (count) => {
+    const lastDigit = count % 10;
+    const lastTwoDigits = count % 100;
+    
+    if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
+      return 'Созданы';
+    }
+    
+    if (lastDigit === 1) {
+      return 'Создан';
+    }
+    
+    return 'Созданы';
+  };
+
+  // Функция для правильного склонения слова "слот"
+  const getSlotWord = (count) => {
+    const lastDigit = count % 10;
+    const lastTwoDigits = count % 100;
+    
+    if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
+      return 'слотов';
+    }
+    
+    if (lastDigit === 1) {
+      return 'слот';
+    }
+    
+    if (lastDigit >= 2 && lastDigit <= 4) {
+      return 'слота';
+    }
+    
+    return 'слотов';
+  };
+
+  // Функция для правильного склонения "повторяющийся/повторяющихся"
+  const getRepeatWord = (count) => {
+    const lastDigit = count % 10;
+    const lastTwoDigits = count % 100;
+    
+    if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
+      return 'повторяющихся';
+    }
+    
+    if (lastDigit === 1) {
+      return 'повторяющийся';
+    }
+    
+    return 'повторяющихся';
+  };
+
+  // Функция для вычисления дат повторяющихся слотов
+  const calculateRepeatDates = (slotDateStr, repeatPeriod) => {
+    if (repeatPeriod === "нет") return [];
+
+    // Парсим дату из формата "dd.MM HH:mm" (например, "09.12 20:00")
+    const [datePart, timePart] = slotDateStr.split(' ');
+    const [day, month] = datePart.split('.');
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1; // 1-12
+    
+    // Определяем год для начальной даты
+    // Если месяц слота уже прошел в текущем году, используем следующий год
+    let year = currentYear;
+    if (parseInt(month) < currentMonth || (parseInt(month) === currentMonth && parseInt(day) < now.getDate())) {
+      // Если дата в прошлом, используем следующий год
+      year = currentYear + 1;
+    }
+    
+    // Создаем начальную дату
+    const startDate = new Date(year, parseInt(month) - 1, parseInt(day));
+    
+    // Определяем интервал и количество повторений
+    let daysInterval = 0;
+    let maxRepeats = 0;
+    
+    switch (repeatPeriod) {
+      case "раз в неделю":
+        daysInterval = 7;
+        maxRepeats = 4; // 4 дня 
+        break;
+      case "раз в 2 недели":
+        daysInterval = 14;
+        maxRepeats = 2; // 2 дня
+        break;
+      case "раз в месяц":
+        daysInterval = 30; // Приблизительно месяц
+        maxRepeats = 1; // 2 месяца
+        break;
+      default:
+        return [];
+    }
+
+    const dates = [];
+    for (let i = 1; i <= maxRepeats; i++) {
+      const nextDate = new Date(startDate);
+      
+      if (repeatPeriod === "раз в месяц") {
+        // Для месяца добавляем месяц
+        nextDate.setMonth(nextDate.getMonth() + i);
+      } else {
+        // Для недель добавляем дни
+        nextDate.setDate(nextDate.getDate() + (daysInterval * i));
+      }
+      
+      // Проверяем, что дата не в прошлом
+      if (nextDate < now) {
+        continue;
+      }
+      
+      // Форматируем дату в формат "dd.MM HH:mm"
+      const formattedDate = format(nextDate, "dd.MM");
+      dates.push(`${formattedDate} ${timePart}`);
+    }
+    
+    return dates;
+  };
+
   const handlePlanningChange = async (newPeriod) => {
     if (isSavingPlan || newPeriod === repeatPeriod) return;
 
@@ -67,16 +187,82 @@ const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn, onSlot
 
     try {
       const slotParam = slotId || slotDate;
-      console.log("FreeSlotPopup: Сохраняем планирование для слота:", slotParam, "slotId:", slotId, "slotDate:", slotDate);
 
-      await axios.post("https://n8n-v2.hrani.live/webhook/plan-free-slots", {
+      // Сначала сохраняем настройки повторения
+      const response = await axios.post("https://n8n-v2.hrani.live/webhook/plan-free-slots", {
         secret: secret,
-        slot: slotParam, // Используем UUID слота, если есть, иначе fallback на дату слота
+        slot: slotParam,
         repeat_period: newPeriod
       });
 
       setRepeatPeriod(newPeriod);
-      toast.success("Настройки планирования сохранены");
+
+      // Если выбрано повторение, создаем слоты для будущих дат
+      if (newPeriod !== "нет" && slotDate) {
+        const repeatDates = calculateRepeatDates(slotDate, newPeriod);
+
+        // Показываем toast о начале создания слотов
+        const creatingRepeatWord = repeatDates.length === 1 ? 'повторяющегося' : 'повторяющихся';
+        const creatingSlotWord = repeatDates.length === 1 ? 'слота' : 'слотов';
+        toast.loading(`Создание ${repeatDates.length} ${creatingRepeatWord} ${creatingSlotWord}...`, { id: 'creating-slots' });
+
+        // Создаем слоты последовательно с задержкой между каждым
+        let successCount = 0;
+        let failCount = 0;
+
+        for (let i = 0; i < repeatDates.length; i++) {
+          const slotString = repeatDates[i];
+          
+          // Добавляем задержку перед каждым созданием слота (кроме первого)
+          if (i > 0) {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+          }
+
+          try {
+            const slotResponse = await axios.post("https://n8n-v2.hrani.live/webhook/add-slot", {
+              secret: secret,
+              slot: slotString
+            });
+
+            // Добавляем слот в Redux
+            if (slotResponse.data && slotResponse.data.id) {
+              dispatch(pushSlot({
+                slot: slotString,
+                id: slotResponse.data.id
+              }));
+            } else {
+              dispatch(pushSlot(slotString));
+            }
+            
+            successCount++;
+          } catch (error) {
+            console.error(`FreeSlotPopup: Ошибка при создании слота ${slotString}:`, error);
+            failCount++;
+          }
+        }
+
+        // Закрываем toast загрузки и показываем результат
+        toast.dismiss('creating-slots');
+        
+        if (successCount > 0) {
+          const createdWord = getCreatedWord(successCount);
+          const successRepeatWord = getRepeatWord(successCount);
+          const successSlotWord = getSlotWord(successCount);
+          const errorText = failCount > 0 ? ` (${failCount} ${failCount === 1 ? 'ошибка' : failCount <= 4 ? 'ошибки' : 'ошибок'})` : '';
+          toast.success(`${createdWord} ${successCount} ${successRepeatWord} ${successSlotWord}${errorText}`);
+        } else {
+          toast.error("Не удалось создать повторяющиеся слоты");
+        }
+      } else {
+        toast.success("Настройки планирования сохранены");
+      }
+
+      // Перезагружаем слоты после создания
+      if (onSlotDeleted) {
+        setTimeout(() => {
+          onSlotDeleted();
+        }, 500);
+      }
     } catch (error) {
       console.error("Ошибка при сохранении планирования:", error);
       toast.error("Ошибка при сохранении настроек планирования");
@@ -127,7 +313,6 @@ const FreeSlotPopup = ({ slotDate, slotId, queryDate, queryTime, closeFn, onSlot
           const slotDate = `${currentYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 
           // Отправляем уведомление о сбросе слота
-          console.log('FreeSlotPopup: отправляем уведомление о сбросе слота', { date: slotDate, time: slotTime });
           dispatch(notifySlotCleared({
             date: slotDate,
             time: slotTime
